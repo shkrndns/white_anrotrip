@@ -1,0 +1,162 @@
+---
+import { Image } from 'astro:assets';
+import FaIcon from '../icons/FaIcon.astro';
+import type { ReviewDoc } from '../../data/review-docs';
+
+interface Props {
+	reviews: ReviewDoc[];
+}
+
+const { reviews } = Astro.props;
+const reviewTitles = reviews.map((r) => r.title);
+const reviewCount = reviews.length;
+---
+
+<style is:global>
+	#lightbox .slide-item,
+	#reviews-scroller {
+		-webkit-overflow-scrolling: touch;
+	}
+</style>
+
+<div
+	id="lightbox"
+	role="dialog"
+	aria-modal="true"
+	aria-labelledby="lightbox-heading"
+	class="fixed inset-0 z-modal bg-black/95 hidden items-center justify-center opacity-0 transition-opacity duration-normal select-none backdrop-blur-sm cursor-zoom-in overflow-hidden"
+>
+	<div
+		id="lightbox-top-bar"
+		class="absolute top-0 right-0 p-5 flex gap-3 z-modal-controls"
+	>
+		<button
+			type="button"
+			aria-label="Увеличить или уменьшить"
+			class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-[background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+			id="zoom-btn"
+		>
+			<svg
+				id="icon-zoom-in"
+				class="w-5 h-5"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+			>
+				<circle cx="11" cy="11" r="8"></circle><path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M21 21l-4.35-4.35M11 8v6M8 11h6"></path>
+			</svg>
+			<svg
+				id="icon-zoom-out"
+				class="w-5 h-5 hidden"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+			>
+				<circle cx="11" cy="11" r="8"></circle><path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M21 21l-4.35-4.35M8 11h6"></path>
+			</svg>
+		</button>
+		<button
+			id="lightbox-close-btn"
+			type="button"
+			aria-label="Закрыть просмотр"
+			onclick="closeLightbox()"
+			class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+		>
+			<svg
+				class="w-5 h-5"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M6 18L18 6M6 6l12 12"></path>
+			</svg>
+		</button>
+	</div>
+
+	<div class="absolute top-5 left-5 z-modal-controls" id="lightbox-title">
+		<h2 id="lightbox-heading" class="text-white/50 text-sm font-medium">
+			<span></span>
+		</h2>
+	</div>
+
+	<div
+		class="absolute left-0 top-24 bottom-16 w-20 z-modal-controls cursor-pointer"
+		data-lightbox-arrow="prev"
+		role="button"
+		tabindex="-1"
+		aria-label="Предыдущий отзыв"
+	>
+		<button
+			type="button"
+			aria-label="Предыдущий отзыв"
+			class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white/90 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+		>
+			<FaIcon name="fa6-solid:arrow-left" iconClass="text-lg leading-none" />
+		</button>
+	</div>
+	<div
+		class="absolute right-0 top-24 bottom-16 w-20 z-modal-controls cursor-pointer"
+		data-lightbox-arrow="next"
+		role="button"
+		tabindex="-1"
+		aria-label="Следующий отзыв"
+	>
+		<button
+			type="button"
+			aria-label="Следующий отзыв"
+			class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white/90 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+		>
+			<FaIcon name="fa6-solid:arrow-right" iconClass="text-lg leading-none" />
+		</button>
+	</div>
+
+	<div
+		id="lightbox-track"
+		class="flex h-full w-full transition-transform duration-normal ease-out will-change-transform relative z-0"
+	>
+		{
+			reviews.map((item) => (
+				<div class="w-full h-full shrink-0 slide-item overflow-x-hidden overflow-y-auto min-h-0 py-6 flex flex-col items-center overscroll-contain [touch-action:pan-x_pan-y]">
+					<div class="lightbox-slide-inner flex items-center justify-center min-h-full w-full shrink-0 mx-auto">
+						<Image
+							src={item.image}
+							alt={item.title}
+							width={item.image.width}
+							height={item.image.height}
+							quality={92}
+							class="lightbox-img max-w-[min(90vw,460px)] md:max-w-[min(90vw,560px)] w-auto h-auto object-contain object-center shadow-2xl shadow-black/30 rounded-lg block"
+						/>
+					</div>
+				</div>
+			))
+		}
+	</div>
+
+	<div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-modal-controls">
+		<span id="lightbox-counter" class="text-white/70 text-sm font-medium"
+		></span>
+	</div>
+</div>
+
+<script define:vars={{ reviewTitles, reviewCount }}>
+	import { initReviewsLightbox } from '../../lib/client/reviews-lightbox.ts';
+
+	function setupReviewsLightbox() {
+		initReviewsLightbox({ reviewTitles, reviewCount });
+	}
+
+	setupReviewsLightbox();
+	document.addEventListener('astro:page-load', setupReviewsLightbox);
+</script>

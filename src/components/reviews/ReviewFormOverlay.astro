@@ -1,0 +1,249 @@
+---
+import { modalLeadSubmitClass } from '../../lib/form-classes';
+import { sitePrivacy } from '../../lib/site-urls';
+---
+
+<div
+	id="review-modal-overlay"
+	class="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm max-md:backdrop-blur-none hidden items-center justify-center opacity-0 transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]"
+>
+	<div
+		id="review-modal-content"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="review-modal-title"
+		class="bg-white rounded-3xl shadow-2xl shadow-black/20 max-md:shadow-lg w-full max-w-md mx-4 relative transform max-h-[90vh] overflow-y-auto scrollbar-hide contain-[layout_paint]
+      translate-y-20 max-md:translate-y-8
+      transition-transform duration-slow ease-out max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]
+      [&.modal-open]:translate-y-0"
+	>
+		<button
+			id="close-review-form"
+			type="button"
+			aria-label="Закрыть форму отзыва"
+			class="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 z-10"
+		>
+			<svg
+				class="w-5 h-5"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M6 18L18 6M6 6l12 12"></path>
+			</svg>
+		</button>
+
+		<div class="p-8 pt-7">
+			<div class="text-center mb-6">
+				<h3
+					id="review-modal-title"
+					class="font-montserrat text-xl font-extrabold text-gray-900 uppercase tracking-wide mb-1"
+				>
+					Оставить отзыв
+				</h3>
+				<p class="text-sm text-gray-500">
+					Будем благодарны за ваше мнение о работе ANRO TRIP
+				</p>
+			</div>
+
+			<form id="review-section-form" class="space-y-3">
+				<div>
+					<label
+						for="review-section-name"
+						class="text-xs text-gray-500 font-medium mb-1 block">Ваше имя</label
+					>
+					<input
+						id="review-section-name"
+						name="name"
+						type="text"
+						placeholder="Имя"
+						required
+						autocomplete="name"
+						class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					/>
+				</div>
+				<div>
+					<label
+						for="review-section-phone"
+						class="text-xs text-gray-500 font-medium mb-1 block">Телефон</label
+					>
+					<input
+						id="review-section-phone"
+						name="phone"
+						type="tel"
+						inputmode="tel"
+						placeholder="+7 (___) ___-__-__"
+						required
+						autocomplete="tel"
+						class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					/>
+				</div>
+				<div>
+					<label
+						for="review-section-email"
+						class="text-xs text-gray-500 font-medium mb-1 block">E-mail</label
+					>
+					<input
+						id="review-section-email"
+						name="email"
+						type="email"
+						placeholder="email@example.ru"
+						autocomplete="email"
+						class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					/>
+				</div>
+				<div>
+					<label
+						for="review-section-city"
+						class="text-xs text-gray-500 font-medium mb-1 block">Город</label
+					>
+					<input
+						id="review-section-city"
+						name="city"
+						type="text"
+						placeholder="Ваш город"
+						autocomplete="address-level2"
+						class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					/>
+				</div>
+				<div>
+					<label
+						for="review-section-service"
+						class="text-xs text-gray-500 font-medium mb-1 block">Услуга</label
+					>
+					<input
+						id="review-section-service"
+						name="service"
+						type="text"
+						placeholder="Билеты / тур / отель / виза / другое"
+						autocomplete="off"
+						class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					/>
+				</div>
+				<div>
+					<label
+						for="review-section-text"
+						class="text-xs text-gray-500 font-medium mb-1 block">Отзыв</label
+					>
+					<textarea
+						id="review-section-text"
+						name="review"
+						rows={3}
+						placeholder="Расскажите о вашем опыте..."
+						required
+						autocomplete="off"
+						class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm resize-none transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					></textarea>
+				</div>
+				<div class="flex items-start gap-2.5 pt-1">
+					<input
+						type="checkbox"
+						id="agree-review"
+						name="agree"
+						required
+						class="mt-0.5 w-4 h-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					/>
+					<label
+						for="agree-review"
+						class="text-[11px] text-gray-600 leading-snug cursor-pointer"
+					>
+						Даю согласие на обработку персональных данных в соответствии с
+						<a
+							href={sitePrivacy()}
+							class="text-primary font-semibold hover:underline cursor-pointer"
+							>Политикой конфиденциальности</a
+						>
+					</label>
+				</div>
+				<p
+					id="review-section-error"
+					class="hidden text-sm text-red-500 text-center"
+					role="alert"
+				>
+				</p>
+				<button
+					type="submit"
+					id="review-section-submit"
+					class={modalLeadSubmitClass}
+				>
+					Отправить отзыв
+				</button>
+			</form>
+
+			<div
+				id="review-section-success"
+				class="hidden text-center py-6 px-2"
+				role="status"
+				aria-live="polite"
+			>
+				<div
+					class="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4"
+				>
+					<svg
+						class="w-8 h-8 text-primary"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2.5"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M5 13l4 4L19 7"></path>
+					</svg>
+				</div>
+				<h4 class="font-montserrat text-lg font-bold text-gray-900 mb-2">
+					Спасибо за отзыв!
+				</h4>
+				<p class="text-sm text-gray-500">
+					Он поможет другим путешественникам с выбором.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	import { attachJsonFormSubmit } from '../../lib/client/form-submit.ts';
+	import { initReviewFormOverlay } from '../../lib/client/review-form-overlay.ts';
+
+	function initReviewSectionForm() {
+		initReviewFormOverlay();
+
+		const reviewSectionForm = document.getElementById(
+			'review-section-form',
+		) as HTMLFormElement | null;
+		const reviewSectionSubmit = document.getElementById(
+			'review-section-submit',
+		) as HTMLButtonElement | null;
+		const reviewSectionError = document.getElementById('review-section-error');
+		const reviewSectionSuccess = document.getElementById(
+			'review-section-success',
+		);
+
+		if (!reviewSectionForm || !reviewSectionSubmit) return;
+		if (reviewSectionForm.dataset.submitBound === '1') return;
+		reviewSectionForm.dataset.submitBound = '1';
+		attachJsonFormSubmit({
+			form: reviewSectionForm,
+			submitButton: reviewSectionSubmit,
+			errorElement: reviewSectionError,
+			apiPath: 'api/review',
+			submitLabel: 'Отправить отзыв',
+			onSuccess: () => {
+				reviewSectionForm.classList.add('hidden');
+				reviewSectionSuccess?.classList.remove('hidden');
+				setTimeout(() => {
+					window.closeReviewForm();
+				}, 3000);
+			},
+		});
+	}
+
+	initReviewSectionForm();
+	document.addEventListener('astro:page-load', initReviewSectionForm);
+</script>

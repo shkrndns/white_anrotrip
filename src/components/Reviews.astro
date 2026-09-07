@@ -1,712 +1,178 @@
 ---
 // src/components/Reviews.astro
-import { modalLeadSubmitClass } from '../lib/form-classes';
-import { sitePrivacy } from '../lib/site-urls';
 import { Image } from 'astro:assets';
 import ExternalReviewsRow from './widgets/ExternalReviewsRow.astro';
-import FaIcon from './icons/FaIcon.astro';
+import SectionHeading from './ui/SectionHeading.astro';
+import ReviewsLightbox from './reviews/ReviewsLightbox.astro';
+import ReviewFormOverlay from './reviews/ReviewFormOverlay.astro';
 import {
-  twoGisRating,
-  twoGisReviews,
-  twoGisReviewsUrl,
-  yandexRating,
-  yandexReviews,
-  yandexReviewsUrl,
+	twoGisRating,
+	twoGisReviews,
+	twoGisReviewsUrl,
+	yandexRating,
+	yandexReviews,
+	yandexReviewsUrl,
 } from '../lib/external-reviews';
-import molodezhImg from '../assets/reviews/molodezh.webp';
-import niagaraImg from '../assets/reviews/niagara.webp';
-import mercedesImg from '../assets/reviews/mercedes.webp';
-import niksImg from '../assets/reviews/niks.webp';
-import usmanovaImg from '../assets/reviews/usmanova.webp';
-import napoleonImg from '../assets/reviews/napoleon.webp';
-import r1projectImg from '../assets/reviews/r1project.webp';
-import uralniiImg from '../assets/reviews/uralnii.webp';
-
-const reviews = [
-  { id: 1, title: '"МОЛОДЕЖЬ ЮЖНОГО УРАЛА"', image: molodezhImg },
-  { id: 2, title: '"Ниагара"', image: niagaraImg },
-  { id: 3, title: '"ОМЕГА Mercedes Benz"', image: mercedesImg },
-  { id: 4, title: '"НИКС"', image: niksImg },
-  { id: 5, title: '"Аня Усманова"', image: usmanovaImg },
-  { id: 6, title: '"Napoleon IT"', image: napoleonImg },
-  { id: 7, title: '"Проектное бюро R1"', image: r1projectImg },
-  { id: 8, title: '"Урал НИИ СТРОМ"', image: uralniiImg },
-];
-
-const reviewTitles = reviews.map((r) => r.title);
-const reviewCount = reviews.length;
+import { reviewDocs as reviews } from '../data/review-docs';
 ---
 
 <section id="reviews" class="relative py-[50px] overflow-hidden bg-gray-950">
-  <!-- Фоновые орбы -->
-  <div class="absolute -top-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-none md:blur-3xl pointer-events-none"></div>
-  <div class="absolute -bottom-40 -right-40 w-80 h-80 bg-secondary/8 rounded-full blur-none md:blur-3xl pointer-events-none"></div>
-  <!-- Тонкая сетка текстура -->
-  <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[60px_60px] pointer-events-none"></div>
+	<div
+		class="absolute -top-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-none md:blur-3xl pointer-events-none"
+	>
+	</div>
+	<div
+		class="absolute -bottom-40 -right-40 w-80 h-80 bg-secondary/8 rounded-full blur-none md:blur-3xl pointer-events-none"
+	>
+	</div>
+	<div
+		class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[60px_60px] pointer-events-none"
+	>
+	</div>
 
-  <div class="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
+		<div
+			class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 md:mb-8 reveal-hidden"
+		>
+			<div>
+				<SectionHeading
+					badge="Отзывы"
+					headingClass="section-heading-plus font-montserrat font-extrabold text-white uppercase tracking-tight"
+				>
+					Что говорят<br />
+					<span class="text-primary">наши клиенты</span>
+				</SectionHeading>
+			</div>
+		</div>
 
-    <!-- Заголовок -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 md:mb-8 reveal-hidden">
-      <div>
-        <div class="section-badge mb-4">
-          <span class="section-badge__dot" aria-hidden="true"></span>
-          <span class="section-badge__label">Отзывы</span>
-        </div>
-        <h2 class="section-heading-plus font-montserrat font-extrabold text-white uppercase tracking-tight">
-          Что говорят<br />
-          <span class="text-primary">наши клиенты</span>
-        </h2>
-      </div>
-    </div>
+		<div class="relative reveal-hidden">
+			<div
+				class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-gray-950 to-transparent z-10 pointer-events-none"
+			>
+			</div>
+			<div
+				class="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-gray-950 to-transparent z-10 pointer-events-none"
+			>
+			</div>
 
-    <!-- Карусель документов -->
-    <div class="relative reveal-hidden">
-      <!-- Fade-маски -->
-      <div class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-gray-950 to-transparent z-10 pointer-events-none"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-gray-950 to-transparent z-10 pointer-events-none"></div>
+			<div
+				class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 md:mx-0 md:px-0 overscroll-x-contain max-sm:overscroll-y-auto scroll-smooth [touch-action:pan-x_pan-y]"
+				id="reviews-scroller"
+			>
+				{
+					reviews.map((item, index) => (
+						<button
+							type="button"
+							class="snap-start shrink-0 w-32 sm:w-36 group cursor-pointer border-0 bg-transparent p-0 text-left"
+							data-review-index={index}
+							aria-label={`Открыть отзыв: ${item.title}`}
+						>
+							<div class="reviews-doc-card relative bg-white rounded-xl overflow-hidden shadow-lg border border-white/10">
+								<Image
+									src={item.image}
+									alt={item.title}
+									width={144}
+									height={203}
+									class="w-full h-auto object-cover aspect-[1/1.41] pointer-events-none"
+									loading="lazy"
+									sizes="(max-width: 640px) 128px, 144px"
+									fetchpriority={index < 2 ? undefined : 'low'}
+								/>
+								<div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-normal flex items-center justify-center">
+									<div class="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-normal shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
+										<svg
+											class="w-5 h-5 text-primary"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+										>
+											<>
+												<circle cx="11" cy="11" r="8" />
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													d="M21 21l-4.35-4.35M11 8v6M8 11h6"
+												/>
+											</>
+										</svg>
+									</div>
+								</div>
+							</div>
+							<p
+								class="text-center text-[11px] text-white/70 mt-2 truncate px-1"
+								title={item.title}
+							>
+								{item.title}
+							</p>
+						</button>
+					))
+				}
+			</div>
+		</div>
 
-      <div
-        class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 md:mx-0 md:px-0 overscroll-x-contain max-sm:overscroll-y-auto scroll-smooth [touch-action:pan-x_pan-y]"
-        id="reviews-scroller"
-      >
-        {reviews.map((item, index) => (
-          <div
-            class="snap-start shrink-0 w-32 sm:w-36 group cursor-pointer"
-            onclick={`openLightbox(${index})`}
-          >
-            <!-- Карточка документа -->
-            <div class="reviews-doc-card relative bg-white rounded-xl overflow-hidden shadow-lg border border-white/10">
-              <Image
-                src={item.image}
-                alt={item.title}
-                width={144}
-                height={203}
-                class="w-full h-auto object-cover aspect-[1/1.41] pointer-events-none"
-                loading="lazy"
-                sizes="(max-width: 640px) 128px, 144px"
-                fetchpriority={index < 2 ? undefined : 'low'}
-              />
-              <!-- Hover overlay -->
-              <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-normal flex items-center justify-center">
-                <div class="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-normal shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
-                  <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 8v6M8 11h6"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <p class="text-center text-[11px] text-white/40 mt-2 truncate px-1" title={item.title}>{item.title}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+		<div class="mt-10 md:mt-12 space-y-8">
+			<ExternalReviewsRow
+				theme="light"
+				platform="yandex"
+				score={yandexRating.score}
+				ratingsCount={yandexRating.ratingsCount}
+				reviewsCount={yandexRating.reviewsCount}
+				link={yandexReviewsUrl}
+				platformLabel="Карты"
+				sourceLabel="Отзыв Яндекс Карты"
+				reviews={yandexReviews}
+				scrollerId="yandex-reviews-scroller"
+			/>
 
-    <!-- Отзывы с внешних площадок: Яндекс Карты + 2ГИС -->
-    <div class="mt-10 md:mt-12 space-y-8">
-      <ExternalReviewsRow
-        theme="light"
-        platform="yandex"
-        score={yandexRating.score}
-        ratingsCount={yandexRating.ratingsCount}
-        reviewsCount={yandexRating.reviewsCount}
-        link={yandexReviewsUrl}
-        platformLabel="Карты"
-        sourceLabel="Отзыв Яндекс Карты"
-        reviews={yandexReviews}
-        scrollerId="yandex-reviews-scroller"
-      />
+			<ExternalReviewsRow
+				theme="dark"
+				platform="2gis"
+				score={twoGisRating.score}
+				ratingsCount={twoGisRating.ratingsCount}
+				reviewsCount={twoGisRating.reviewsCount}
+				link={twoGisReviewsUrl}
+				platformLabel="2ГИС"
+				sourceLabel="Отзыв 2ГИС"
+				reviews={twoGisReviews}
+				readMoreCaps
+				scrollerId="twogis-reviews-scroller"
+			/>
+		</div>
 
-      <ExternalReviewsRow
-        theme="dark"
-        platform="2gis"
-        score={twoGisRating.score}
-        ratingsCount={twoGisRating.ratingsCount}
-        reviewsCount={twoGisRating.reviewsCount}
-        link={twoGisReviewsUrl}
-        platformLabel="2ГИС"
-        sourceLabel="Отзыв 2ГИС"
-        reviews={twoGisReviews}
-        readMoreCaps
-        scrollerId="twogis-reviews-scroller"
-      />
-    </div>
+		<div class="text-center mt-10 reveal-hidden">
+			<button
+				id="open-review-form"
+				type="button"
+				class="reviews-cta-btn inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-white/10 border border-primary/15 text-white font-bold text-sm uppercase tracking-wider shadow-[0_4px_12px_rgba(0,171,179,0.25)] hover:bg-primary/15 hover:shadow-lg hover:shadow-primary/30 btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+			>
+				<svg
+					class="w-4 h-4 text-primary"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+					></path>
+				</svg>
+				Оставить отзыв
+			</button>
+		</div>
+	</div>
 
-    <!-- CTA -->
-    <div class="text-center mt-10 reveal-hidden">
-      <button
-        id="open-review-form"
-        type="button"
-        class="reviews-cta-btn inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-white/10 border border-primary/15 text-white font-bold text-sm uppercase tracking-wider shadow-[0_4px_12px_rgba(0,171,179,0.25)] hover:bg-primary/15 hover:shadow-lg hover:shadow-primary/30 btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
-      >
-        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-        </svg>
-        Оставить отзыв
-      </button>
-    </div>
-  </div>
-
-  <!-- ══════ LIGHTBOX ══════ -->
-  <style is:global>
-    /* iOS: плавная прокрутка (веб-стандарт для touch) */
-    #lightbox .slide-item,
-    #reviews-scroller {
-      -webkit-overflow-scrolling: touch;
-    }
-  </style>
-  <div
-    id="lightbox"
-    class="fixed inset-0 z-modal bg-black/95 hidden items-center justify-center opacity-0 transition-opacity duration-normal select-none backdrop-blur-sm cursor-zoom-in overflow-hidden"
-  >
-    <!-- Панель управления -->
-    <div
-      id="lightbox-top-bar"
-      class="absolute top-0 right-0 p-5 flex gap-3 z-2147483649"
-    >
-      <button
-        type="button"
-        aria-label="Увеличить или уменьшить"
-        class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-[background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-        id="zoom-btn"
-      >
-        <svg id="icon-zoom-in" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 8v6M8 11h6"/>
-        </svg>
-        <svg id="icon-zoom-out" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M8 11h6"/>
-        </svg>
-      </button>
-      <button
-        id="lightbox-close-btn"
-        type="button"
-        aria-label="Закрыть просмотр"
-        onclick="closeLightbox()"
-        class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Название слайда -->
-    <div class="absolute top-5 left-5 z-2147483649" id="lightbox-title">
-      <span class="text-white/50 text-sm font-medium"></span>
-    </div>
-
-    <!-- Стрелки: зона клика только в области стрелок, не перекрывает кнопки закрытия/зума -->
-    <div
-      class="absolute left-0 top-24 bottom-16 w-20 z-2147483649 cursor-pointer"
-      data-lightbox-arrow="prev"
-      role="button"
-      tabindex="-1"
-      aria-label="Предыдущий отзыв"
-    >
-      <button
-        type="button"
-        aria-label="Предыдущий отзыв"
-        class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white/90 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-      >
-        <FaIcon name="fa6-solid:arrow-left" iconClass="text-lg leading-none" />
-      </button>
-    </div>
-    <div
-      class="absolute right-0 top-24 bottom-16 w-20 z-2147483649 cursor-pointer"
-      data-lightbox-arrow="next"
-      role="button"
-      tabindex="-1"
-      aria-label="Следующий отзыв"
-    >
-      <button
-        type="button"
-        aria-label="Следующий отзыв"
-        class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white/90 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-      >
-        <FaIcon name="fa6-solid:arrow-right" iconClass="text-lg leading-none" />
-      </button>
-    </div>
-
-    <!-- Трек (z-0 — под стрелками) -->
-    <div id="lightbox-track" class="flex h-full w-full transition-transform duration-normal ease-out will-change-transform relative z-0">
-      {reviews.map((item) => (
-        <div class="w-full h-full shrink-0 slide-item overflow-x-hidden overflow-y-auto min-h-0 py-6 flex flex-col items-center overscroll-contain [touch-action:pan-x_pan-y]">
-          <div class="lightbox-slide-inner flex items-center justify-center min-h-full w-full shrink-0 mx-auto">
-            <Image
-              src={item.image}
-              alt={item.title}
-              width={item.image.width}
-              height={item.image.height}
-              quality={92}
-              class="lightbox-img max-w-[min(90vw,460px)] md:max-w-[min(90vw,560px)] w-auto h-auto object-contain object-center shadow-2xl shadow-black/30 rounded-lg block"
-            />
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <!-- Счётчик -->
-    <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-2147483649">
-      <span id="lightbox-counter" class="text-white/40 text-sm font-medium"></span>
-    </div>
-  </div>
-
-  <!-- ══════ ФОРМА ОТЗЫВА ══════ (по аналогии с CallbackModal / GiftModal: плавное открытие/закрытие, виджет офиса за блюром) -->
-  <div id="review-modal-overlay"
-    class="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm max-md:backdrop-blur-none hidden items-center justify-center opacity-0 transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]">
-    <div id="review-modal-content"
-      class="bg-white rounded-3xl shadow-2xl shadow-black/20 max-md:shadow-lg w-full max-w-md mx-4 relative transform max-h-[90vh] overflow-y-auto scrollbar-hide contain-[layout_paint]
-        translate-y-20 max-md:translate-y-8
-        transition-transform duration-slow ease-out max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]
-        [&.modal-open]:translate-y-0">
-      <button id="close-review-form"
-        type="button"
-        aria-label="Закрыть форму отзыва"
-        class="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 z-10">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-
-      <div class="p-8 pt-7">
-        <div class="text-center mb-6">
-          <h3 class="font-montserrat text-xl font-extrabold text-gray-900 uppercase tracking-wide mb-1">Оставить отзыв</h3>
-          <p class="text-sm text-gray-400">Будем благодарны за ваше мнение о работе ANRO TRIP</p>
-        </div>
-
-        <form id="review-section-form" class="space-y-3">
-          <div>
-            <label for="review-section-name" class="text-xs text-gray-500 font-medium mb-1 block">Ваше имя</label>
-            <input
-              id="review-section-name"
-              name="name"
-              type="text"
-              placeholder="Имя"
-              required
-              autocomplete="name"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            />
-          </div>
-          <div>
-            <label for="review-section-phone" class="text-xs text-gray-500 font-medium mb-1 block">Телефон</label>
-            <input
-              id="review-section-phone"
-              name="phone"
-              type="tel"
-              placeholder="+7 (___) ___-__-__"
-              required
-              autocomplete="tel"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            />
-          </div>
-          <div>
-            <label for="review-section-email" class="text-xs text-gray-500 font-medium mb-1 block">E-mail</label>
-            <input
-              id="review-section-email"
-              name="email"
-              type="email"
-              placeholder="email@example.ru"
-              autocomplete="email"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            />
-          </div>
-          <div>
-            <label for="review-section-city" class="text-xs text-gray-500 font-medium mb-1 block">Город</label>
-            <input
-              id="review-section-city"
-              name="city"
-              type="text"
-              placeholder="Ваш город"
-              autocomplete="address-level2"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            />
-          </div>
-          <div>
-            <label for="review-section-service" class="text-xs text-gray-500 font-medium mb-1 block">Услуга</label>
-            <input
-              id="review-section-service"
-              name="service"
-              type="text"
-              placeholder="Билеты / тур / отель / виза / другое"
-              autocomplete="off"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            />
-          </div>
-          <div>
-            <label for="review-section-text" class="text-xs text-gray-500 font-medium mb-1 block">Отзыв</label>
-            <textarea
-              id="review-section-text"
-              name="review"
-              rows={3}
-              placeholder="Расскажите о вашем опыте..."
-              required
-              autocomplete="off"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm resize-none transition-[border-color,box-shadow] outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            ></textarea>
-          </div>
-          <div class="flex items-start gap-2.5 pt-1">
-            <input type="checkbox" id="agree-review" name="agree" required class="mt-0.5 w-4 h-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" />
-            <label for="agree-review" class="text-[11px] text-gray-400 leading-snug cursor-pointer">
-              Даю согласие на обработку персональных данных в соответствии с
-              <a href={sitePrivacy()} class="text-primary font-semibold hover:underline cursor-pointer">Политикой конфиденциальности</a>
-            </label>
-          </div>
-          <p id="review-section-error" class="hidden text-sm text-red-500 text-center" role="alert"></p>
-          <button type="submit" id="review-section-submit" class={modalLeadSubmitClass}>
-            Отправить отзыв
-          </button>
-        </form>
-        {/* Экран успеха */}
-        <div id="review-section-success" class="hidden text-center py-6 px-2">
-          <div class="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4">
-            <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h4 class="font-montserrat text-lg font-bold text-gray-900 mb-2">Спасибо за отзыв!</h4>
-          <p class="text-sm text-gray-500">Он поможет другим путешественникам с выбором.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+	<ReviewsLightbox reviews={reviews} />
+	<ReviewFormOverlay />
 </section>
 
-<script is:inline define:vars={{ reviewTitles, reviewCount }}>
-  let currentIndex = 0;
-  let isZoomed = false;
+<script>
+	import { initReviewsScroller } from '../lib/client/reviews-lightbox.ts';
 
-  const lightbox   = document.getElementById('lightbox');
-  const track      = document.getElementById('lightbox-track');
-  const slides     = document.querySelectorAll('.slide-item');
-  const inners     = document.querySelectorAll('.lightbox-slide-inner');
-  const images     = document.querySelectorAll('.lightbox-img');
-  const counter    = document.getElementById('lightbox-counter');
-  const titleEl    = document.getElementById('lightbox-title')?.querySelector('span');
-
-  const iconIn     = document.getElementById('icon-zoom-in');
-  const iconOut    = document.getElementById('icon-zoom-out');
-
-  const formOverlay  = document.getElementById('review-modal-overlay');
-  const formContent  = document.getElementById('review-modal-content');
-  const openFormBtn  = document.getElementById('open-review-form');
-  const closeFormBtn = document.getElementById('close-review-form');
-
-  // Перенос модалки и лайтбокса в body — иначе под хедером (section overflow-hidden + stacking context)
-  if (formOverlay && formOverlay.parentElement !== document.body) {
-    document.body.appendChild(formOverlay);
-  }
-  if (lightbox && lightbox.parentElement !== document.body) {
-    document.body.appendChild(lightbox);
-  }
-
-  let lightboxPreviousFocus = null;
-
-  function getLightboxFocusables() {
-    if (!lightbox) return [];
-    const sel = 'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
-    return Array.from(lightbox.querySelectorAll(sel)).filter(el => el.offsetParent !== null);
-  }
-
-  function trapLightboxFocus(ev) {
-    const e = ev;
-    if (e.key !== 'Tab') return;
-    const focusables = getLightboxFocusables();
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (e.shiftKey) {
-      if (document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      }
-    } else {
-      if (document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-  }
-
-  function togglePageElements(hide) {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    const duration = isMobile ? 200 : 500;
-    const scrollToTop = document.getElementById('scroll-to-top');
-    const others = [document.getElementById('favorites-widget'), document.getElementById('office-widget-container')];
-    if (hide) {
-      [scrollToTop, ...others].forEach(el => {
-        if (!el) return;
-        el.style.transition = `opacity ${duration}ms ease-out`;
-        el.style.opacity = '0';
-        el.style.pointerEvents = 'none';
-      });
-    } else {
-      others.forEach(el => {
-        if (!el) return;
-        el.style.transition = `opacity ${duration}ms ease-out`;
-        el.style.opacity = '1';
-        el.style.pointerEvents = 'auto';
-        setTimeout(() => { el.style.transition = ''; el.style.opacity = ''; el.style.pointerEvents = ''; }, duration);
-      });
-      if (scrollToTop) {
-        scrollToTop.style.transition = '';
-        scrollToTop.style.opacity = '';
-        scrollToTop.style.pointerEvents = '';
-        window.dispatchEvent(new Event('scroll'));
-      }
-    }
-  }
-
-  function updateCounter() {
-    if (counter) counter.textContent = `${currentIndex + 1} / ${reviewCount}`;
-    if (titleEl) titleEl.textContent = reviewTitles[currentIndex] || '';
-  }
-
-  window.openLightbox = (index) => {
-    lightboxPreviousFocus = document.activeElement;
-    currentIndex = index;
-    updateTrackPosition(false);
-    updateCounter();
-    const curSlide = slides[currentIndex];
-    if (curSlide) { curSlide.scrollTop = 0; curSlide.scrollLeft = 0; }
-    lightbox.classList.remove('hidden');
-    lightbox.style.display = 'flex';
-    if (window.lockScroll) window.lockScroll();
-    togglePageElements(true);
-    lightbox.addEventListener('keydown', trapLightboxFocus);
-    setTimeout(() => {
-      lightbox.classList.remove('opacity-0');
-      document.getElementById('lightbox-close-btn')?.focus();
-    }, 10);
-  };
-
-  window.closeLightbox = () => {
-    lightbox.removeEventListener('keydown', trapLightboxFocus);
-    lightbox.classList.add('opacity-0');
-    setTimeout(() => {
-      lightbox.classList.add('hidden');
-      lightbox.style.display = '';
-      if (window.unlockScroll) window.unlockScroll();
-      resetZoom();
-      togglePageElements(false);
-      lightboxPreviousFocus?.focus();
-      lightboxPreviousFocus = null;
-    }, 300);
-  };
-
-  window.changeSlide = (dir) => {
-    resetZoom();
-    currentIndex = (currentIndex + dir + reviewCount) % reviewCount;
-    updateTrackPosition(true);
-    updateCounter();
-    const curSlide = slides[currentIndex];
-    if (curSlide) { curSlide.scrollTop = 0; curSlide.scrollLeft = 0; }
-  };
-
-  function updateTrackPosition(animate) {
-    track.style.transition = animate ? 'transform 0.3s ease-out' : 'none';
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
-  }
-
-  // Зум как на anrotrip (Tilda): без transform, изображение в 2× размере + прокрутка, без прыжка
-  window.toggleZoom = () => {
-    const img = images[currentIndex];
-    const slide = slides[currentIndex];
-    const inner = inners[currentIndex];
-    if (isZoomed) {
-      img.style.width = '';
-      img.style.height = '';
-      img.style.maxWidth = '';
-      img.style.maxHeight = '';
-      if (inner) {
-        inner.style.width = '';
-        inner.style.height = '';
-        inner.style.minWidth = '';
-        inner.style.minHeight = '';
-      }
-      slide.style.overflowX = 'hidden';
-      slide.style.overflowY = 'auto';
-      lightbox.style.cursor = 'zoom-in';
-      iconIn.classList.remove('hidden'); iconOut.classList.add('hidden');
-      isZoomed = false;
-    } else {
-      const w = img.clientWidth;
-      const h = img.clientHeight;
-      const zoomFactor = 1.5;
-      const zoomedW = Math.round(w * zoomFactor);
-      const zoomedH = Math.round(h * zoomFactor);
-      if (inner && w && h) {
-        inner.style.width = zoomedW + 'px';
-        inner.style.height = zoomedH + 'px';
-        inner.style.minWidth = zoomedW + 'px';
-        inner.style.minHeight = zoomedH + 'px';
-      }
-      img.style.maxWidth = 'none';
-      img.style.maxHeight = 'none';
-      img.style.width = zoomedW + 'px';
-      img.style.height = zoomedH + 'px';
-      slide.style.overflow = 'auto';
-      slide.style.overflowX = 'auto';
-      slide.style.overflowY = 'auto';
-      // После перерасчёта layout — центрировать вид по центру документа (десктоп и мобильные)
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const maxScrollL = Math.max(0, slide.scrollWidth - slide.clientWidth);
-          const maxScrollT = Math.max(0, slide.scrollHeight - slide.clientHeight);
-          slide.scrollLeft = maxScrollL * 0.5;
-          slide.scrollTop = maxScrollT * 0.5;
-        });
-      });
-      lightbox.style.cursor = 'zoom-out';
-      iconIn.classList.add('hidden'); iconOut.classList.remove('hidden');
-      isZoomed = true;
-    }
-  };
-
-  function resetZoom() {
-    images.forEach(img => {
-      img.style.width = '';
-      img.style.height = '';
-      img.style.maxWidth = '';
-      img.style.maxHeight = '';
-    });
-    inners.forEach(inner => {
-      inner.style.width = '';
-      inner.style.height = '';
-      inner.style.minWidth = '';
-      inner.style.minHeight = '';
-    });
-    slides.forEach(s => { s.style.overflowX = 'hidden'; s.style.overflowY = 'auto'; });
-    lightbox.style.cursor = 'zoom-in';
-    iconIn.classList.remove('hidden'); iconOut.classList.add('hidden');
-    isZoomed = false;
-  }
-
-  const lightboxTopBar = document.getElementById('lightbox-top-bar');
-  const lightboxArrowPrev = document.querySelector('[data-lightbox-arrow="prev"]');
-  const lightboxArrowNext = document.querySelector('[data-lightbox-arrow="next"]');
-  const zoomBtnEl = document.getElementById('zoom-btn');
-
-  lightboxTopBar?.addEventListener('click', (e) => e.stopPropagation());
-  zoomBtnEl?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    window.toggleZoom();
-  });
-  lightboxArrowPrev?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    window.changeSlide(-1);
-  });
-  lightboxArrowNext?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    window.changeSlide(1);
-  });
-  lightbox?.addEventListener('click', (e) => {
-    const t = e.target;
-    if (!(t instanceof Element)) return;
-    if (t.closest('#lightbox-top-bar') || t.closest('[data-lightbox-arrow]')) return;
-    window.toggleZoom();
-  });
-
-  // Swipe support
-  let touchStartX = 0;
-  lightbox?.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  lightbox?.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 50) window.changeSlide(dx < 0 ? 1 : -1);
-  });
-
-  // Form — плавное открытие/закрытие (как CallbackModal/GiftModal: без скрытия избранного/офиса —
-  // остаются под полупрозрачным оверлеем, без лишних opacity-перерисовок)
-  openFormBtn?.addEventListener('click', () => {
-    if (!formOverlay || !formContent) return;
-    formOverlay.classList.remove('hidden');
-    formOverlay.style.display = 'flex';
-    if (window.lockScroll) window.lockScroll();
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        formContent.style.willChange = 'transform';
-        formOverlay.classList.remove('opacity-0');
-        formContent.classList.add('modal-open');
-      });
-    });
-  });
-
-  window.closeReviewForm = () => {
-    if (!formOverlay || !formContent) return;
-    formContent.style.willChange = 'transform';
-    formOverlay.classList.add('opacity-0');
-    formContent.classList.remove('modal-open');
-
-    const onCloseEnd = () => {
-      if (!formOverlay.classList.contains('opacity-0')) return;
-      formContent.style.willChange = '';
-      formOverlay.classList.add('hidden');
-      formOverlay.style.display = 'none';
-      if (window.unlockScroll) window.unlockScroll();
-    };
-    formContent.addEventListener('transitionend', onCloseEnd, { once: true });
-  };
-
-  closeFormBtn?.addEventListener('click', closeReviewForm);
-  formOverlay?.addEventListener('click', e => { if (e.target === formOverlay) closeReviewForm(); });
-
-  const reviewSectionForm   = document.getElementById('review-section-form');
-  const reviewSectionSubmit = document.getElementById('review-section-submit');
-  const reviewSectionError  = document.getElementById('review-section-error');
-  const reviewSectionSuccess = document.getElementById('review-section-success');
-
-  reviewSectionForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!reviewSectionForm || !reviewSectionSubmit) return;
-
-    reviewSectionSubmit.disabled = true;
-    reviewSectionSubmit.textContent = 'Отправляем…';
-    if (reviewSectionError) { reviewSectionError.textContent = ''; reviewSectionError.classList.add('hidden'); }
-
-    try {
-      const res = await fetch('/api/review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(reviewSectionForm))),
-      });
-      const data = await res.json();
-
-      if (data.ok) {
-        reviewSectionForm.classList.add('hidden');
-        reviewSectionSuccess?.classList.remove('hidden');
-        setTimeout(() => { window.closeReviewForm(); }, 3000);
-      } else {
-        throw new Error(data.error ?? 'Ошибка отправки');
-      }
-    } catch (err) {
-      if (reviewSectionError) {
-        reviewSectionError.textContent = err instanceof Error ? err.message : 'Не удалось отправить. Попробуйте ещё раз.';
-        reviewSectionError.classList.remove('hidden');
-      }
-      reviewSectionSubmit.disabled = false;
-      reviewSectionSubmit.textContent = 'Отправить отзыв';
-    }
-  });
-
-  window.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      if (!lightbox.classList.contains('hidden')) closeLightbox();
-      if (formOverlay && !formOverlay.classList.contains('hidden')) closeReviewForm();
-    }
-    if (!lightbox.classList.contains('hidden')) {
-      if (e.key === 'ArrowRight') window.changeSlide(1);
-      if (e.key === 'ArrowLeft')  window.changeSlide(-1);
-    }
-  });
-
-  function initReviewsScroller() {
-    const el = document.getElementById('reviews-scroller');
-    if (!el) return;
-    el.scrollLeft = 0;
-  }
-  initReviewsScroller();
-  document.addEventListener('astro:page-load', initReviewsScroller);
-  window.addEventListener('load', () => {
-    const el = document.getElementById('reviews-scroller');
-    if (el) el.scrollLeft = 0;
-  });
+	initReviewsScroller();
+	document.addEventListener('astro:page-load', initReviewsScroller);
+	window.addEventListener('load', initReviewsScroller);
 </script>
