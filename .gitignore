@@ -19,7 +19,9 @@ playwright-report/
 !.env.example
 
 # --- Специфические файлы от ИИ и редакторов ---
-.cursor/
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
 .cursorignore
 .cursorrules
 .qwen/
@@ -32,7 +34,6 @@ playwright-report/
 QWEN.md
 .ai-factory.json
 skillkit.yaml
-skills-lock.json
 convert-to-webp.js
 
 # AGENTS.md — в git (руководство для агентов, без секретов)
@@ -43,37 +44,32 @@ convert-to-webp.js
 # budget-costs, vps-plan-justification
 .doc/*
 !.doc/README.md
-!.doc/analytics-cookies-plan.md
-!.doc/anro-trip-guide-optimized.md
-!.doc/audit-2026-09-full.md
-!.doc/audit-full-2026-04.md
-!.doc/audit-mobile.md
-!.doc/commercial-resource-roadmap.md
-!.doc/design-overhaul-2026.md
-!.doc/design-report-2026.md
-!.doc/dev_site.md
-!.doc/forms.md
-!.doc/gitflic-mirror.md
-!.doc/header-anchor-scroll.md
-!.doc/header-frozen.md
-!.doc/legal-pages-review.md
-!.doc/max-blog-import-plan.md
-!.doc/mobile-menu.md
-!.doc/nemo-flights-widget-plan.md
-!.doc/notes-blur-production.md
-!.doc/project-roadmap.md
-!.doc/pwa-plan.md
-!.doc/refactoring-plan.md
-!.doc/responsive-adaptation.md
-!.doc/SEO_trends.md
-!.doc/SEO-чек-лист.md
-!.doc/site-analysis-full.md
-!.doc/skills-primary-shortlists.md
-!.doc/technical-audit-checklist.md
-!.doc/testing-plan.md
-!.doc/Анализ-текста-сайта.md
-!.doc/Контент-стратегия.md
-!.doc/Семантическое-ядро.md
+!.doc/_archive/
+!.doc/_archive/**
+!.doc/architecture/
+!.doc/architecture/**
+!.doc/audits/
+!.doc/audits/**
+!.doc/blog/
+!.doc/blog/**
+!.doc/content/
+!.doc/content/**
+!.doc/deploy/gitflic-mirror.md
+!.doc/deploy/notes-blur-production.md
+!.doc/design/
+!.doc/design/**
+!.doc/forms/
+!.doc/forms/**
+!.doc/navigation/
+!.doc/navigation/**
+!.doc/roadmaps/
+!.doc/roadmaps/**
+!.doc/seo/
+!.doc/seo/**
+!.doc/testing/
+!.doc/testing/**
+!.doc/meta/
+!.doc/meta/**
 
 # scripts/ — все утилиты в git (секретов нет)
 

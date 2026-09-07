@@ -30,6 +30,18 @@
 
 ---
 
+## Разработка
+
+```bash
+pnpm install
+pnpm skills:install   # agent skills (skills.sh) для Cursor
+pnpm dev
+```
+
+ИИ-агенты: **`AGENTS.md`** · правила: `.cursor/rules/` · документация: `.doc/README.md`
+
+---
+
 ## Лицензия
 
 Проект Anrotrip. Все права защищены.

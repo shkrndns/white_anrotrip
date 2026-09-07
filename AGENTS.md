@@ -2,9 +2,21 @@
 
 Сайт туристического агентства «ANRO TRIP». Основной офис — **Челябинск**; представительства — Москва, Екатеринбург.
 
+## Обязательный протокол (без запроса пользователя)
+
+**Каждая сессия и каждая задача** — агент сам:
+
+1. Читает `.specify/memory/constitution.md` и `.agents/skills/anrotrip/SKILL.md` (после `pnpm skills:install`).
+2. Открывает релевантные `.doc/*` и skills по таблицам в `.cursor/rules/01-docs-routing.mdc` и `02-skills-routing.mdc`.
+3. Не ждёт «прочитай AGENTS.md» — контекст подтягивается проактивно.
+
+Правила Cursor (always apply): `.cursor/rules/00-agent-protocol.mdc` и др.
+
 > **Конституция проекта:** `.specify/memory/constitution.md` — читать первым делом!  
 > **Документация:** `.doc/README.md` — указатель справочных документов.  
-> **Архитектура:** `.doc/architecture-reference.md` — middleware, `src/lib/`, виджеты, контент.
+> **Архитектура:** `.doc/architecture/architecture-reference.md` — middleware, `src/lib/`, виджеты, контент.  
+> **Agent skills:** `.doc/meta/skills-primary-shortlists.md` — skills.sh; установка: `pnpm skills:install`  
+> **⚠️ План аудита не завершён** (пауза 2026-09-07): `.doc/audits/AUDIT-PLAN-STATUS.md` — этап 6 и хвосты; не считать аудит закрытым.
 
 ---
 
@@ -103,11 +115,11 @@ Tailwind v4: `bg-linear-to-r` (не `bg-gradient-to-r`).
 
 ### Blur в production
 
-`vite.build.cssMinify: false` в `astro.config.mjs` — **не менять** (Tailwind v4 + Vite ломает `backdrop-blur-*`). См. `.doc/notes-blur-production.md`.
+`vite.build.cssMinify: false` в `astro.config.mjs` — **не менять** (Tailwind v4 + Vite ломает `backdrop-blur-*`). См. `.doc/deploy/notes-blur-production.md`.
 
 ### Хедер — заморожен
 
-`Header.astro` — не менять без явной просьбы. `.doc/header-frozen.md`, `.doc/header-anchor-scroll.md`.
+`Header.astro` — не менять без явной просьбы. `.doc/navigation/header-frozen.md`, `.doc/navigation/header-anchor-scroll.md`.
 
 ### Corp — в архиве
 
@@ -135,7 +147,7 @@ Tailwind v4: `bg-linear-to-r` (не `bg-gradient-to-r`).
 
 ### Формы
 
-Клиент: `form-submit.ts`. Сервер: `src/pages/api/*.ts`, zod в `schemas.ts`, honeypot + rate-limit. Док: `.doc/forms.md`.
+Клиент: `form-submit.ts`. Сервер: `src/pages/api/*.ts`, zod в `schemas.ts`, honeypot + rate-limit. Док: `.doc/forms/forms.md`.
 
 ### Data layer
 
@@ -166,7 +178,7 @@ push main → CI (check, lint, e2e) → GHCR образ
 - Образ: `ghcr.io/shkrndns/white_anrotrip:latest`
 - GitHub: `github.com/shkrndns/white_anrotrip`
 - Health-gate + rollback в `deploy.yml`
-- Чеклист: `.doc/deploy-prep-checklist.md`
+- Чеклист: `.doc/deploy/deploy-prep-checklist.md`
 
 ---
 

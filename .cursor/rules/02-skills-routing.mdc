@@ -1,0 +1,33 @@
+---
+description: Which agent skills to load proactively by task type
+alwaysApply: true
+---
+
+# Skills routing
+
+When the task matches a row, **read** `.agents/skills/<skill>/SKILL.md` (or `.cursor/skills/aif-<name>/SKILL.md`) **before** coding. User does not need to name the skill.
+
+| Task | Skills |
+|------|--------|
+| Any work in this repo | `anrotrip` |
+| `.astro`, routing, content collections | `astro`, `tailwind-4-docs` |
+| `global.css`, Tailwind utilities | `tailwind-4-docs` |
+| UI components, layout polish | `web-design-guidelines` |
+| A11y, aria, keyboard | `accessibility` |
+| LCP, CLS, INP, perf | `core-web-vitals` |
+| Security, CSP, XSS review | `best-practices`; deep audit → `aif-security-checklist` |
+| Docker, compose, GHCR | `docker-patterns` |
+| `.github/workflows`, CI | `github-actions-templates` |
+| `e2e/`, Playwright | `playwright-best-practices` |
+| `site.webmanifest`, SW, PWA | `pwa-development` |
+| SEO audit, meta, OG | `seo-audit`, `schema` |
+| Blog posts, journal copy | `content-strategy`, `copywriting` |
+| Landing CTAs, forms conversion | `cro` |
+| Analytics events, tracking plan | `analytics` |
+| Plan feature / tasks | `aif-plan` |
+| Implement from plan | `aif-implement` |
+| Commit message | `aif-commit` |
+| Pre-deploy security | `aif-security-checklist` |
+| QA / test plan | `aif-qa` |
+
+Full list + install: `.doc/meta/skills-primary-shortlists.md` · `pnpm skills:install`.
