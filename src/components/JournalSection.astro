@@ -7,9 +7,9 @@ import { typografText } from '../lib/typograf';
 import SectionHeading from './ui/SectionHeading.astro';
 import FaIcon from './icons/FaIcon.astro';
 import {
-	blogCardAspectClass,
 	blogCardImageClass,
 	isPortraitBlogAspect,
+	journalCardAspectClass,
 	BLOG_PORTRAIT_IMAGE_HEIGHT,
 	BLOG_PORTRAIT_IMAGE_WIDTH,
 } from '../lib/blog-media';
@@ -70,7 +70,7 @@ const journalBadgeClasses = [
 								href={siteBlogPost(post.id)}
 								class:list={[
 									'block relative overflow-hidden',
-									blogCardAspectClass(post.data.cardAspect),
+									journalCardAspectClass(post.data.cardAspect),
 								]}
 								aria-label={`Читать статью: ${cardTitle}`}
 							>
@@ -102,7 +102,14 @@ const journalBadgeClasses = [
 										))}
 									</div>
 								) : (post.data.cardImage ?? post.data.heroImage) ? (
-									<div class="blog-image-frame absolute inset-0">
+									<div
+										class:list={[
+											'absolute inset-0',
+											isPortraitBlogAspect(post.data.cardAspect)
+												? 'bg-white'
+												: 'blog-image-frame',
+										]}
+									>
 										<Image
 											src={post.data.cardImage ?? post.data.heroImage!}
 											alt={post.data.title}

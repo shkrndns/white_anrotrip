@@ -20,5 +20,20 @@ export function blogCardImageClass(aspect?: BlogCardAspect): string {
 	return 'blog-image-contain w-full h-full';
 }
 
+/** Hero статьи: на всю область (cover). Portrait — якорь сверху, чтобы не резать заголовок постера. */
+export function blogHeroImageClass(aspect?: BlogCardAspect): string {
+	if (aspect === '4/5') {
+		return 'w-full h-full object-cover object-top';
+	}
+	return 'w-full h-full object-cover object-center';
+}
+
+/** Карточки на главной: portrait выше, чем 4/3. */
+export function journalCardAspectClass(aspect?: BlogCardAspect): string {
+	return aspect === '4/5'
+		? 'journal-card-media--portrait aspect-blog-max-poster'
+		: 'aspect-4/3';
+}
+
 export const BLOG_PORTRAIT_IMAGE_WIDTH = 959;
 export const BLOG_PORTRAIT_IMAGE_HEIGHT = 1200;

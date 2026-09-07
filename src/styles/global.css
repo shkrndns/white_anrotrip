@@ -1437,6 +1437,23 @@ iframe[src*='tourvisor'] {
 	aspect-ratio: 959 / 1200;
 }
 
+/* Карточки журнала на главной — portrait выше обычного 4/3 */
+.journal-card-media--portrait {
+	min-height: 17.5rem;
+}
+
+@media (min-width: 640px) {
+	.journal-card-media--portrait {
+		min-height: 20rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	.journal-card-media--portrait {
+		min-height: 22rem;
+	}
+}
+
 .blog-image-frame {
 	background:
 		radial-gradient(
