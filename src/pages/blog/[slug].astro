@@ -20,6 +20,7 @@ import {
 	siteHomeSearch,
 } from '../../lib/site-urls';
 import { typografText, formatBlogTitleHtml } from '../../lib/typograf';
+import { isPortraitBlogAspect } from '../../lib/blog-media';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import FaIcon from '../../components/icons/FaIcon.astro';
 
@@ -48,6 +49,10 @@ const readingTimeLabel = `${readingTime}\u00a0мин`;
 // Определяем режим Hero: коллаж или одиночное изображение
 const hasCollage = post.data.heroImages && post.data.heroImages.length >= 2;
 const collageImages = post.data.heroImages?.slice(0, 8) ?? [];
+const isPortraitHero =
+	isPortraitBlogAspect(post.data.cardAspect) &&
+	!hasCollage &&
+	!!post.data.heroImage;
 
 const siteOrigin = Astro.site?.href.replace(/\/$/, '') ?? Astro.url.origin;
 const postUrl = new URL(siteBlogPost(post.id), `${siteOrigin}/`).href;
@@ -103,10 +108,32 @@ const blogSchemaGraph = buildBlogPostSchemaGraph({
 	<!-- Обёртка: ограничивает sticky Hero (как на corp), чтобы при скролле контент наползал на фото -->
 	<div>
 		<!-- Hero: sticky — при прокрутке main (z-10) наползает сверху; логотип внутри Hero -->
-		<div class="sticky top-0 z-0 h-[55vh] md:h-[65vh] overflow-hidden">
+		<div
+			class:list={[
+				'sticky top-0 z-0',
+				isPortraitHero
+					? 'blog-image-frame'
+					: 'h-[55vh] md:h-[65vh] overflow-hidden',
+			]}
+		>
 			{
-				hasCollage ? (
-					<div class="absolute inset-0" data-slideshow="hero-collage">
+				isPortraitHero && post.data.heroImage ? (
+					<div class="relative px-4 pt-14 pb-8 sm:px-6">
+						<Image
+							src={post.data.heroImage}
+							alt={post.data.title}
+							width={959}
+							height={1200}
+							loading="eager"
+							fetchpriority="high"
+							class="mx-auto block w-full max-w-[min(100%,20rem)] sm:max-w-sm h-auto rounded-[1.35rem] shadow-[0_16px_48px_rgb(0_109_115/0.22)]"
+						/>
+					</div>
+				) : hasCollage ? (
+					<div
+						class="blog-image-frame absolute inset-0"
+						data-slideshow="hero-collage"
+					>
 						{collageImages.map((img, i) => (
 							<div
 								class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
@@ -120,21 +147,23 @@ const blogSchemaGraph = buildBlogPostSchemaGraph({
 									height={900}
 									loading={i === 0 ? 'eager' : 'lazy'}
 									fetchpriority={i === 0 ? 'high' : 'auto'}
-									class="w-full h-full object-cover"
+									class="blog-image-contain w-full h-full"
 								/>
 							</div>
 						))}
 					</div>
 				) : post.data.heroImage ? (
-					<Image
-						src={post.data.heroImage}
-						alt={post.data.title}
-						width={1600}
-						height={900}
-						loading="eager"
-						fetchpriority="high"
-						class="w-full h-full object-cover"
-					/>
+					<div class="blog-image-frame absolute inset-0">
+						<Image
+							src={post.data.heroImage}
+							alt={post.data.title}
+							width={1600}
+							height={900}
+							loading="eager"
+							fetchpriority="high"
+							class="blog-image-contain w-full h-full"
+						/>
+					</div>
 				) : (
 					<div
 						class="blog-hero-placeholder w-full h-full"
@@ -160,15 +189,20 @@ const blogSchemaGraph = buildBlogPostSchemaGraph({
 				)
 			}
 
-			<!-- Градиент снизу -->
-			<div
-				class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/70%)_0%,rgb(0_0_0/20%)_50%,transparent_100%)] pointer-events-none"
-			>
-			</div>
+			{
+				!isPortraitHero && (
+					<div class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/70%)_0%,rgb(0_0_0/20%)_50%,transparent_100%)] pointer-events-none" />
+				)
+			}
 
-			<!-- Заголовок поверх Hero -->
+			<!-- Заголовок: под постером (portrait) или поверх hero (landscape) -->
 			<div
-				class="absolute bottom-0 left-0 right-0 px-4 sm:px-6 pb-8 md:pb-12 max-w-4xl mx-auto"
+				class:list={[
+					'px-4 sm:px-6 max-w-4xl mx-auto',
+					isPortraitHero
+						? 'relative pb-8 md:pb-10'
+						: 'absolute bottom-0 left-0 right-0 pb-8 md:pb-12',
+				]}
 			>
 				<div class="flex flex-wrap items-center gap-3 mb-4">
 					{
@@ -182,7 +216,10 @@ const blogSchemaGraph = buildBlogPostSchemaGraph({
 					}
 					<time
 						datetime={post.data.pubDate.toISOString()}
-						class="text-white/70 text-xs font-inter"
+						class:list={[
+							'text-xs font-inter',
+							isPortraitHero ? 'text-gray-500' : 'text-white/70',
+						]}
 					>
 						{
 							post.data.pubDate.toLocaleDateString('ru-RU', {
@@ -192,13 +229,37 @@ const blogSchemaGraph = buildBlogPostSchemaGraph({
 							})
 						}
 					</time>
-					<span class="text-white/50 text-xs" aria-hidden="true">·</span>
-					<span class="text-white/70 text-xs font-inter"
-						>{post.data.author}</span
-					>
-					<span class="text-white/40 text-xs" aria-hidden="true">·</span>
 					<span
-						class="text-white/60 text-xs font-inter inline-flex items-center gap-1"
+						class:list={[
+							'text-xs',
+							isPortraitHero ? 'text-gray-300' : 'text-white/50',
+						]}
+						aria-hidden="true"
+					>
+						·
+					</span>
+					<span
+						class:list={[
+							'text-xs font-inter',
+							isPortraitHero ? 'text-gray-500' : 'text-white/70',
+						]}
+					>
+						{post.data.author}
+					</span>
+					<span
+						class:list={[
+							'text-xs',
+							isPortraitHero ? 'text-gray-300' : 'text-white/40',
+						]}
+						aria-hidden="true"
+					>
+						·
+					</span>
+					<span
+						class:list={[
+							'text-xs font-inter inline-flex items-center gap-1',
+							isPortraitHero ? 'text-gray-500' : 'text-white/60',
+						]}
 					>
 						<svg
 							class="w-3 h-3 shrink-0"
@@ -216,7 +277,12 @@ const blogSchemaGraph = buildBlogPostSchemaGraph({
 					</span>
 				</div>
 				<h1
-					class="blog-post-hero__title font-montserrat font-extrabold text-white tracking-tight leading-tight"
+					class:list={[
+						'font-montserrat font-extrabold tracking-tight leading-tight',
+						isPortraitHero
+							? 'blog-post-hero__title text-gray-900'
+							: 'blog-post-hero__title text-white',
+					]}
 					set:html={displayTitleHtml}
 				/>
 			</div>

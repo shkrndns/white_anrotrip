@@ -1348,6 +1348,116 @@ iframe[src*='tourvisor'] {
 	border-radius: 50%;
 }
 
+/* --- Списки с FA-иконками (самолёт, сердце и т.п. в markdown) --- */
+.blog-content ul.blog-content-fa-list li::before {
+	display: none;
+}
+
+.blog-content ul.blog-content-fa-list li {
+	display: flex;
+	gap: 0.625rem;
+	align-items: flex-start;
+	padding-left: 0;
+}
+
+.blog-content .blog-content-fa-mark {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	margin-top: 0.1em;
+	border-radius: 9999px;
+	background: rgb(0 171 179 / 0.12);
+	color: var(--color-primary);
+	font-size: 0.85rem;
+}
+
+.blog-content .blog-content-fa-mark--heart {
+	background: rgb(0 171 179 / 0.1);
+}
+
+.blog-content h3.blog-content-hotel-title {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	margin-top: 2rem;
+	margin-bottom: 0.75rem;
+}
+
+.blog-content h3.blog-content-hotel-title:first-of-type {
+	margin-top: 0.5rem;
+}
+
+/* --- Таблицы цен (город / цена) --- */
+.blog-content table.blog-content-price-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0 0 1.5rem;
+	font-size: inherit;
+}
+
+.blog-content table.blog-content-price-table th,
+.blog-content table.blog-content-price-table td {
+	padding: 0.7rem 0;
+	border-bottom: 1px solid rgb(0 171 179 / 0.12);
+	vertical-align: middle;
+}
+
+.blog-content table.blog-content-price-table th {
+	font-family: var(--font-montserrat);
+	font-size: 0.7rem;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: rgb(100 116 139);
+}
+
+.blog-content table.blog-content-price-table td:first-child,
+.blog-content table.blog-content-price-table th:first-child {
+	padding-right: 2.5rem;
+	width: 58%;
+}
+
+.blog-content table.blog-content-price-table td:last-child,
+.blog-content table.blog-content-price-table th:last-child {
+	padding-left: 1.5rem;
+	text-align: right;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.blog-content table.blog-content-price-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+/* --- Обложки блога: полное фото без обрезки --- */
+.aspect-blog-max-poster {
+	aspect-ratio: 959 / 1200;
+}
+
+.blog-image-frame {
+	background:
+		radial-gradient(
+			circle at 18% 22%,
+			rgb(51 191 198 / 0.12) 0%,
+			transparent 42%
+		),
+		radial-gradient(
+			circle at 82% 78%,
+			rgb(0 171 179 / 0.08) 0%,
+			transparent 38%
+		),
+		rgb(241 245 249);
+}
+
+.blog-image-frame img,
+.blog-image-contain {
+	object-fit: contain;
+	object-position: center;
+}
+
 /* --- Лид статьи (description над контентом) --- */
 .blog-article-intro {
 	max-width: 100%;

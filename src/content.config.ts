@@ -16,6 +16,8 @@ const blog = defineCollection({
 			cardImage: image().optional(),
 			/** Коллаж из нескольких изображений (приоритет над heroImage) */
 			heroImages: z.array(image()).optional(),
+			/** Превью карточки: 4/3 (landscape) или 4/5 (portrait, постеры MAX) */
+			cardAspect: z.enum(['4/3', '4/5']).optional(),
 			author: z.string().default('Команда ANRO TRIP'),
 			destination: z.string().optional(),
 			/** Крупная карточка в блоке «Журнал» на главной (одна на сайт) */

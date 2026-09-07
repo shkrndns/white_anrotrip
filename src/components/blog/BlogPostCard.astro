@@ -4,6 +4,13 @@ import type { CollectionEntry } from 'astro:content';
 import { getTourStyleBadge } from '../../lib/tourDestinationBadge';
 import { siteBlogPost } from '../../lib/site-urls';
 import { formatBlogTitleHtml, typografText } from '../../lib/typograf';
+import {
+	blogCardAspectClass,
+	blogCardImageClass,
+	isPortraitBlogAspect,
+	BLOG_PORTRAIT_IMAGE_HEIGHT,
+	BLOG_PORTRAIT_IMAGE_WIDTH,
+} from '../../lib/blog-media';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
@@ -21,12 +28,18 @@ const cardDescription = typografText(post.data.description);
 >
 	<a
 		href={siteBlogPost(post.id)}
-		class="block relative overflow-hidden aspect-4/3"
+		class:list={[
+			'block relative overflow-hidden',
+			blogCardAspectClass(post.data.cardAspect),
+		]}
 		aria-label={`Читать статью: ${cardTitle}`}
 	>
 		{
 			post.data.heroImages && post.data.heroImages.length >= 2 ? (
-				<div class="absolute inset-0" data-slideshow={`card-${post.id}`}>
+				<div
+					class="blog-image-frame absolute inset-0"
+					data-slideshow={`card-${post.id}`}
+				>
 					{post.data.heroImages.slice(0, 8).map((img, i) => (
 						<div
 							class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
@@ -37,9 +50,13 @@ const cardDescription = typografText(post.data.description);
 								src={img}
 								alt={`${post.data.title} — фото ${i + 1}`}
 								width={600}
-								height={450}
+								height={
+									post.data.cardAspect === '4/5'
+										? BLOG_PORTRAIT_IMAGE_HEIGHT
+										: 450
+								}
 								loading={index < 3 ? 'eager' : 'lazy'}
-								class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.04]"
+								class={blogCardImageClass(post.data.cardAspect)}
 							/>
 						</div>
 					))}
@@ -47,18 +64,29 @@ const cardDescription = typografText(post.data.description);
 			) : (post.data.heroImages?.[0] ??
 			  post.data.cardImage ??
 			  post.data.heroImage) ? (
-				<Image
-					src={
-						post.data.heroImages?.[0] ??
-						post.data.cardImage ??
-						post.data.heroImage!
-					}
-					alt={post.data.title}
-					width={600}
-					height={450}
-					loading={index < 3 ? 'eager' : 'lazy'}
-					class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.04]"
-				/>
+				<div class="blog-image-frame absolute inset-0">
+					<Image
+						src={
+							post.data.heroImages?.[0] ??
+							post.data.cardImage ??
+							post.data.heroImage!
+						}
+						alt={post.data.title}
+						width={
+							post.data.cardAspect === '4/5' ? BLOG_PORTRAIT_IMAGE_WIDTH : 600
+						}
+						height={
+							post.data.cardAspect === '4/5' ? BLOG_PORTRAIT_IMAGE_HEIGHT : 450
+						}
+						loading={index < 3 ? 'eager' : 'lazy'}
+						class:list={[
+							blogCardImageClass(post.data.cardAspect),
+							post.data.cardAspect === '4/5'
+								? ''
+								: 'transition-transform duration-slow ease-out group-hover:scale-[1.02]',
+						]}
+					/>
+				</div>
 			) : (
 				<div
 					class="blog-card-placeholder w-full h-full"
@@ -84,7 +112,7 @@ const cardDescription = typografText(post.data.description);
 			)
 		}
 		{
-			post.data.destination && (
+			post.data.destination && !isPortraitBlogAspect(post.data.cardAspect) && (
 				<div class="absolute top-4 left-4">
 					<span
 						class:list={[

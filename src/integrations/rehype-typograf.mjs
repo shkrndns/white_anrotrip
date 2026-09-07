@@ -8,7 +8,15 @@ import { visit } from 'unist-util-visit';
 const tp = new Typograf({ locale: ['ru', 'en-US'] });
 tp.disableRule('ru/other/phone-number');
 
-const SKIP_TAGS = new Set(['code', 'pre', 'script', 'style', 'kbd', 'samp']);
+const SKIP_TAGS = new Set([
+	'code',
+	'pre',
+	'script',
+	'style',
+	'kbd',
+	'samp',
+	'table',
+]);
 
 function isInsideSkippedTag(node) {
 	let parent = node.parent;

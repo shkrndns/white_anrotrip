@@ -6,6 +6,13 @@ import { siteBlogIndex, siteBlogPost } from '../lib/site-urls';
 import { typografText } from '../lib/typograf';
 import SectionHeading from './ui/SectionHeading.astro';
 import FaIcon from './icons/FaIcon.astro';
+import {
+	blogCardAspectClass,
+	blogCardImageClass,
+	isPortraitBlogAspect,
+	BLOG_PORTRAIT_IMAGE_HEIGHT,
+	BLOG_PORTRAIT_IMAGE_WIDTH,
+} from '../lib/blog-media';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort(
@@ -61,12 +68,15 @@ const journalBadgeClasses = [
 						<article class="group flex flex-col rounded-3xl overflow-hidden bg-white border border-white/10 shadow-[0_4px_24px_rgba(0,171,179,0.15)] hover:shadow-[0_8px_32px_rgba(0,171,179,0.25)] transition-[opacity,transform,box-shadow] duration-slow">
 							<a
 								href={siteBlogPost(post.id)}
-								class="block relative overflow-hidden aspect-4/3"
+								class:list={[
+									'block relative overflow-hidden',
+									blogCardAspectClass(post.data.cardAspect),
+								]}
 								aria-label={`Читать статью: ${cardTitle}`}
 							>
 								{post.data.heroImages && post.data.heroImages.length >= 2 ? (
 									<div
-										class="absolute inset-0 transition-transform duration-slow ease-out group-hover:scale-[1.04]"
+										class="blog-image-frame absolute inset-0 transition-transform duration-slow ease-out group-hover:scale-[1.02]"
 										data-slideshow={slideshowKey}
 									>
 										{post.data.heroImages.slice(0, 8).map((img, i) => (
@@ -79,24 +89,43 @@ const journalBadgeClasses = [
 													src={img}
 													alt={`${post.data.title} — фото ${i + 1}`}
 													width={600}
-													height={450}
+													height={
+														post.data.cardAspect === '4/5'
+															? BLOG_PORTRAIT_IMAGE_HEIGHT
+															: 450
+													}
 													sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
 													loading="lazy"
-													class="w-full h-full object-cover"
+													class={blogCardImageClass(post.data.cardAspect)}
 												/>
 											</div>
 										))}
 									</div>
 								) : (post.data.cardImage ?? post.data.heroImage) ? (
-									<Image
-										src={post.data.cardImage ?? post.data.heroImage!}
-										alt={post.data.title}
-										width={600}
-										height={450}
-										sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
-										loading="lazy"
-										class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.04]"
-									/>
+									<div class="blog-image-frame absolute inset-0">
+										<Image
+											src={post.data.cardImage ?? post.data.heroImage!}
+											alt={post.data.title}
+											width={
+												post.data.cardAspect === '4/5'
+													? BLOG_PORTRAIT_IMAGE_WIDTH
+													: 600
+											}
+											height={
+												post.data.cardAspect === '4/5'
+													? BLOG_PORTRAIT_IMAGE_HEIGHT
+													: 450
+											}
+											sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+											loading="lazy"
+											class:list={[
+												blogCardImageClass(post.data.cardAspect),
+												post.data.cardAspect === '4/5'
+													? ''
+													: 'transition-transform duration-slow ease-out group-hover:scale-[1.02]',
+											]}
+										/>
+									</div>
 								) : (
 									<div
 										class="blog-card-placeholder w-full h-full"
@@ -123,16 +152,19 @@ const journalBadgeClasses = [
 									</div>
 								)}
 								<div class="absolute top-4 left-4 flex flex-wrap items-center gap-2">
-									{post.data.destination && (
-										<span
-											class:list={[
-												'inline-block rounded-full px-3 py-1 text-[0.625rem] font-black uppercase tracking-wider',
-												journalBadgeClasses[index % journalBadgeClasses.length],
-											]}
-										>
-											{getTourStyleBadge(post.data.destination).label}
-										</span>
-									)}
+									{post.data.destination &&
+										!isPortraitBlogAspect(post.data.cardAspect) && (
+											<span
+												class:list={[
+													'inline-block rounded-full px-3 py-1 text-[0.625rem] font-black uppercase tracking-wider',
+													journalBadgeClasses[
+														index % journalBadgeClasses.length
+													],
+												]}
+											>
+												{getTourStyleBadge(post.data.destination).label}
+											</span>
+										)}
 								</div>
 							</a>
 

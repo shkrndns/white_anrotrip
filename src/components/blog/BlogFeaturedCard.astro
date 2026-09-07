@@ -25,7 +25,7 @@ const { post, title, titleHtml, description } = Astro.props;
 		{
 			post.data.heroImages && post.data.heroImages.length >= 2 ? (
 				<div
-					class="absolute inset-0 transition-transform duration-slow ease-out group-hover:scale-[1.02]"
+					class="blog-image-frame absolute inset-0 transition-transform duration-slow ease-out group-hover:scale-[1.02]"
 					data-slideshow={`card-featured-${post.id}`}
 				>
 					{post.data.heroImages.slice(0, 8).map((img, i) => (
@@ -40,20 +40,22 @@ const { post, title, titleHtml, description } = Astro.props;
 								width={1200}
 								height={675}
 								loading={i === 0 ? 'eager' : 'lazy'}
-								class="w-full h-full object-cover"
+								class="blog-image-contain w-full h-full"
 							/>
 						</div>
 					))}
 				</div>
 			) : (post.data.cardImage ?? post.data.heroImage) ? (
-				<Image
-					src={post.data.cardImage ?? post.data.heroImage!}
-					alt={post.data.title}
-					width={1200}
-					height={675}
-					loading="eager"
-					class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.02]"
-				/>
+				<div class="blog-image-frame absolute inset-0">
+					<Image
+						src={post.data.cardImage ?? post.data.heroImage!}
+						alt={post.data.title}
+						width={1200}
+						height={675}
+						loading="eager"
+						class="blog-image-contain w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.02]"
+					/>
+				</div>
 			) : (
 				<div
 					class="blog-card-placeholder w-full h-full min-h-48"
