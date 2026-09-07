@@ -1,0 +1,6 @@
+Contact: mailto:anro@anrotrip.ru
+Contact: tel:+78002224473
+Expires: 2027-09-06T00:00:00.000Z
+Preferred-Languages: ru, en
+Canonical: https://anrotrip.ru/.well-known/security.txt
+Policy: https://anrotrip.ru/privacy
