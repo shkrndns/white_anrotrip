@@ -1,265 +1,278 @@
 ---
 import {
-  modalLeadInputClass,
-  modalLeadLabelClass,
-  modalLeadSubmitClass,
+	modalLeadInputClass,
+	modalLeadLabelClass,
+	modalLeadSubmitClass,
 } from '../lib/form-classes';
 import { sitePrivacy } from '../lib/site-urls';
 ---
 
 <div
-  id="callback-modal-overlay"
-  class="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm max-md:backdrop-blur-none hidden opacity-0 transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]"
+	id="callback-modal-overlay"
+	class="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm max-md:backdrop-blur-none hidden opacity-0 transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]"
 >
-  <div class="flex min-h-full min-w-full items-center justify-center">
-    {
-      /* КОНТЕНТ: desktop — slide up, mobile — лёгкое всплытие (translate-y-8, ease-out) */
-    }
-    <div
-      class="bg-white rounded-3xl shadow-2xl shadow-black/20 max-md:shadow-lg w-full max-w-md mx-4 relative transform max-h-[90dvh] overflow-y-auto contain-[layout_paint]
+	<div class="flex min-h-full min-w-full items-center justify-center">
+		{
+			/* КОНТЕНТ: desktop — slide up, mobile — лёгкое всплытие (translate-y-8, ease-out) */
+		}
+		<div
+			class="bg-white rounded-3xl shadow-2xl shadow-black/20 max-md:shadow-lg w-full max-w-md mx-4 relative transform max-h-[90dvh] overflow-y-auto contain-[layout_paint]
       translate-y-20 max-md:translate-y-8
       transition-transform duration-slow ease-out max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]
       [&.modal-open]:translate-y-0"
-      id="callback-modal-content"
-    >
-      <button
-        id="close-callback-modal"
-        type="button"
-        aria-label="Закрыть окно заказа звонка"
-        class="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 z-10"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 stroke-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"></path></svg
-        >
-      </button>
+			id="callback-modal-content"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="callback-modal-title"
+		>
+			<button
+				id="close-callback-modal"
+				type="button"
+				aria-label="Закрыть окно заказа звонка"
+				class="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 z-10"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-5 w-5 stroke-2"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M6 18L18 6M6 6l12 12"></path></svg
+				>
+			</button>
 
-      <div class="p-8 pt-7">
-        <h3
-          class="font-montserrat text-xl font-extrabold text-gray-900 uppercase tracking-wide mb-1 text-center"
-        >
-          Заказ обратного звонка
-        </h3>
-        <p class="text-center text-sm text-gray-400 mb-6 wrap-break-word">
-          Оставьте свои контакты,<br class="hidden sm:block" />и мы свяжемся с
-          вами в ближайшее время!
-        </p>
+			<div class="p-8 pt-7">
+				<h3
+					id="callback-modal-title"
+					class="font-montserrat text-xl font-extrabold text-gray-900 uppercase tracking-wide mb-1 text-center"
+				>
+					Заказ обратного звонка
+				</h3>
+				<p class="text-center text-sm text-gray-500 mb-6 wrap-break-word">
+					Оставьте свои контакты,<br class="hidden sm:block" />и мы свяжемся с
+					вами в ближайшее время!
+				</p>
 
-        <form id="callback-form" class="space-y-3">
-          {/* Honeypot — скрытое поле, боты заполняют, люди нет */}
-          <input type="text" name="_hp" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+				<form id="callback-form" class="space-y-3">
+					{/* Honeypot — скрытое поле, боты заполняют, люди нет */}
+					<input
+						type="text"
+						name="_hp"
+						class="hidden"
+						tabindex="-1"
+						autocomplete="off"
+						aria-hidden="true"
+					/>
 
-          <div>
-            <label for="callback-name" class={modalLeadLabelClass}>Ваше имя</label>
-            <input
-              id="callback-name"
-              name="name"
-              type="text"
-              placeholder="Имя"
-              required
-              autocomplete="name"
-              class={modalLeadInputClass}
-            />
-          </div>
+					<div>
+						<label for="callback-name" class={modalLeadLabelClass}
+							>Ваше имя</label
+						>
+						<input
+							id="callback-name"
+							name="name"
+							type="text"
+							placeholder="Имя"
+							required
+							autocomplete="name"
+							class={modalLeadInputClass}
+						/>
+					</div>
 
-          <div>
-            <label for="callback-phone" class={modalLeadLabelClass}>Ваш телефон</label>
-            <input
-              id="callback-phone"
-              name="phone"
-              type="tel"
-              placeholder="+7 (999) 000-00-00"
-              required
-              autocomplete="tel"
-              class={modalLeadInputClass}
-            />
-          </div>
+					<div>
+						<label for="callback-phone" class={modalLeadLabelClass}
+							>Ваш телефон</label
+						>
+						<input
+							id="callback-phone"
+							name="phone"
+							type="tel"
+							inputmode="tel"
+							placeholder="+7 (999) 000-00-00"
+							required
+							autocomplete="tel"
+							class={modalLeadInputClass}
+						/>
+					</div>
 
-          <div class="flex items-start gap-2.5 pt-1">
-            <input
-              name="agree"
-              type="checkbox"
-              id="agree-callback"
-              required
-              class="mt-0.5 w-4 h-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            />
-            <label
-              for="agree-callback"
-              class="text-[11px] text-gray-400 leading-snug cursor-pointer"
-            >
-              Даю свое согласие на обработку персональных данных в соответствии
-              с <a
-                href={sitePrivacy()}
-                class="text-primary font-semibold hover:underline cursor-pointer"
-                >Политикой конфиденциальности</a
-              >
-            </label>
-          </div>
+					<div class="flex items-start gap-2.5 pt-1">
+						<input
+							name="agree"
+							type="checkbox"
+							id="agree-callback"
+							required
+							class="mt-0.5 w-4 h-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+						/>
+						<label
+							for="agree-callback"
+							class="text-[11px] text-gray-600 leading-snug cursor-pointer"
+						>
+							Даю свое согласие на обработку персональных данных в соответствии
+							с <a
+								href={sitePrivacy()}
+								class="text-primary-dark font-semibold hover:underline cursor-pointer"
+								>Политикой конфиденциальности</a
+							>
+						</label>
+					</div>
 
-          {/* Сообщение об ошибке */}
-          <p id="callback-error" class="hidden text-sm text-red-500 text-center pt-1" role="alert"></p>
+					{/* Сообщение об ошибке */}
+					<p
+						id="callback-error"
+						class="hidden text-sm text-red-500 text-center pt-1"
+						role="alert"
+					>
+					</p>
 
-          <button type="submit" id="callback-submit" class={modalLeadSubmitClass}>
-            Заказать звонок
-          </button>
-        </form>
+					<button
+						type="submit"
+						id="callback-submit"
+						class={modalLeadSubmitClass}
+					>
+						Заказать звонок
+					</button>
+				</form>
 
-        {/* Экран успеха — скрыт по умолчанию */}
-        <div id="callback-success" class="hidden text-center py-6 px-2">
-          <div class="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4">
-            <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h4 class="font-montserrat text-lg font-bold text-gray-900 mb-2">Заявка принята!</h4>
-          <p class="text-sm text-gray-500">Мы перезвоним вам в ближайшее время.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+				{/* Экран успеха — скрыт по умолчанию */}
+				<div
+					id="callback-success"
+					class="hidden text-center py-6 px-2"
+					role="status"
+					aria-live="polite"
+				>
+					<div
+						class="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4"
+					>
+						<svg
+							class="w-8 h-8 text-primary"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2.5"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M5 13l4 4L19 7"></path>
+						</svg>
+					</div>
+					<h4 class="font-montserrat text-lg font-bold text-gray-900 mb-2">
+						Заявка принята!
+					</h4>
+					<p class="text-sm text-gray-500">
+						Мы перезвоним вам в ближайшее время.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
-  const overlay = document.getElementById('callback-modal-overlay');
-  const content = document.getElementById('callback-modal-content');
-  const closeBtn = document.getElementById('close-callback-modal');
+	import {
+		createFocusTrap,
+		type FocusTrapController,
+	} from '../lib/client/focus-trap.ts';
+	import { attachJsonFormSubmit } from '../lib/client/form-submit.ts';
 
-  let previousActiveElement: HTMLElement | null = null;
+	const overlay = document.getElementById('callback-modal-overlay');
+	const content = document.getElementById('callback-modal-content');
+	const closeBtn = document.getElementById('close-callback-modal');
 
-  function getFocusables(container: HTMLElement): HTMLElement[] {
-    const sel =
-      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    return Array.from(container.querySelectorAll<HTMLElement>(sel)).filter(
-      (el) => el.offsetParent !== null && !el.hasAttribute('aria-hidden'),
-    );
-  }
+	let previousActiveElement: HTMLElement | null = null;
+	let focusTrap: FocusTrapController | null = null;
 
-  function trapFocus(e: KeyboardEvent) {
-    if (e.key !== 'Tab' || !content) return;
-    const focusables = getFocusables(content);
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (e.shiftKey) {
-      if (document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      }
-    } else {
-      if (document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-  }
+	// Глобальная функция открытия
+	window.openCallbackModal = () => {
+		if (overlay && content) {
+			previousActiveElement = document.activeElement as HTMLElement | null;
+			overlay.classList.remove('hidden');
+			overlay.style.display = 'block';
+			window.lockScroll();
 
-  // Глобальная функция открытия
-  window.openCallbackModal = () => {
-    if (overlay && content) {
-      previousActiveElement = document.activeElement as HTMLElement | null;
-      overlay.classList.remove('hidden');
-      overlay.style.display = 'block';
-      window.lockScroll();
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					content.style.willChange = 'transform';
+					overlay.classList.remove('opacity-0');
+					content.classList.add('modal-open');
+					focusTrap = createFocusTrap(content);
+					focusTrap.activate(closeBtn as HTMLElement | null);
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          content.style.willChange = 'transform';
-          overlay.classList.remove('opacity-0');
-          content.classList.add('modal-open');
-          closeBtn?.focus();
-          content.addEventListener('keydown', trapFocus);
+					const onOpenEnd = () => {
+						content.style.willChange = '';
+					};
+					content.addEventListener('transitionend', onOpenEnd, { once: true });
+				});
+			});
+		}
+	};
 
-          const onOpenEnd = () => {
-            content.style.willChange = '';
-          };
-          content.addEventListener('transitionend', onOpenEnd, { once: true });
-        });
-      });
-    }
-  };
+	// Глобальная функция закрытия
+	window.closeCallbackModal = () => {
+		if (overlay && content) {
+			focusTrap?.deactivate();
+			focusTrap = null;
+			content.style.willChange = 'transform';
+			overlay.classList.add('opacity-0');
+			content.classList.remove('modal-open');
 
-  // Глобальная функция закрытия
-  window.closeCallbackModal = () => {
-    if (overlay && content) {
-      content.removeEventListener('keydown', trapFocus);
-      content.style.willChange = 'transform';
-      overlay.classList.add('opacity-0');
-      content.classList.remove('modal-open');
+			const onCloseEnd = () => {
+				if (!overlay.classList.contains('opacity-0')) return;
+				content.style.willChange = '';
+				overlay.classList.add('hidden');
+				overlay.style.display = '';
+				requestAnimationFrame(() => {
+					window.unlockScroll();
+					previousActiveElement?.focus();
+					previousActiveElement = null;
+				});
+			};
+			content.addEventListener('transitionend', onCloseEnd, { once: true });
+		}
+	};
 
-      const onCloseEnd = () => {
-        if (!overlay.classList.contains('opacity-0')) return;
-        content.style.willChange = '';
-        overlay.classList.add('hidden');
-        overlay.style.display = '';
-        requestAnimationFrame(() => {
-          window.unlockScroll();
-          previousActiveElement?.focus();
-          previousActiveElement = null;
-        });
-      };
-      content.addEventListener('transitionend', onCloseEnd, { once: true });
-    }
-  };
+	closeBtn?.addEventListener('click', window.closeCallbackModal);
+	overlay?.addEventListener('click', (e) => {
+		if (content && !content.contains(e.target as Node))
+			window.closeCallbackModal();
+	});
 
-  closeBtn?.addEventListener('click', window.closeCallbackModal);
-  overlay?.addEventListener('click', (e) => {
-    if (content && !content.contains(e.target as Node))
-      window.closeCallbackModal();
-  });
+	// Отправка на сервер. Данные не логируются в console.* (152-ФЗ).
+	const callbackForm = document.getElementById(
+		'callback-form',
+	) as HTMLFormElement | null;
+	const callbackSubmit = document.getElementById(
+		'callback-submit',
+	) as HTMLButtonElement | null;
+	const callbackError = document.getElementById(
+		'callback-error',
+	) as HTMLParagraphElement | null;
+	const callbackSuccess = document.getElementById(
+		'callback-success',
+	) as HTMLElement | null;
 
-  // Отправка на сервер. Данные не логируются в console.* (152-ФЗ).
-  const callbackForm = document.getElementById('callback-form') as HTMLFormElement | null;
-  const callbackSubmit = document.getElementById('callback-submit') as HTMLButtonElement | null;
-  const callbackError = document.getElementById('callback-error') as HTMLParagraphElement | null;
-  const callbackSuccess = document.getElementById('callback-success') as HTMLElement | null;
+	if (callbackForm && callbackSubmit) {
+		attachJsonFormSubmit({
+			form: callbackForm,
+			submitButton: callbackSubmit,
+			errorElement: callbackError,
+			apiPath: 'api/callback',
+			submitLabel: 'Заказать звонок',
+			onSuccess: () => {
+				callbackForm.classList.add('hidden');
+				callbackSuccess?.classList.remove('hidden');
+				setTimeout(() => window.closeCallbackModal(), 3000);
+			},
+		});
+	}
 
-  callbackForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!callbackForm || !callbackSubmit) return;
-
-    // loading
-    callbackSubmit.disabled = true;
-    callbackSubmit.textContent = 'Отправляем…';
-    if (callbackError) { callbackError.textContent = ''; callbackError.classList.add('hidden'); }
-
-    try {
-      const res = await fetch('/api/callback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(callbackForm))),
-      });
-      const data = await res.json();
-
-      if (data.ok) {
-        // success
-        callbackForm.classList.add('hidden');
-        callbackSuccess?.classList.remove('hidden');
-        setTimeout(() => window.closeCallbackModal(), 3000);
-      } else {
-        throw new Error(data.error ?? 'Ошибка отправки');
-      }
-    } catch (err: unknown) {
-      // error
-      if (callbackError) {
-        callbackError.textContent = err instanceof Error ? err.message : 'Не удалось отправить. Попробуйте ещё раз.';
-        callbackError.classList.remove('hidden');
-      }
-      callbackSubmit.disabled = false;
-      callbackSubmit.textContent = 'Заказать звонок';
-    }
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !overlay?.classList.contains('hidden')) {
-      window.closeCallbackModal();
-    }
-  });
+	window.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && !overlay?.classList.contains('hidden')) {
+			window.closeCallbackModal();
+		}
+	});
 </script>

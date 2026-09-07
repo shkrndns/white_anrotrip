@@ -4,42 +4,49 @@
 ---
 
 <div
-  id="scroll-progress"
-  class="fixed top-0 left-0 z-9999 h-1 bg-primary"
-  style="width: 0%; transform-origin: left;"
+	id="scroll-progress"
+	class="fixed top-0 left-0 z-overlay-top h-1 bg-primary"
+	style="width: 0%; transform-origin: left;"
+	role="progressbar"
+	aria-label="Прогресс прокрутки страницы"
+	aria-valuemin="0"
+	aria-valuemax="100"
+	aria-valuenow="0"
 >
 </div>
 
 <script>
-  function updateScrollProgress() {
-    const progressBar = document.getElementById('scroll-progress');
-    if (!progressBar) return;
+	function updateScrollProgress() {
+		const progressBar = document.getElementById('scroll-progress');
+		if (!progressBar) return;
 
-    const scrollTop = window.scrollY;
-    const docHeight =
-      document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = Math.min((scrollTop / docHeight) * 100, 100);
+		const scrollTop = window.scrollY;
+		const docHeight =
+			document.documentElement.scrollHeight - window.innerHeight;
+		const scrollPercent = Math.min((scrollTop / docHeight) * 100, 100);
+		const roundedPercent = Math.round(scrollPercent);
 
-    progressBar.style.width = `${scrollPercent}%`;
-  }
+		progressBar.style.width = `${scrollPercent}%`;
+		progressBar.setAttribute('aria-valuenow', String(roundedPercent));
+	}
 
-  // Throttle через requestAnimationFrame для производительности
-  let ticking = false;
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateScrollProgress();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    },
-    { passive: true },
-  );
+	// Throttle через requestAnimationFrame для производительности
+	let ticking = false;
+	window.addEventListener(
+		'scroll',
+		() => {
+			if (!ticking) {
+				requestAnimationFrame(() => {
+					updateScrollProgress();
+					ticking = false;
+				});
+				ticking = true;
+			}
+		},
+		{ passive: true },
+	);
 
-  // Инициализация при загрузке и после View Transitions
-  updateScrollProgress();
-  document.addEventListener('astro:page-load', updateScrollProgress);
+	// Инициализация при загрузке и после View Transitions
+	updateScrollProgress();
+	document.addEventListener('astro:page-load', updateScrollProgress);
 </script>

@@ -1,0 +1,38 @@
+---
+export interface Props {
+	/** Текст бейджа над заголовком */
+	badge: string;
+	/** h2 по умолчанию */
+	as?: 'h1' | 'h2' | 'h3';
+	/** dot — точка; icon — слот name="icon" (GiftSection, Awards) */
+	variant?: 'dot' | 'icon';
+	badgeClass?: string;
+	headingClass?: string;
+	headingStyle?: string;
+	id?: string;
+}
+
+const {
+	badge,
+	as: HeadingTag = 'h2',
+	variant = 'dot',
+	badgeClass = 'mb-4',
+	headingClass = 'section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-tight',
+	headingStyle,
+	id,
+} = Astro.props;
+---
+
+<div class:list={['section-badge', badgeClass]}>
+	{
+		variant === 'dot' ? (
+			<span class="section-badge__dot" aria-hidden="true" />
+		) : (
+			<slot name="icon" />
+		)
+	}
+	<span class="section-badge__label">{badge}</span>
+</div>
+<HeadingTag class={headingClass} style={headingStyle} id={id}>
+	<slot />
+</HeadingTag>

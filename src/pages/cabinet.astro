@@ -12,176 +12,184 @@ const tinyWelcome = await getImage({ src: welcomeImg, width: 20, quality: 20 });
 ---
 
 <Layout
-  title="Личный кабинет — ANRO TRIP"
-  description="Вход в личный кабинет туриста ANRO TRIP. Управление бронированиями и документами."
-  showScrollProgress={false}
-  showScrollToTop={false}
-  showFavorites={false}
-  showOfficeWidget={false}
-  showSchema={false}
+	title="Личный кабинет — ANRO TRIP"
+	description="Вход в личный кабинет туриста ANRO TRIP. Управление бронированиями и документами."
+	showScrollProgress={false}
+	showScrollToTop={false}
+	showFavorites={false}
+	showOfficeWidget={false}
+	showSchema={false}
 >
-  <Fragment slot="head">
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="preload" as="image" href={welcomePreload.src} fetchpriority="high" />
-  </Fragment>
-  <main id="content" class="fixed inset-0 z-0">
-    <!-- Логотип «На главную» — favicon из assets как в Header -->
-    <a
-      href={siteHome()}
-      data-astro-reload
-      class="reveal-hidden absolute top-4 left-4 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/85 backdrop-blur-sm shadow-[0_0_24px_rgba(0,0,0,0.08)] transition-[box-shadow,transform] duration-normal hover:shadow-[0_0_32px_rgba(0,0,0,0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      aria-label="На главную"
-    >
-      <Image
-        src={favicon}
-        alt=""
-        format="png"
-        quality="max"
-        decoding="async"
-        class="h-10 w-10 object-contain drop-shadow-sm"
-      />
-    </a>
+	<Fragment slot="head">
+		<meta name="robots" content="noindex, nofollow" />
+		<link
+			rel="preload"
+			as="image"
+			href={welcomePreload.src}
+			fetchpriority="high"
+		/>
+	</Fragment>
+	<main id="content" class="fixed inset-0 z-0">
+		<!-- Логотип «На главную» — favicon из assets как в Header -->
+		<a
+			href={siteHome()}
+			data-astro-reload
+			class="reveal-hidden absolute top-4 left-4 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/85 backdrop-blur-sm shadow-[0_0_24px_rgba(0,0,0,0.08)] transition-[box-shadow,transform] duration-normal hover:shadow-[0_0_32px_rgba(0,0,0,0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+			aria-label="На главную"
+		>
+			<Image
+				src={favicon}
+				alt=""
+				format="png"
+				quality="max"
+				decoding="async"
+				class="h-10 w-10 object-contain drop-shadow-sm"
+			/>
+		</a>
 
-    <!-- Полноэкранное фото: tiny blur placeholder (как Tilda) + fade-in при загрузке -->
-    <div
-      class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-      style={`background-image: url('${tinyWelcome.src}'); background-color: #1e293b`}
-    >
-      <Image
-        src={welcomeImg}
-        alt=""
-        class="welcome-bg-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 ease-out"
-        quality={92}
-        loading="eager"
-        fetchpriority="high"
-      />
-    </div>
+		<!-- Полноэкранное фото: tiny blur placeholder (как Tilda) + fade-in при загрузке -->
+		<div
+			class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+			style={`background-image: url('${tinyWelcome.src}'); background-color: #1e293b`}
+		>
+			<Image
+				src={welcomeImg}
+				alt=""
+				class="welcome-bg-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 ease-out"
+				quality={92}
+				loading="eager"
+				fetchpriority="high"
+			/>
+		</div>
 
-    <!-- Форма: 70px от верха, reveal-эффект как на corp -->
-    <div class="absolute inset-0 flex flex-col items-center pt-[90px] px-4">
-      <div
-        class="w-full max-w-[400px] rounded-2xl bg-white/85 shadow-[0_4px_24px_rgba(0,0,0,0.12)] p-6 sm:p-8 reveal-hidden"
-      >
-        <h1
-          class="text-gray-800 text-xl sm:text-2xl font-bold pb-4 border-b border-gray-200"
-        >
-          Личный кабинет туриста
-        </h1>
+		<!-- Форма: 70px от верха, reveal-эффект как на corp -->
+		<div class="absolute inset-0 flex flex-col items-center pt-[90px] px-4">
+			<div
+				class="w-full max-w-[400px] rounded-2xl bg-white/85 shadow-[0_4px_24px_rgba(0,0,0,0.12)] p-6 sm:p-8 reveal-hidden"
+			>
+				<h1
+					class="text-gray-800 text-xl sm:text-2xl font-bold pb-4 border-b border-gray-200"
+				>
+					Личный кабинет туриста
+				</h1>
 
-        <form
-          action="https://lk.anrotrip.ru/index/welcome"
-          method="post"
-          class="mt-6 space-y-6"
-        >
-          <!-- Радио: Телефон / Email -->
-          <fieldset class="border-0 p-0 m-0 min-w-0 mb-3">
-            <legend class="sr-only">Способ входа: телефон или email</legend>
-            <div
-              class="flex items-center gap-2 text-base"
-              id="cabinet-radio-group"
-            >
-              <label class="flex items-center gap-1.5 cursor-pointer">
-                <input
-                  type="radio"
-                  name="inputType"
-                  value="tel"
-                  checked
-                  class="w-4 h-4 accent-secondary cabinet-radio cursor-pointer"
-                />
-                <span id="cabinet-label-phone" class="font-bold text-gray-800"
-                  >Телефон</span
-                >
-              </label>
-              <span class="text-gray-500 font-medium">/</span>
-              <label class="flex items-center gap-1.5 cursor-pointer">
-                <input
-                  type="radio"
-                  name="inputType"
-                  value="email"
-                  class="w-4 h-4 accent-secondary cabinet-radio cursor-pointer"
-                />
-                <span id="cabinet-label-email" class="text-gray-500">Email</span
-                >
-              </label>
-            </div>
-          </fieldset>
+				<form
+					action="https://lk.anrotrip.ru/index/welcome"
+					method="post"
+					class="mt-6 space-y-6"
+				>
+					<!-- Радио: Телефон / Email -->
+					<fieldset class="border-0 p-0 m-0 min-w-0 mb-3">
+						<legend class="sr-only">Способ входа: телефон или email</legend>
+						<div
+							class="flex items-center gap-2 text-base"
+							id="cabinet-radio-group"
+						>
+							<label class="flex items-center gap-1.5 cursor-pointer">
+								<input
+									type="radio"
+									name="inputType"
+									value="tel"
+									checked
+									class="w-4 h-4 accent-secondary cabinet-radio cursor-pointer"
+								/>
+								<span id="cabinet-label-phone" class="font-bold text-gray-800"
+									>Телефон</span
+								>
+							</label>
+							<span class="text-gray-500 font-medium">/</span>
+							<label class="flex items-center gap-1.5 cursor-pointer">
+								<input
+									type="radio"
+									name="inputType"
+									value="email"
+									class="w-4 h-4 accent-secondary cabinet-radio cursor-pointer"
+								/>
+								<span id="cabinet-label-email" class="text-gray-500">Email</span
+								>
+							</label>
+						</div>
+					</fieldset>
 
-          <label for="cabinet-login" class="sr-only">Телефон или email для входа</label>
-          <input
-            id="cabinet-login"
-            type="tel"
-            name="login"
-            placeholder="+7 (999) 000-00-00"
-            required
-            autocomplete="tel"
-            class={cabinetLoginInputClass}
-          />
+					<label for="cabinet-login" class="sr-only"
+						>Телефон или email для входа</label
+					>
+					<input
+						id="cabinet-login"
+						type="tel"
+						inputmode="tel"
+						name="login"
+						placeholder="+7 (999) 000-00-00"
+						required
+						autocomplete="tel"
+						class={cabinetLoginInputClass}
+					/>
 
-          <button
-            type="submit"
-            class="w-full rounded-lg bg-primary-dark py-3.5 text-base font-bold text-white hover:bg-secondary hover:shadow-lg hover:shadow-primary/30 transition-[background-color,box-shadow] duration-normal shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 btn-ripple"
-          >
-            Войти
-          </button>
-        </form>
-      </div>
-    </div>
+					<button
+						type="submit"
+						class="w-full rounded-lg bg-primary-dark py-3.5 text-base font-bold text-white hover:bg-secondary hover:shadow-lg hover:shadow-primary/30 transition-[background-color,box-shadow] duration-normal shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 btn-ripple"
+					>
+						Войти
+					</button>
+				</form>
+			</div>
+		</div>
 
-    <!-- Подпись: 2 строки, reveal-эффект с небольшой задержкой после формы -->
-    <div
-      class="absolute bottom-4 left-0 right-0 text-center text-sm reveal-hidden delay-200"
-    >
-      <p
-        class="text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.8),0_0_4px_rgba(0,0,0,0.6)]"
-      >
-        © 2009–2026 ООО «МоиДокументы.ру»
-      </p>
-      <a
-        href="https://www.moidokumenti.ru"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-(--color-primary) hover:underline [text-shadow:0_1px_2px_rgba(0,0,0,0.8),0_0_4px_rgba(0,0,0,0.6)]"
-      >
-        www.moidokumenti.ru
-      </a>
-    </div>
-  </main>
+		<!-- Подпись: 2 строки, reveal-эффект с небольшой задержкой после формы -->
+		<div
+			class="absolute bottom-4 left-0 right-0 text-center text-sm reveal-hidden delay-200"
+		>
+			<p
+				class="text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.8),0_0_4px_rgba(0,0,0,0.6)]"
+			>
+				© 2009–2026 ООО «МоиДокументы.ру»
+			</p>
+			<a
+				href="https://www.moidokumenti.ru"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-(--color-primary) hover:underline [text-shadow:0_1px_2px_rgba(0,0,0,0.8),0_0_4px_rgba(0,0,0,0.6)]"
+			>
+				www.moidokumenti.ru
+			</a>
+		</div>
+	</main>
 
-  <script>
-    // Blur-up: показать welcome при загрузке
-    const welcomeImg = document.querySelector('.welcome-bg-image');
-    if (welcomeImg) {
-      const show = () => welcomeImg.classList.add('!opacity-100');
-      if ((welcomeImg as HTMLImageElement).complete) show();
-      else welcomeImg.addEventListener('load', show);
-    }
+	<script>
+		// Blur-up: показать welcome при загрузке
+		const welcomeImg = document.querySelector('.welcome-bg-image');
+		if (welcomeImg) {
+			const show = () => welcomeImg.classList.add('!opacity-100');
+			if ((welcomeImg as HTMLImageElement).complete) show();
+			else welcomeImg.addEventListener('load', show);
+		}
 
-    const loginInput = document.getElementById(
-      'cabinet-login',
-    ) as HTMLInputElement;
-    document.querySelectorAll('.cabinet-radio').forEach((r) => {
-      r.addEventListener('change', () => {
-        const radio = r as HTMLInputElement;
-        const phone = document.getElementById('cabinet-label-phone');
-        const email = document.getElementById('cabinet-label-email');
-        if (radio.value === 'tel') {
-          loginInput.type = 'tel';
-          loginInput.placeholder = '+7 (999) 000-00-00';
-          loginInput.setAttribute('autocomplete', 'tel');
-          phone?.classList.add('font-bold', 'text-gray-800');
-          phone?.classList.remove('text-gray-500');
-          email?.classList.remove('font-bold', 'text-gray-800');
-          email?.classList.add('text-gray-500');
-        } else {
-          loginInput.type = 'email';
-          loginInput.placeholder = 'example@mail.ru';
-          loginInput.setAttribute('autocomplete', 'email');
-          email?.classList.add('font-bold', 'text-gray-800');
-          email?.classList.remove('text-gray-500');
-          phone?.classList.remove('font-bold', 'text-gray-800');
-          phone?.classList.add('text-gray-500');
-        }
-      });
-    });
-  </script>
+		const loginInput = document.getElementById(
+			'cabinet-login',
+		) as HTMLInputElement;
+		document.querySelectorAll('.cabinet-radio').forEach((r) => {
+			r.addEventListener('change', () => {
+				const radio = r as HTMLInputElement;
+				const phone = document.getElementById('cabinet-label-phone');
+				const email = document.getElementById('cabinet-label-email');
+				if (radio.value === 'tel') {
+					loginInput.type = 'tel';
+					loginInput.placeholder = '+7 (999) 000-00-00';
+					loginInput.setAttribute('autocomplete', 'tel');
+					phone?.classList.add('font-bold', 'text-gray-800');
+					phone?.classList.remove('text-gray-500');
+					email?.classList.remove('font-bold', 'text-gray-800');
+					email?.classList.add('text-gray-500');
+				} else {
+					loginInput.type = 'email';
+					loginInput.placeholder = 'example@mail.ru';
+					loginInput.setAttribute('autocomplete', 'email');
+					email?.classList.add('font-bold', 'text-gray-800');
+					email?.classList.remove('text-gray-500');
+					phone?.classList.remove('font-bold', 'text-gray-800');
+					phone?.classList.add('text-gray-500');
+				}
+			});
+		});
+	</script>
 </Layout>

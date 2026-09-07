@@ -1,269 +1,278 @@
 ---
 import {
-  modalLeadInputClass,
-  modalLeadLabelClass,
-  modalLeadSubmitClass,
+	modalLeadInputClass,
+	modalLeadLabelClass,
+	modalLeadSubmitClass,
 } from '../lib/form-classes';
 import { sitePrivacy } from '../lib/site-urls';
 import XMarkIcon from './icons/XMarkIcon.astro';
 ---
 
 <div
-  id="gift-modal-overlay"
-  class="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm max-md:backdrop-blur-none hidden items-center justify-center opacity-0 transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]"
+	id="gift-modal-overlay"
+	class="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm max-md:backdrop-blur-none hidden items-center justify-center opacity-0 transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]"
 >
-  <div
-    class="bg-white rounded-3xl shadow-2xl shadow-black/20 max-md:shadow-lg w-full max-w-md mx-4 relative transform max-h-[90dvh] overflow-y-auto contain-[layout_paint]
+	<div
+		class="bg-white rounded-3xl shadow-2xl shadow-black/20 max-md:shadow-lg w-full max-w-md mx-4 relative transform max-h-[90dvh] overflow-y-auto contain-[layout_paint]
       translate-y-20 max-md:translate-y-8
       transition-transform duration-slow ease-out max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]
       [&.modal-open]:translate-y-0"
-    id="gift-modal-content"
-  >
-    <button
-      id="close-gift-modal"
-      type="button"
-      aria-label="Закрыть окно подарочного сертификата"
-      class="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 z-10"
-    >
-      <XMarkIcon />
-    </button>
+		id="gift-modal-content"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="gift-modal-title"
+	>
+		<button
+			id="close-gift-modal"
+			type="button"
+			aria-label="Закрыть окно подарочного сертификата"
+			class="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 z-10"
+		>
+			<XMarkIcon />
+		</button>
 
-    <div class="p-8 pt-7">
-      <h3
-        class="font-montserrat text-xl font-extrabold text-gray-900 uppercase tracking-wide mb-1 text-center"
-      >
-        Подарочный сертификат
-      </h3>
-      <p class="text-center text-sm text-gray-400 mb-6">
-        Лучший подарок — это путешествие!
-      </p>
+		<div class="p-8 pt-7">
+			<h3
+				id="gift-modal-title"
+				class="font-montserrat text-xl font-extrabold text-gray-900 uppercase tracking-wide mb-1 text-center"
+			>
+				Подарочный сертификат
+			</h3>
+			<p class="text-center text-sm text-gray-500 mb-6">
+				Лучший подарок — это путешествие!
+			</p>
 
-      <form id="gift-form" class="space-y-3">
-          <input type="text" name="_hp" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
-        <p class="text-xs text-center text-gray-500 mb-5 font-inter">
-          <i
-            >Вы можете приобрести <strong>Подарочный сертификат</strong> на любые
-            услуги туристической компании ANRO TRIP для этого заполните форму и мы
-            свяжемся с Вами!</i
-          >
-        </p>
-        <div>
-          <label for="gift-fio" class={modalLeadLabelClass}>Фамилия Имя Отчество</label>
-          <input
-            id="gift-fio"
-            name="fio"
-            type="text"
-            placeholder="ФИО"
-            required
-            autocomplete="name"
-            class={modalLeadInputClass}
-          />
-        </div>
+			<form id="gift-form" class="space-y-3">
+				<input
+					type="text"
+					name="_hp"
+					class="hidden"
+					tabindex="-1"
+					autocomplete="off"
+					aria-hidden="true"
+				/>
+				<p class="text-xs text-center text-gray-500 mb-5 font-inter">
+					<i
+						>Вы можете приобрести <strong>Подарочный сертификат</strong> на любые
+						услуги туристической компании ANRO TRIP для этого заполните форму и мы
+						свяжемся с Вами!</i
+					>
+				</p>
+				<div>
+					<label for="gift-fio" class={modalLeadLabelClass}
+						>Фамилия Имя Отчество</label
+					>
+					<input
+						id="gift-fio"
+						name="fio"
+						type="text"
+						placeholder="ФИО"
+						required
+						autocomplete="name"
+						class={modalLeadInputClass}
+					/>
+				</div>
 
-        <div>
-          <label for="gift-phone" class={modalLeadLabelClass}>Ваш телефон</label>
-          <input
-            id="gift-phone"
-            name="phone"
-            type="tel"
-            placeholder="+7 (999) 000-00-00"
-            required
-            autocomplete="tel"
-            class={modalLeadInputClass}
-          />
-        </div>
+				<div>
+					<label for="gift-phone" class={modalLeadLabelClass}>Ваш телефон</label
+					>
+					<input
+						id="gift-phone"
+						name="phone"
+						type="tel"
+						inputmode="tel"
+						placeholder="+7 (999) 000-00-00"
+						required
+						autocomplete="tel"
+						class={modalLeadInputClass}
+					/>
+				</div>
 
-        <div>
-          <label for="gift-email" class={modalLeadLabelClass}>Ваш e-mail</label>
-          <input
-            id="gift-email"
-            name="email"
-            type="email"
-            placeholder="example@mail.ru"
-            required
-            autocomplete="email"
-            class={modalLeadInputClass}
-          />
-        </div>
+				<div>
+					<label for="gift-email" class={modalLeadLabelClass}>Ваш e-mail</label>
+					<input
+						id="gift-email"
+						name="email"
+						type="email"
+						placeholder="example@mail.ru"
+						required
+						autocomplete="email"
+						class={modalLeadInputClass}
+					/>
+				</div>
 
-        <div class="flex items-start gap-2.5 pt-1">
-          <input
-            name="agree"
-            type="checkbox"
-            id="agree-gift"
-            required
-            class="mt-0.5 w-4 h-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          />
-          <label
-            for="agree-gift"
-            class="text-[11px] text-gray-400 leading-snug cursor-pointer"
-          >
-            Даю свое согласие на обработку персональных данных в соответствии с <a
-              href={sitePrivacy()}
-              class="text-primary font-semibold hover:underline cursor-pointer"
-              >Политикой конфиденциальности</a
-            >
-          </label>
-        </div>
+				<div class="flex items-start gap-2.5 pt-1">
+					<input
+						name="agree"
+						type="checkbox"
+						id="agree-gift"
+						required
+						class="mt-0.5 w-4 h-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					/>
+					<label
+						for="agree-gift"
+						class="text-[11px] text-gray-600 leading-snug cursor-pointer"
+					>
+						Даю свое согласие на обработку персональных данных в соответствии с <a
+							href={sitePrivacy()}
+							class="text-primary-dark font-semibold hover:underline cursor-pointer"
+							>Политикой конфиденциальности</a
+						>
+					</label>
+				</div>
 
-        <p id="gift-error" class="hidden text-sm text-red-500 text-center pt-1" role="alert"></p>
+				<p
+					id="gift-error"
+					class="hidden text-sm text-red-500 text-center pt-1"
+					role="alert"
+				>
+				</p>
 
-        <button type="submit" id="gift-submit" class={modalLeadSubmitClass}>
-          Отправить
-        </button>
-      </form>
+				<button type="submit" id="gift-submit" class={modalLeadSubmitClass}>
+					Отправить
+				</button>
+			</form>
 
-      <div id="gift-success" class="hidden text-center py-6 px-2">
-        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4">
-          <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h4 class="font-montserrat text-lg font-bold text-gray-900 mb-2">Заявка принята!</h4>
-        <p class="text-sm text-gray-500">Мы свяжемся с вами для оформления сертификата.</p>
-      </div>
-    </div>
-  </div>
+			<div
+				id="gift-success"
+				class="hidden text-center py-6 px-2"
+				role="status"
+				aria-live="polite"
+			>
+				<div
+					class="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4"
+				>
+					<svg
+						class="w-8 h-8 text-primary"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2.5"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M5 13l4 4L19 7"></path>
+					</svg>
+				</div>
+				<h4 class="font-montserrat text-lg font-bold text-gray-900 mb-2">
+					Заявка принята!
+				</h4>
+				<p class="text-sm text-gray-500">
+					Мы свяжемся с вами для оформления сертификата.
+				</p>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
-  let previousActiveElement = null as HTMLElement | null;
+	import { attachJsonFormSubmit } from '../lib/client/form-submit.ts';
+	import {
+		createFocusTrap,
+		type FocusTrapController,
+	} from '../lib/client/focus-trap.ts';
 
-  function getFocusables(container: HTMLElement) {
-    const sel =
-      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    return Array.from(container.querySelectorAll<HTMLElement>(sel)).filter(
-      (el) => el.offsetParent !== null && !el.hasAttribute('aria-hidden'),
-    );
-  }
+	let previousActiveElement = null as HTMLElement | null;
+	let focusTrap: FocusTrapController | null = null;
 
-  function trapFocus(e: KeyboardEvent) {
-    if (e.key !== 'Tab') return;
-    const content = document.getElementById('gift-modal-content');
-    if (!content) return;
-    const focusables = getFocusables(content);
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (e.shiftKey) {
-      if (document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      }
-    } else {
-      if (document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-  }
+	function openGiftModal() {
+		const overlay = document.getElementById('gift-modal-overlay');
+		const content = document.getElementById('gift-modal-content');
+		const closeBtn = document.getElementById('close-gift-modal');
 
-  function openGiftModal() {
-    const overlay = document.getElementById('gift-modal-overlay');
-    const content = document.getElementById('gift-modal-content');
-    const closeBtn = document.getElementById('close-gift-modal');
+		if (overlay && content) {
+			previousActiveElement = document.activeElement as HTMLElement | null;
+			overlay.classList.remove('hidden');
+			overlay.style.display = 'flex';
+			window.lockScroll();
 
-    if (overlay && content) {
-      previousActiveElement = document.activeElement as HTMLElement | null;
-      overlay.classList.remove('hidden');
-      overlay.style.display = 'flex';
-      window.lockScroll();
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					content.style.willChange = 'transform';
+					overlay.classList.remove('opacity-0');
+					content.classList.add('modal-open');
+					focusTrap = createFocusTrap(content);
+					focusTrap.activate(closeBtn as HTMLElement | null);
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          content.style.willChange = 'transform';
-          overlay.classList.remove('opacity-0');
-          content.classList.add('modal-open');
-          closeBtn?.focus();
-          content.addEventListener('keydown', trapFocus);
+					const onOpenEnd = () => {
+						content.style.willChange = '';
+					};
+					content.addEventListener('transitionend', onOpenEnd, { once: true });
+				});
+			});
+		}
+	}
 
-          const onOpenEnd = () => {
-            content.style.willChange = '';
-          };
-          content.addEventListener('transitionend', onOpenEnd, { once: true });
-        });
-      });
-    }
-  }
+	function closeGiftModal() {
+		const overlay = document.getElementById('gift-modal-overlay');
+		const content = document.getElementById('gift-modal-content');
 
-  function closeGiftModal() {
-    const overlay = document.getElementById('gift-modal-overlay');
-    const content = document.getElementById('gift-modal-content');
+		if (overlay && content) {
+			focusTrap?.deactivate();
+			focusTrap = null;
+			content.style.willChange = 'transform';
+			overlay.classList.add('opacity-0');
+			content.classList.remove('modal-open');
 
-    if (overlay && content) {
-      content.removeEventListener('keydown', trapFocus);
-      content.style.willChange = 'transform';
-      overlay.classList.add('opacity-0');
-      content.classList.remove('modal-open');
+			const onCloseEnd = () => {
+				if (!overlay.classList.contains('opacity-0')) return;
+				content.style.willChange = '';
+				overlay.classList.add('hidden');
+				overlay.style.display = 'none';
+				requestAnimationFrame(() => {
+					window.unlockScroll();
+					previousActiveElement?.focus();
+					previousActiveElement = null;
+				});
+			};
+			content.addEventListener('transitionend', onCloseEnd, { once: true });
+		}
+	}
 
-      const onCloseEnd = () => {
-        if (!overlay.classList.contains('opacity-0')) return;
-        content.style.willChange = '';
-        overlay.classList.add('hidden');
-        overlay.style.display = 'none';
-        requestAnimationFrame(() => {
-          window.unlockScroll();
-          previousActiveElement?.focus();
-          previousActiveElement = null;
-        });
-      };
-      content.addEventListener('transitionend', onCloseEnd, { once: true });
-    }
-  }
+	window.openGiftModal = openGiftModal;
+	window.closeGiftModal = closeGiftModal;
 
-  window.openGiftModal = openGiftModal;
-  window.closeGiftModal = closeGiftModal;
+	const closeBtn = document.getElementById('close-gift-modal');
+	const overlay = document.getElementById('gift-modal-overlay');
 
-  const closeBtn = document.getElementById('close-gift-modal');
-  const overlay = document.getElementById('gift-modal-overlay');
+	closeBtn?.addEventListener('click', closeGiftModal);
+	overlay?.addEventListener('click', (e) => {
+		if (e.target === overlay) closeGiftModal();
+	});
 
-  closeBtn?.addEventListener('click', closeGiftModal);
-  overlay?.addEventListener('click', (e) => {
-    if (e.target === overlay) closeGiftModal();
-  });
+	// Отправка на сервер. Данные не логируются в console.* (152-ФЗ).
+	const giftForm = document.getElementById(
+		'gift-form',
+	) as HTMLFormElement | null;
+	const giftSubmit = document.getElementById(
+		'gift-submit',
+	) as HTMLButtonElement | null;
+	const giftError = document.getElementById(
+		'gift-error',
+	) as HTMLParagraphElement | null;
+	const giftSuccess = document.getElementById(
+		'gift-success',
+	) as HTMLElement | null;
 
-  // Отправка на сервер. Данные не логируются в console.* (152-ФЗ).
-  const giftForm = document.getElementById('gift-form') as HTMLFormElement | null;
-  const giftSubmit = document.getElementById('gift-submit') as HTMLButtonElement | null;
-  const giftError = document.getElementById('gift-error') as HTMLParagraphElement | null;
-  const giftSuccess = document.getElementById('gift-success') as HTMLElement | null;
+	if (giftForm && giftSubmit) {
+		attachJsonFormSubmit({
+			form: giftForm,
+			submitButton: giftSubmit,
+			errorElement: giftError,
+			apiPath: 'api/gift',
+			submitLabel: 'Отправить',
+			onSuccess: () => {
+				giftForm.classList.add('hidden');
+				giftSuccess?.classList.remove('hidden');
+				setTimeout(() => closeGiftModal(), 3000);
+			},
+		});
+	}
 
-  giftForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!giftForm || !giftSubmit) return;
-
-    giftSubmit.disabled = true;
-    giftSubmit.textContent = 'Отправляем…';
-    if (giftError) { giftError.textContent = ''; giftError.classList.add('hidden'); }
-
-    try {
-      const res = await fetch('/api/gift', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(giftForm))),
-      });
-      const data = await res.json();
-
-      if (data.ok) {
-        giftForm.classList.add('hidden');
-        giftSuccess?.classList.remove('hidden');
-        setTimeout(() => closeGiftModal(), 3000);
-      } else {
-        throw new Error(data.error ?? 'Ошибка отправки');
-      }
-    } catch (err: unknown) {
-      if (giftError) {
-        giftError.textContent = err instanceof Error ? err.message : 'Не удалось отправить. Попробуйте ещё раз.';
-        giftError.classList.remove('hidden');
-      }
-      giftSubmit.disabled = false;
-      giftSubmit.textContent = 'Отправить';
-    }
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !overlay?.classList.contains('hidden')) {
-      closeGiftModal();
-    }
-  });
+	window.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && !overlay?.classList.contains('hidden')) {
+			closeGiftModal();
+		}
+	});
 </script>

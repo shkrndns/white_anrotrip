@@ -2,263 +2,221 @@
 // src/components/OurPartners.astro
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import anexTourLogo from '../assets/our-partners/anex-tour.webp';
-import funSunLogo from '../assets/our-partners/fun-sun.webp';
-import gkpLogo from '../assets/our-partners/gkp.webp';
+import { tourOperatorPartners } from '../data/our-partners';
+import SectionHeading from './ui/SectionHeading.astro';
 
 type PartnerSlot =
-  | { type: 'logo'; name: string; logo: ImageMetadata }
-  | { type: 'placeholder'; name: string };
+	| { type: 'logo'; name: string; logo: ImageMetadata }
+	| { type: 'placeholder'; name: string };
 
 const placeholders: PartnerSlot[] = Array.from({ length: 10 }).map((_, i) => ({
-  type: 'placeholder',
-  name: `Партнёр ${i + 1}`,
+	type: 'placeholder',
+	name: `Партнёр ${i + 1}`,
 }));
 
 // Пробная тройка: 2 логотипа в верхнем ряду, 1 — в нижнем
 const row1Slots: PartnerSlot[] = [
-  { type: 'logo', name: 'ГКП', logo: gkpLogo },
-  { type: 'logo', name: 'FUN&SUN', logo: funSunLogo },
-  ...placeholders.slice(2),
+	{
+		type: 'logo',
+		name: tourOperatorPartners[0].name,
+		logo: tourOperatorPartners[0].logo,
+	},
+	{
+		type: 'logo',
+		name: tourOperatorPartners[1].name,
+		logo: tourOperatorPartners[1].logo,
+	},
+	...placeholders.slice(2),
 ];
 
 const row2Slots: PartnerSlot[] = [
-  { type: 'logo', name: 'Anex Tour', logo: anexTourLogo },
-  ...placeholders.slice(1),
+	{
+		type: 'logo',
+		name: tourOperatorPartners[2].name,
+		logo: tourOperatorPartners[2].logo,
+	},
+	...placeholders.slice(1),
 ];
 
 const row1 = [...row1Slots, ...row1Slots];
 const row2 = [...row2Slots, ...row2Slots].reverse();
 
 interface Props {
-  class?: string;
+	class?: string;
 }
 const { class: classes = '' }: Props = Astro.props;
 ---
 
-<section id="our-partners" class={`relative py-[50px] bg-primary/4 overflow-hidden ${classes}`}>
-  <!-- Декоративные фоновые элементы -->
-  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
-  <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl pointer-events-none translate-y-1/3 -translate-x-1/4"></div>
+<section
+	id="our-partners"
+	class={`relative py-[50px] bg-primary/4 overflow-hidden ${classes}`}
+>
+	<!-- Декоративные фоновые элементы -->
+	<div
+		class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3"
+	>
+	</div>
+	<div
+		class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl pointer-events-none translate-y-1/3 -translate-x-1/4"
+	>
+	</div>
 
-  <div class="relative container mx-auto px-4 sm:px-6 max-w-7xl">
+	<div class="relative container mx-auto px-4 sm:px-6 max-w-7xl">
+		<!-- ЗАГОЛОВОК -->
+		<div
+			class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4 md:mb-6 reveal-hidden"
+		>
+			<div>
+				<SectionHeading badge="Наши партнёры">
+					<span class="text-primary">Сотрудничество</span>
+				</SectionHeading>
+			</div>
 
-    <!-- ЗАГОЛОВОК -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4 md:mb-6 reveal-hidden">
-      <div>
-        <div class="section-badge mb-4">
-          <span class="section-badge__dot" aria-hidden="true"></span>
-          <span class="section-badge__label">Наши партнёры</span>
-        </div>
+			<p class="section-caption">
+				Мы сотрудничаем с ведущими авиакомпаниями, отельными сетями и
+				туроператорами по всему миру, чтобы предоставлять вам лучший сервис
+			</p>
+		</div>
 
-        <h2 class="section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-tight">
-          <span class="text-primary">Сотрудничество</span>
-        </h2>
-      </div>
+		<!-- ЛЕНТА ЛОГОТИПОВ -->
 
-      <p class="section-caption">
-        Мы сотрудничаем с ведущими авиакомпаниями, отельными сетями и туроператорами по всему миру, чтобы предоставлять вам лучший сервис
-      </p>
-    </div>
+		<!-- Мобилка: только ручной скролл (как в Partners.astro — «Наши клиенты») -->
+		<div class="relative md:hidden">
+			<div
+				class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-primary/4 to-transparent z-10 pointer-events-none"
+			>
+			</div>
+			<div
+				class="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-primary/4 to-transparent z-10 pointer-events-none"
+			>
+			</div>
 
-    <!-- ЛЕНТА ЛОГОТИПОВ -->
+			<div
+				id="our-partners-mobile-scroll-1"
+				class="flex overflow-x-auto overflow-y-hidden gap-4 pb-4 mb-4 scrollbar-hide -mx-4 px-4 overscroll-x-contain touch-pan-x touch-pan-y scroll-auto"
+			>
+				{
+					row1.map((partner) => (
+						<div class="shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3">
+							{partner.type === 'logo' ? (
+								<Image
+									src={partner.logo}
+									alt={partner.name}
+									width={160}
+									height={120}
+									class="max-h-full w-auto max-w-full object-contain"
+									loading="lazy"
+									decoding="async"
+								/>
+							) : (
+								<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider text-center">
+									{partner.name}
+								</span>
+							)}
+						</div>
+					))
+				}
+			</div>
 
-    <!-- Мобилка: только ручной скролл (как в Partners.astro — «Наши клиенты») -->
-    <div class="relative md:hidden">
-      <div class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-primary/4 to-transparent z-10 pointer-events-none"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-primary/4 to-transparent z-10 pointer-events-none"></div>
+			<div
+				id="our-partners-mobile-scroll-2"
+				class="flex overflow-x-auto overflow-y-hidden gap-4 pb-4 scrollbar-hide -mx-4 px-4 overscroll-x-contain touch-pan-x touch-pan-y scroll-auto"
+			>
+				{
+					row2.map((partner) => (
+						<div class="shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3">
+							{partner.type === 'logo' ? (
+								<Image
+									src={partner.logo}
+									alt={partner.name}
+									width={160}
+									height={120}
+									class="max-h-full w-auto max-w-full object-contain"
+									loading="lazy"
+									decoding="async"
+								/>
+							) : (
+								<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider text-center">
+									{partner.name}
+								</span>
+							)}
+						</div>
+					))
+				}
+			</div>
+		</div>
 
-      <div
-        id="our-partners-mobile-scroll-1"
-        class="flex overflow-x-auto overflow-y-hidden gap-4 pb-4 mb-4 scrollbar-hide -mx-4 px-4 overscroll-x-contain touch-pan-x touch-pan-y scroll-auto"
-      >
-        {row1.map((partner) => (
-          <div class="shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3">
-            {partner.type === 'logo' ? (
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                width={160}
-                height={120}
-                class="max-h-full w-auto max-w-full object-contain"
-                loading="lazy"
-                decoding="async"
-              />
-            ) : (
-              <span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider text-center">
-                {partner.name}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
+		<!-- Десктоп: marquee -->
+		<div class="reveal-hidden relative hidden md:block">
+			<div
+				class="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-linear-to-r from-primary/4 to-transparent z-10 pointer-events-none"
+			>
+			</div>
+			<div
+				class="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-linear-to-l from-primary/4 to-transparent z-10 pointer-events-none"
+			>
+			</div>
 
-      <div
-        id="our-partners-mobile-scroll-2"
-        class="flex overflow-x-auto overflow-y-hidden gap-4 pb-4 scrollbar-hide -mx-4 px-4 overscroll-x-contain touch-pan-x touch-pan-y scroll-auto"
-      >
-        {row2.map((partner) => (
-          <div class="shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3">
-            {partner.type === 'logo' ? (
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                width={160}
-                height={120}
-                class="max-h-full w-auto max-w-full object-contain"
-                loading="lazy"
-                decoding="async"
-              />
-            ) : (
-              <span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider text-center">
-                {partner.name}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
+			<div class="partners-marquee-viewport mb-4">
+				<div
+					class="partners-track partners-track--forward flex gap-4 w-max"
+					aria-hidden="true"
+				>
+					{
+						row1.map((partner) => (
+							<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
+								{partner.type === 'logo' ? (
+									<Image
+										src={partner.logo}
+										alt={partner.name}
+										class="max-h-full w-auto max-w-full object-contain"
+										loading="lazy"
+										decoding="async"
+									/>
+								) : (
+									<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider group-hover:text-primary/50 transition-colors text-center">
+										{partner.name}
+									</span>
+								)}
+							</div>
+						))
+					}
+				</div>
+			</div>
 
-    <!-- Десктоп: marquee -->
-    <div class="reveal-hidden relative hidden md:block">
-      <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-linear-to-r from-primary/4 to-transparent z-10 pointer-events-none"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-linear-to-l from-primary/4 to-transparent z-10 pointer-events-none"></div>
-
-      <div class="partners-marquee-viewport mb-4">
-        <div class="partners-track partners-track--forward flex gap-4 w-max" aria-hidden="true">
-          {row1.map((partner) => (
-            <div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
-              {partner.type === 'logo' ? (
-                <Image
-                  src={partner.logo}
-                  alt={partner.name}
-                  class="max-h-full w-auto max-w-full object-contain"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-                <span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider group-hover:text-primary/50 transition-colors text-center">
-                  {partner.name}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div class="partners-marquee-viewport">
-        <div class="partners-track partners-track--reverse flex gap-4 w-max" aria-hidden="true">
-          {row2.map((partner) => (
-            <div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
-              {partner.type === 'logo' ? (
-                <Image
-                  src={partner.logo}
-                  alt={partner.name}
-                  class="max-h-full w-auto max-w-full object-contain"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-                <span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider group-hover:text-primary/50 transition-colors text-center">
-                  {partner.name}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-
-  </div>
+			<div class="partners-marquee-viewport">
+				<div
+					class="partners-track partners-track--reverse flex gap-4 w-max"
+					aria-hidden="true"
+				>
+					{
+						row2.map((partner) => (
+							<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
+								{partner.type === 'logo' ? (
+									<Image
+										src={partner.logo}
+										alt={partner.name}
+										class="max-h-full w-auto max-w-full object-contain"
+										loading="lazy"
+										decoding="async"
+									/>
+								) : (
+									<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider group-hover:text-primary/50 transition-colors text-center">
+										{partner.name}
+									</span>
+								)}
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
 <script>
-  // Десктоп: точное смещение marquee — как в Partners.astro
-  function initOurPartnersMarqueeTrack(track: HTMLElement) {
-    track.style.animationPlayState = 'paused';
+	import { initOurPartnersMarquee } from '../lib/client/partners-marquee.ts';
 
-    requestAnimationFrame(() => {
-      const cards = track.children;
-      const half = Math.floor(cards.length / 2);
-      if (half === 0) {
-        track.style.animationPlayState = '';
-        return;
-      }
-
-      const firstLeft = (cards[0] as HTMLElement).offsetLeft;
-      const halfLeft = (cards[half] as HTMLElement).offsetLeft;
-      const halfWidth = halfLeft - firstLeft;
-      const totalWidth = track.scrollWidth;
-
-      if (totalWidth > 0 && halfWidth > 0) {
-        const offset = -(halfWidth / totalWidth) * 100;
-        track.style.setProperty('--marquee-offset', `${offset.toFixed(4)}%`);
-      }
-
-      track.style.animationPlayState = '';
-    });
-  }
-
-  function initOurPartnersMarquee() {
-    if (window.innerWidth < 768) return;
-
-    const root = document.getElementById('our-partners');
-    if (!root) return;
-
-    root.querySelectorAll<HTMLElement>('.partners-track--forward, .partners-track--reverse').forEach(
-      initOurPartnersMarqueeTrack,
-    );
-  }
-
-  // Мобилка: бесшовный цикл при ручном скролле — как в Partners.astro
-  function initOurPartnersSeamlessLoop(el: HTMLElement) {
-    if (window.innerWidth >= 768) return;
-
-    const half = () => el.scrollWidth / 2;
-    const max = () => Math.max(0, el.scrollWidth - el.clientWidth);
-    const threshold = 120;
-    let jumping = false;
-    let rafId = 0;
-
-    const resetJumping = () => { jumping = false; };
-
-    const checkAndLoop = () => {
-      if (jumping) return;
-      const m = max();
-      if (m <= 0) return;
-      const left = el.scrollLeft;
-      const h = half();
-      const cw = el.clientWidth;
-      if (left < threshold) {
-        jumping = true;
-        el.scrollLeft = h + left;
-        setTimeout(resetJumping, 50);
-      } else if (left > m - threshold) {
-        jumping = true;
-        el.scrollLeft = h - cw - (m - left);
-        setTimeout(resetJumping, 50);
-      }
-      rafId = 0;
-    };
-
-    el.addEventListener('scroll', () => {
-      if (jumping || rafId) return;
-      rafId = requestAnimationFrame(checkAndLoop);
-    }, { passive: true });
-  }
-
-  function initOurPartnersMobileScroll() {
-    const row1 = document.getElementById('our-partners-mobile-scroll-1');
-    const row2 = document.getElementById('our-partners-mobile-scroll-2');
-    if (row1) initOurPartnersSeamlessLoop(row1);
-    if (row2) initOurPartnersSeamlessLoop(row2);
-  }
-
-  function init() {
-    initOurPartnersMarquee();
-    initOurPartnersMobileScroll();
-  }
-
-  init();
-  document.addEventListener('astro:page-load', init);
+	initOurPartnersMarquee();
+	document.addEventListener('astro:page-load', initOurPartnersMarquee);
 </script>

@@ -4,253 +4,285 @@
 import FooterLegalStrip from '../components/FooterLegalStrip.astro';
 import Layout from '../layouts/Layout.astro';
 import { siteHome, sitePrivacy } from '../lib/site-urls';
+import { company, companyMailto, companyPhoneHref } from '../data/company';
 
-const siteUrl = 'https://anrotrip.ru';
+const { phones, emails } = company;
+const siteUrl = company.siteUrl;
 ---
 
 <Layout
-  title="Пользовательское соглашение — ANRO TRIP"
-  description="Пользовательское соглашение туристической компании ANRO TRIP."
-  showFavorites={false}
-  showOfficeWidget={false}
-  showScrollToTop={false}
-  showSchema={false}
+	title="Пользовательское соглашение — ANRO TRIP"
+	description="Пользовательское соглашение туристической компании ANRO TRIP."
+	showFavorites={false}
+	showOfficeWidget={false}
+	showScrollToTop={false}
+	showSchema={false}
 >
-  <!-- <Header /> -->
-  <main id="content" class="min-h-dvh pt-24 pb-16">
-    <article
-      class="legal-content container mx-auto max-w-3xl px-4 sm:px-6 font-inter text-gray-800 leading-relaxed"
-    >
-      <h1
-        class="font-montserrat font-extrabold text-gray-900 text-2xl md:text-3xl mb-6"
-      >
-        Пользовательское соглашение
-      </h1>
+	<!-- <Header /> -->
+	<main id="content" class="min-h-dvh pt-24 pb-16">
+		<article
+			class="legal-content container mx-auto max-w-3xl px-4 sm:px-6 font-inter text-gray-800 leading-relaxed"
+		>
+			<h1
+				class="font-montserrat font-extrabold text-gray-900 text-2xl md:text-3xl mb-6"
+			>
+				Пользовательское соглашение
+			</h1>
 
-      <p class="mb-4 text-gray-600 text-sm">
-        Документ определяет правила использования сайта{' '}
-        <a
-          href={siteUrl}
-          class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
-          >{siteUrl}</a
-        >{' '}
-        (далее — Сайт) и отношения между пользователями Сайта и ООО «АНРО» (далее —
-        Компания, ANRO TRIP). Действует с 24 марта 2026 г.
-      </p>
+			<p class="mb-4 text-gray-600 text-sm">
+				Документ определяет правила использования сайта{' '}
+				<a
+					href={siteUrl}
+					class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
+					>{siteUrl}</a
+				>{' '}
+				(далее — Сайт) и отношения между пользователями Сайта и ООО «АНРО» (далее
+				— Компания, ANRO TRIP). Действует с 24 марта 2026 г.
+			</p>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-8 mb-3">
-        1. Общие положения
-      </h2>
-      <ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
-        <li>
-          Используя Сайт — в том числе просматривая материалы, заполняя формы, переходя по
-          ссылкам, — вы подтверждаете, что ознакомились с настоящим Пользовательским
-          соглашением (далее — Соглашение) и принимаете его условия. Если вы не согласны с
-          условиями, пожалуйста, прекратите использование Сайта.
-        </li>
-        <li>
-          Компания оставляет за собой право изменять Соглашение. Актуальная редакция
-          всегда размещена по адресу{' '}
-          <a
-            href={`${siteUrl}/terms`}
-            class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
-            >{siteUrl}/terms</a
-          >. Продолжение использования Сайта после публикации изменений означает согласие
-          с новой редакцией, если иное прямо не указано на Сайте.
-        </li>
-        <li>
-          К отношениям между Компанией и потребителями туристских услуг применяются
-          положения законодательства Российской Федерации, в том числе Закона РФ «О защите
-          прав потребителей», Закона РФ «Об основах туристской деятельности в Российской
-          Федерации» и иные нормы. Условия конкретного бронирования и договора о реализации туристского
-          продукта определяются отдельным договором и приложениями к нему.
-        </li>
-      </ol>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-8 mb-3"
+			>
+				1. Общие положения
+			</h2>
+			<ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
+				<li>
+					Используя Сайт — в том числе просматривая материалы, заполняя формы,
+					переходя по ссылкам, — вы подтверждаете, что ознакомились с настоящим
+					Пользовательским соглашением (далее — Соглашение) и принимаете его
+					условия. Если вы не согласны с условиями, пожалуйста, прекратите
+					использование Сайта.
+				</li>
+				<li>
+					Компания оставляет за собой право изменять Соглашение. Актуальная
+					редакция всегда размещена по адресу{' '}
+					<a
+						href={`${siteUrl}/terms`}
+						class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
+						>{siteUrl}/terms</a
+					>. Продолжение использования Сайта после публикации изменений означает
+					согласие с новой редакцией, если иное прямо не указано на Сайте.
+				</li>
+				<li>
+					К отношениям между Компанией и потребителями туристских услуг
+					применяются положения законодательства Российской Федерации, в том
+					числе Закона РФ «О защите прав потребителей», Закона РФ «Об основах
+					туристской деятельности в Российской Федерации» и иные нормы. Условия
+					конкретного бронирования и договора о реализации туристского продукта
+					определяются отдельным договором и приложениями к нему.
+				</li>
+			</ol>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        2. Термины
-      </h2>
-      <ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
-        <li>
-          <span class="font-semibold text-gray-900">Компания / ANRO TRIP</span> — ООО «АНРО»,
-          ИНН 6658540239, ОГРН 1206600070764, оказывающее услуги в сфере туризма.
-        </li>
-        <li>
-          <span class="font-semibold text-gray-900">Сайт</span> — совокупность страниц в сети
-          Интернет по адресу{' '}
-          <a
-            href={siteUrl}
-            class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
-            >{siteUrl}</a
-          >, включая подстраницы и разделы.
-        </li>
-        <li>
-          <span class="font-semibold text-gray-900">Пользователь</span> — физическое или
-          юридическое лицо, использующее Сайт.
-        </li>
-        <li>
-          <span class="font-semibold text-gray-900">Контент</span> — тексты, изображения,
-          логотипы, видео, программный код, дизайн и иные объекты, размещённые на Сайте.
-        </li>
-      </ol>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				2. Термины
+			</h2>
+			<ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
+				<li>
+					<span class="font-semibold text-gray-900">Компания / ANRO TRIP</span> —
+					ООО «АНРО», ИНН 6658540239, ОГРН 1206600070764, оказывающее услуги в сфере
+					туризма.
+				</li>
+				<li>
+					<span class="font-semibold text-gray-900">Сайт</span> — совокупность страниц
+					в сети Интернет по адресу{' '}
+					<a
+						href={siteUrl}
+						class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
+						>{siteUrl}</a
+					>, включая подстраницы и разделы.
+				</li>
+				<li>
+					<span class="font-semibold text-gray-900">Пользователь</span> — физическое
+					или юридическое лицо, использующее Сайт.
+				</li>
+				<li>
+					<span class="font-semibold text-gray-900">Контент</span> — тексты, изображения,
+					логотипы, видео, программный код, дизайн и иные объекты, размещённые на
+					Сайте.
+				</li>
+			</ol>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        3. Предмет соглашения
-      </h2>
-      <p class="mb-4">
-        Компания предоставляет Пользователю доступ к информации о туристских услугах,
-        направлениях, акциях и контактных данных, а также к инструментам поиска и обратной
-        связи в объёме, доступном на Сайте. Настоящее Соглашение регулирует порядок
-        использования Сайта и не заменяет договор о реализации туристского продукта,
-        заключаемый при бронировании.
-      </p>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				3. Предмет соглашения
+			</h2>
+			<p class="mb-4">
+				Компания предоставляет Пользователю доступ к информации о туристских
+				услугах, направлениях, акциях и контактных данных, а также к
+				инструментам поиска и обратной связи в объёме, доступном на Сайте.
+				Настоящее Соглашение регулирует порядок использования Сайта и не
+				заменяет договор о реализации туристского продукта, заключаемый при
+				бронировании.
+			</p>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        4. Использование Сайта
-      </h2>
-      <ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
-        <li>
-          Пользователь обязуется использовать Сайт законным способом, не нарушать права
-          третьих лиц, не предпринимать действий, способных нарушить работу Сайта
-          (включая попытки несанкционированного доступа, распространение вредоносного
-          кода, чрезмерную нагрузку на инфраструктуру).
-        </li>
-        <li>
-          Отдельные разделы Сайта (в том числе поиск туров) могут содержать виджеты или
-          переходы к сервисам партнёров. Использование таких сервисов регулируется правилами
-          соответствующих операторов; Компания не отвечает за работу сторонних систем
-          вне зоны своего контроля.
-        </li>
-        <li>
-          Личный кабинет туриста, если доступен по ссылке с Сайта, может располагаться на
-          домене оператора туристских услуг и регулируется правилами того ресурса.
-        </li>
-      </ol>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				4. Использование Сайта
+			</h2>
+			<ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
+				<li>
+					Пользователь обязуется использовать Сайт законным способом, не
+					нарушать права третьих лиц, не предпринимать действий, способных
+					нарушить работу Сайта (включая попытки несанкционированного доступа,
+					распространение вредоносного кода, чрезмерную нагрузку на
+					инфраструктуру).
+				</li>
+				<li>
+					Отдельные разделы Сайта (в том числе поиск туров) могут содержать
+					виджеты или переходы к сервисам партнёров. Использование таких
+					сервисов регулируется правилами соответствующих операторов; Компания
+					не отвечает за работу сторонних систем вне зоны своего контроля.
+				</li>
+				<li>
+					Личный кабинет туриста, если доступен по ссылке с Сайта, может
+					располагаться на домене оператора туристских услуг и регулируется
+					правилами того ресурса.
+				</li>
+			</ol>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        5. Интеллектуальная собственность
-      </h2>
-      <ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
-        <li>
-          Исключительные права на Контент Сайта, за исключением материалов партнёров и
-          объектов, права на которые принадлежат третьим лицам, принадлежат Компании либо
-          используются на законном основании.
-        </li>
-        <li>
-          Воспроизведение, распространение, переработка Контента без письменного согласия
-          Компании не допускается, за исключением случаев, прямо предусмотренных
-          законодательством РФ (например, краткое цитирование с указанием источника).
-        </li>
-      </ol>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				5. Интеллектуальная собственность
+			</h2>
+			<ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
+				<li>
+					Исключительные права на Контент Сайта, за исключением материалов
+					партнёров и объектов, права на которые принадлежат третьим лицам,
+					принадлежат Компании либо используются на законном основании.
+				</li>
+				<li>
+					Воспроизведение, распространение, переработка Контента без письменного
+					согласия Компании не допускается, за исключением случаев, прямо
+					предусмотренных законодательством РФ (например, краткое цитирование с
+					указанием источника).
+				</li>
+			</ol>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        6. Заявки и обратная связь
-      </h2>
-      <ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
-        <li>
-          Отправляя заявку через формы Сайта или связываясь по указанным телефонам и
-          адресам электронной почты, Пользователь подтверждает достоверность указанных
-          данных в пределах, необходимых для обратной связи.
-        </li>
-        <li>
-          Компания вправе направлять ответы и информацию о услугах по контактам,
-          оставленным Пользователем, с учётом требований законодательства о рекламе и
-          согласия на обработку персональных данных.
-        </li>
-      </ol>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				6. Заявки и обратная связь
+			</h2>
+			<ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
+				<li>
+					Отправляя заявку через формы Сайта или связываясь по указанным
+					телефонам и адресам электронной почты, Пользователь подтверждает
+					достоверность указанных данных в пределах, необходимых для обратной
+					связи.
+				</li>
+				<li>
+					Компания вправе направлять ответы и информацию о услугах по контактам,
+					оставленным Пользователем, с учётом требований законодательства о
+					рекламе и согласия на обработку персональных данных.
+				</li>
+			</ol>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        7. Ограничение ответственности
-      </h2>
-      <ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
-        <li>
-          Материалы Сайта носят информационный характер. Условия туров, цены, наличие мест
-          и иные параметры уточняются при бронировании и могут изменяться до момента
-          заключения договора.
-        </li>
-        <li>
-          Компания прилагает разумные усилия для доступности Сайта, но не гарантирует
-          отсутствие ошибок, перерывов и несовместимости с устройствами Пользователя.
-        </li>
-        <li>
-          В пределах, допустимых законом, Компания не несёт ответственности за косвенные
-          убытки и упущенную выгоду, возникшие в связи с использованием или невозможностью
-          использования Сайта.
-        </li>
-      </ol>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				7. Ограничение ответственности
+			</h2>
+			<ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
+				<li>
+					Материалы Сайта носят информационный характер. Условия туров, цены,
+					наличие мест и иные параметры уточняются при бронировании и могут
+					изменяться до момента заключения договора.
+				</li>
+				<li>
+					Компания прилагает разумные усилия для доступности Сайта, но не
+					гарантирует отсутствие ошибок, перерывов и несовместимости с
+					устройствами Пользователя.
+				</li>
+				<li>
+					В пределах, допустимых законом, Компания не несёт ответственности за
+					косвенные убытки и упущенную выгоду, возникшие в связи с
+					использованием или невозможностью использования Сайта.
+				</li>
+			</ol>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        8. Персональные данные
-      </h2>
-      <p class="mb-4">
-        Обработка персональных данных осуществляется в соответствии с{' '}
-        <a
-          href={sitePrivacy()}
-          class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
-          >Политикой конфиденциальности</a
-        >. Используя Сайт и оставляя данные в формах, Пользователь подтверждает, что
-        ознакомился с указанной Политикой.
-      </p>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				8. Персональные данные
+			</h2>
+			<p class="mb-4">
+				Обработка персональных данных осуществляется в соответствии с{' '}
+				<a
+					href={sitePrivacy()}
+					class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
+					>Политикой конфиденциальности</a
+				>. Используя Сайт и оставляя данные в формах, Пользователь подтверждает,
+				что ознакомился с указанной Политикой.
+			</p>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        9. Порядок разрешения споров
-      </h2>
-      <ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
-        <li>
-          Споры и разногласия стремятся урегулировать путём переговоров. Обязательный
-          досудебный порядок для потребителей может предусматриваться законодательством о
-          защите прав потребителей.
-        </li>
-        <li>
-          При недостижении согласия спор подлежит рассмотрению в суде по месту нахождения
-          Компании либо в ином порядке, установленном законодательством РФ для споров с
-          потребителем.
-        </li>
-        <li>
-          К настоящему Соглашению и отношениям сторон применяется право Российской
-          Федерации.
-        </li>
-      </ol>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				9. Порядок разрешения споров
+			</h2>
+			<ol class="list-decimal space-y-3 pl-6 marker:text-gray-900">
+				<li>
+					Споры и разногласия стремятся урегулировать путём переговоров.
+					Обязательный досудебный порядок для потребителей может
+					предусматриваться законодательством о защите прав потребителей.
+				</li>
+				<li>
+					При недостижении согласия спор подлежит рассмотрению в суде по месту
+					нахождения Компании либо в ином порядке, установленном
+					законодательством РФ для споров с потребителем.
+				</li>
+				<li>
+					К настоящему Соглашению и отношениям сторон применяется право
+					Российской Федерации.
+				</li>
+			</ol>
 
-      <h2 class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3">
-        10. Контакты и реквизиты
-      </h2>
-      <p class="mb-4">
-        ООО «АНРО», ИНН 6658540239, ОГРН 1206600070764. Электронная почта:{' '}
-        <a
-          href="mailto:anro@anrotrip.ru"
-          class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
-          >anro@anrotrip.ru</a
-        >, телефон{' '}
-        <a
-          href="tel:88002224473"
-          class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
-          >8 (800) 222-44-73</a
-        >.
-      </p>
+			<h2
+				class="font-montserrat font-bold text-gray-900 text-lg md:text-xl mt-10 mb-3"
+			>
+				10. Контакты и реквизиты
+			</h2>
+			<p class="mb-4">
+				ООО «АНРО», ИНН 6658540239, ОГРН 1206600070764. Электронная почта:{' '}
+				<a
+					href={companyMailto('public')}
+					class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
+					>{emails.public}</a
+				>, телефон{' '}
+				<a
+					href={companyPhoneHref('tollFree')}
+					class="text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
+					>{phones.tollFree.display}</a
+				>.
+			</p>
 
-      <p class="mt-10">
-        <a
-          href={siteHome()}
-          data-astro-reload
-          class="inline-flex items-center gap-2 text-primary font-semibold hover:underline cursor-pointer"
-        >
-          <svg
-            class="h-4 w-4 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg
-          >
-          На главную
-        </a>
-      </p>
-    </article>
-  </main>
-  <FooterLegalStrip />
+			<p class="mt-10">
+				<a
+					href={siteHome()}
+					data-astro-reload
+					class="inline-flex items-center gap-2 text-primary font-semibold hover:underline cursor-pointer"
+				>
+					<svg
+						class="h-4 w-4 shrink-0"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg
+					>
+					На главную
+				</a>
+			</p>
+		</article>
+	</main>
+	<FooterLegalStrip />
 </Layout>

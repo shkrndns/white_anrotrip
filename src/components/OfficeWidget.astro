@@ -2,614 +2,620 @@
 import PhoneSolidIcon from './PhoneSolidIcon.astro';
 import FaIcon from './icons/FaIcon.astro';
 import {
-  maxIconPath,
-  socialLogoTransform0,
-  socialLogoTransform80,
-  telegramIconPath,
-  vkIconPath,
+	maxIconPath,
+	socialLogoTransform0,
+	socialLogoTransform80,
+	telegramIconPath,
+	vkIconPath,
 } from '../lib/social-icons';
+import { company, companyMailto, companyPhoneHref } from '../data/company';
 
 export interface Props {
-  /**
-   * corp: 1-й ряд — Почта, Телефон, Telegram; главная — Телефон, ВКонтакте, Telegram.
-   * 2-й ряд одинаковый: Канал MAX, Чат TG, Туры MAX.
-   */
-  variant?: 'default' | 'corp';
+	/**
+	 * corp: 1-й ряд — Почта, Телефон, Telegram; главная — Телефон, ВКонтакте, Telegram.
+	 * 2-й ряд одинаковый: Канал MAX, Чат TG, Туры MAX.
+	 */
+	variant?: 'default' | 'corp';
 }
 
 const { variant = 'default' } = Astro.props;
 
-const CORP_MAIL = 'mailto:anro@anrotrip.ru';
-const CORP_TG_NEWS = 'https://t.me/anrotrip';
-const CORP_TG_CHAT = 'https://t.me/anro_trip';
-const CORP_MAX_CHANNEL =
-  'https://max.ru/u/f9LHodD0cOKNXrTMtvUZWd2zLeGEpz34bQ0i1a-Ur_6EKrIw9H11bR6uhLM';
-const CORP_MAX_BIZ = 'https://max.ru/id6658540239_biz';
+const { social } = company;
+const CORP_MAIL = companyMailto('public');
+const CORP_TG_NEWS = social.telegram;
+const CORP_TG_CHAT = social.telegramChannel;
+const CORP_MAX_CHANNEL = social.maxChannel;
+const CORP_MAX_BIZ = social.maxBiz;
 
 const corpItemClass =
-  'group flex min-w-[3.75rem] flex-col items-center gap-1.5 rounded-xl p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
+	'group flex min-w-[3.75rem] flex-col items-center gap-1.5 rounded-xl p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
 const corpCircleClass =
-  'flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-md ring-1 ring-black/5 transition-[box-shadow,background-color] duration-fast group-hover:shadow-lg animate-office-icon-pulse';
+	'flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-md ring-1 ring-black/5 transition-[box-shadow,background-color] duration-fast group-hover:shadow-lg animate-office-icon-pulse';
 
 /** Карточка контактов: без blur; на главной — тень primary, на corp — нейтральная */
 const officeContactCardBase =
-  'w-[min(16rem,calc(100vw-2rem))] rounded-2xl border border-gray-200/90 bg-white p-3 font-inter shadow-2xl max-md:max-w-[min(16rem,calc(100vw-1.5rem))]';
+	'w-[min(16rem,calc(100vw-2rem))] rounded-2xl border border-gray-200/90 bg-white p-3 font-inter shadow-2xl max-md:max-w-[min(16rem,calc(100vw-1.5rem))]';
 const officeContactCardClass =
-  variant === 'default'
-    ? `${officeContactCardBase} shadow-primary/25`
-    : `${officeContactCardBase} shadow-black/12`;
+	variant === 'default'
+		? `${officeContactCardBase} shadow-primary/25`
+		: `${officeContactCardBase} shadow-black/12`;
 ---
 
-{/* Подложка под хедером (z-50); виджет z-40 — кнопка и карточка над затемнением */}
+{
+	/* Подложка под хедером (z-50); виджет z-40 — кнопка и карточка над затемнением */
+}
 <div
-  id="office-widget-backdrop"
-  class="fixed inset-0 z-39 bg-black/30 backdrop-blur-none transition-opacity duration-normal ease-out opacity-0 pointer-events-none motion-reduce:transition-none"
-  aria-hidden="true"
+	id="office-widget-backdrop"
+	class="fixed inset-0 z-39 bg-black/30 backdrop-blur-none transition-opacity duration-normal ease-out opacity-0 pointer-events-none motion-reduce:transition-none"
+	aria-hidden="true"
 >
 </div>
 <div
-  id="office-widget-container"
-  class:list={[
-    'fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 will-change-transform overflow-visible pointer-events-none lg:bottom-5 lg:right-5',
-  ]}
+	id="office-widget-container"
+	class:list={[
+		'fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 will-change-transform overflow-visible pointer-events-none lg:bottom-5 lg:right-5',
+	]}
 >
-  <div
-    id="social-list"
-    class:list={[
-      'transition-all duration-normal pb-2',
-      'flex flex-col items-end origin-bottom-right',
-      'pointer-events-none scale-90 opacity-0 translate-y-4',
-    ]}
-  >
-    {
-      (
-        <div
-          class={officeContactCardClass}
-          role="region"
-          aria-label="Связаться с ANRO TRIP"
-        >
-          <p
-            class="mb-3 text-center font-montserrat text-lg font-bold tracking-tight text-gray-900"
-          >
-            Связаться
-          </p>
-          <div class="flex flex-col gap-3">
-            {variant === 'corp' ? (
-            <div
-              class="flex flex-wrap items-start justify-center gap-x-2 gap-y-2.5 sm:gap-x-3"
-              role="group"
-              aria-label="Почта, телефон, Telegram — новости"
-            >
-              <a
-                href={CORP_MAIL}
-                class={corpItemClass}
-                aria-label="Написать на почту anro@anrotrip.ru"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-gray-900 group-hover:bg-gray-800',
-                    '[--office-pulse-rgb:17_24_39]',
-                  ]}
-                >
-                  <svg
-                    class="h-6 w-6 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    aria-hidden="true"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Почта
-                </span>
-              </a>
-              <a
-                href="tel:88002224473"
-                class={corpItemClass}
-                aria-label="Позвонить: 8 800 222-44-73"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-primary group-hover:bg-primary-dark',
-                    '[--office-pulse-rgb:0_171_179]',
-                  ]}
-                >
-                  <PhoneSolidIcon iconClass="w-5.5 h-5.5" colorClass="text-white" />
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Телефон
-                </span>
-              </a>
-              <a
-                href={CORP_TG_NEWS}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={corpItemClass}
-                aria-label="Telegram — все новости (@anrotrip)"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-[#0087cb] group-hover:bg-[#0074b0]',
-                    '[--office-pulse-rgb:0_135_203]',
-                  ]}
-                >
-                  <svg
-                    class="h-7.5 w-7.5 shrink-0 text-white"
-                    viewBox="0 0 80 80"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform0}>
-                      <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d={telegramIconPath}
-                      />
-                    </g>
-                  </svg>
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Telegram
-                </span>
-              </a>
-            </div>
-            ) : (
-            <div
-              class="flex flex-wrap items-start justify-center gap-x-2 gap-y-2.5 sm:gap-x-3"
-              role="group"
-              aria-label="Телефон, ВКонтакте, Telegram — новости"
-            >
-              <a
-                href="tel:88002224473"
-                class={corpItemClass}
-                aria-label="Позвонить: 8 800 222-44-73"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-primary group-hover:bg-primary-dark',
-                    '[--office-pulse-rgb:0_171_179]',
-                  ]}
-                >
-                  <PhoneSolidIcon iconClass="w-5.5 h-5.5" colorClass="text-white" />
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Телефон
-                </span>
-              </a>
-              <a
-                href="https://vk.com/anrotrip"
-                target="_blank"
-                rel="noopener noreferrer"
-                class={corpItemClass}
-                aria-label="ВКонтакте"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-[#0077FF] group-hover:bg-[#0066dd]',
-                    '[--office-pulse-rgb:0_119_255]',
-                  ]}
-                >
-                  <svg
-                    class="h-7.5 w-7.5 shrink-0 text-white"
-                    viewBox="0 0 80 80"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform0}>
-                      <path fill="currentColor" d={vkIconPath} />
-                    </g>
-                  </svg>
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  ВКонтакте
-                </span>
-              </a>
-              <a
-                href={CORP_TG_NEWS}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={corpItemClass}
-                aria-label="Telegram — все новости (@anrotrip)"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-[#0087cb] group-hover:bg-[#0074b0]',
-                    '[--office-pulse-rgb:0_135_203]',
-                  ]}
-                >
-                  <svg
-                    class="h-8 w-8 shrink-0 text-white"
-                    viewBox="0 0 80 80"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform0}>
-                      <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d={telegramIconPath}
-                      />
-                    </g>
-                  </svg>
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Telegram
-                </span>
-              </a>
-            </div>
-            )}
-            <!-- 2-й ряд: MAX канал, Telegram чат, MAX бизнес -->
-            <div
-              class="flex flex-wrap items-start justify-center gap-x-2 gap-y-2.5 border-t border-gray-100 pt-3 sm:gap-x-3"
-              role="group"
-              aria-label="MAX и Telegram"
-            >
-              <a
-                href={CORP_MAX_CHANNEL}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={corpItemClass}
-                aria-label="MAX — наш канал"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-[#7b3dec] group-hover:bg-[#6829d4]',
-                    '[--office-pulse-rgb:123_61_236]',
-                  ]}
-                >
-                  <svg
-                    class="h-[23px] w-[23px] shrink-0 text-white"
-                    viewBox="80 80 80 80"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform80}>
-                      <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d={maxIconPath}
-                      />
-                    </g>
-                  </svg>
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Канал
-                </span>
-              </a>
-              <a
-                href={CORP_TG_CHAT}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={corpItemClass}
-                aria-label="Telegram — чат (@anro_trip)"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-[#0087cb] group-hover:bg-[#0074b0]',
-                    '[--office-pulse-rgb:0_135_203]',
-                  ]}
-                >
-                  <svg
-                    class="h-8 w-8 shrink-0 text-white"
-                    viewBox="0 0 80 80"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform0}>
-                      <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d={telegramIconPath}
-                      />
-                    </g>
-                  </svg>
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Чат
-                </span>
-              </a>
-              <a
-                href={CORP_MAX_BIZ}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={corpItemClass}
-                aria-label="MAX — ANRO TRIP туры и авиабилеты"
-              >
-                <span
-                  class:list={[
-                    corpCircleClass,
-                    'bg-[#7b3dec] group-hover:bg-[#6829d4]',
-                    '[--office-pulse-rgb:123_61_236]',
-                  ]}
-                >
-                  <svg
-                    class="h-[23px] w-[23px] shrink-0 text-white"
-                    viewBox="80 80 80 80"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform80}>
-                      <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d={maxIconPath}
-                      />
-                    </g>
-                  </svg>
-                </span>
-                <span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
-                  Туры
-                </span>
-              </a>
-            </div>
-          </div>
-        </div>
-      )
-    }
-  </div>
+	<div
+		id="social-list"
+		class:list={[
+			'transition-all duration-normal pb-2',
+			'flex flex-col items-end origin-bottom-right',
+			'pointer-events-none scale-90 opacity-0 translate-y-4',
+		]}
+	>
+		{
+			(
+				<div
+					class={officeContactCardClass}
+					role="region"
+					aria-label="Связаться с ANRO TRIP"
+				>
+					<p class="mb-3 text-center font-montserrat text-lg font-bold tracking-tight text-gray-900">
+						Связаться
+					</p>
+					<div class="flex flex-col gap-3">
+						{variant === 'corp' ? (
+							<div
+								class="flex flex-wrap items-start justify-center gap-x-2 gap-y-2.5 sm:gap-x-3"
+								role="group"
+								aria-label="Почта, телефон, Telegram — новости"
+							>
+								<a
+									href={CORP_MAIL}
+									class={corpItemClass}
+									aria-label={`Написать на почту ${company.emails.public}`}
+								>
+									<span
+										class:list={[
+											corpCircleClass,
+											'bg-gray-900 group-hover:bg-gray-800',
+											'[--office-pulse-rgb:17_24_39]',
+										]}
+									>
+										<svg
+											class="h-6 w-6 text-white"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											stroke-width="2"
+											aria-hidden="true"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+											/>
+										</svg>
+									</span>
+									<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+										Почта
+									</span>
+								</a>
+								<a
+									href={companyPhoneHref('tollFree')}
+									class={corpItemClass}
+									aria-label="Позвонить: 8 800 222-44-73"
+								>
+									<span
+										class:list={[
+											corpCircleClass,
+											'bg-primary group-hover:bg-primary-dark',
+											'[--office-pulse-rgb:0_171_179]',
+										]}
+									>
+										<PhoneSolidIcon
+											iconClass="w-5.5 h-5.5"
+											colorClass="text-white"
+										/>
+									</span>
+									<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+										Телефон
+									</span>
+								</a>
+								<a
+									href={CORP_TG_NEWS}
+									target="_blank"
+									rel="noopener noreferrer"
+									class={corpItemClass}
+									aria-label="Telegram — все новости (@anrotrip)"
+								>
+									<span
+										class:list={[
+											corpCircleClass,
+											'bg-[#0087cb] group-hover:bg-[#0074b0]',
+											'[--office-pulse-rgb:0_135_203]',
+										]}
+									>
+										<svg
+											class="h-7.5 w-7.5 shrink-0 text-white"
+											viewBox="0 0 80 80"
+											xmlns="http://www.w3.org/2000/svg"
+											aria-hidden="true"
+										>
+											<g transform={socialLogoTransform0}>
+												<path
+													fill="currentColor"
+													fill-rule="evenodd"
+													clip-rule="evenodd"
+													d={telegramIconPath}
+												/>
+											</g>
+										</svg>
+									</span>
+									<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+										Telegram
+									</span>
+								</a>
+							</div>
+						) : (
+							<div
+								class="flex flex-wrap items-start justify-center gap-x-2 gap-y-2.5 sm:gap-x-3"
+								role="group"
+								aria-label="Телефон, ВКонтакте, Telegram — новости"
+							>
+								<a
+									href={companyPhoneHref('tollFree')}
+									class={corpItemClass}
+									aria-label="Позвонить: 8 800 222-44-73"
+								>
+									<span
+										class:list={[
+											corpCircleClass,
+											'bg-primary group-hover:bg-primary-dark',
+											'[--office-pulse-rgb:0_171_179]',
+										]}
+									>
+										<PhoneSolidIcon
+											iconClass="w-5.5 h-5.5"
+											colorClass="text-white"
+										/>
+									</span>
+									<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+										Телефон
+									</span>
+								</a>
+								<a
+									href="https://vk.com/anrotrip"
+									target="_blank"
+									rel="noopener noreferrer"
+									class={corpItemClass}
+									aria-label="ВКонтакте"
+								>
+									<span
+										class:list={[
+											corpCircleClass,
+											'bg-[#0077FF] group-hover:bg-[#0066dd]',
+											'[--office-pulse-rgb:0_119_255]',
+										]}
+									>
+										<svg
+											class="h-7.5 w-7.5 shrink-0 text-white"
+											viewBox="0 0 80 80"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+											aria-hidden="true"
+										>
+											<g transform={socialLogoTransform0}>
+												<path fill="currentColor" d={vkIconPath} />
+											</g>
+										</svg>
+									</span>
+									<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+										ВКонтакте
+									</span>
+								</a>
+								<a
+									href={CORP_TG_NEWS}
+									target="_blank"
+									rel="noopener noreferrer"
+									class={corpItemClass}
+									aria-label="Telegram — все новости (@anrotrip)"
+								>
+									<span
+										class:list={[
+											corpCircleClass,
+											'bg-[#0087cb] group-hover:bg-[#0074b0]',
+											'[--office-pulse-rgb:0_135_203]',
+										]}
+									>
+										<svg
+											class="h-8 w-8 shrink-0 text-white"
+											viewBox="0 0 80 80"
+											xmlns="http://www.w3.org/2000/svg"
+											aria-hidden="true"
+										>
+											<g transform={socialLogoTransform0}>
+												<path
+													fill="currentColor"
+													fill-rule="evenodd"
+													clip-rule="evenodd"
+													d={telegramIconPath}
+												/>
+											</g>
+										</svg>
+									</span>
+									<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+										Telegram
+									</span>
+								</a>
+							</div>
+						)}
+						<div
+							class="flex flex-wrap items-start justify-center gap-x-2 gap-y-2.5 border-t border-gray-100 pt-3 sm:gap-x-3"
+							role="group"
+							aria-label="MAX и Telegram"
+						>
+							<a
+								href={CORP_MAX_CHANNEL}
+								target="_blank"
+								rel="noopener noreferrer"
+								class={corpItemClass}
+								aria-label="MAX — наш канал"
+							>
+								<span
+									class:list={[
+										corpCircleClass,
+										'bg-[#7b3dec] group-hover:bg-[#6829d4]',
+										'[--office-pulse-rgb:123_61_236]',
+									]}
+								>
+									<svg
+										class="h-[23px] w-[23px] shrink-0 text-white"
+										viewBox="80 80 80 80"
+										xmlns="http://www.w3.org/2000/svg"
+										aria-hidden="true"
+									>
+										<g transform={socialLogoTransform80}>
+											<path
+												fill="currentColor"
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d={maxIconPath}
+											/>
+										</g>
+									</svg>
+								</span>
+								<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+									Канал
+								</span>
+							</a>
+							<a
+								href={CORP_TG_CHAT}
+								target="_blank"
+								rel="noopener noreferrer"
+								class={corpItemClass}
+								aria-label="Telegram — чат (@anro_trip)"
+							>
+								<span
+									class:list={[
+										corpCircleClass,
+										'bg-[#0087cb] group-hover:bg-[#0074b0]',
+										'[--office-pulse-rgb:0_135_203]',
+									]}
+								>
+									<svg
+										class="h-8 w-8 shrink-0 text-white"
+										viewBox="0 0 80 80"
+										xmlns="http://www.w3.org/2000/svg"
+										aria-hidden="true"
+									>
+										<g transform={socialLogoTransform0}>
+											<path
+												fill="currentColor"
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d={telegramIconPath}
+											/>
+										</g>
+									</svg>
+								</span>
+								<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+									Чат
+								</span>
+							</a>
+							<a
+								href={CORP_MAX_BIZ}
+								target="_blank"
+								rel="noopener noreferrer"
+								class={corpItemClass}
+								aria-label="MAX — ANRO TRIP туры и авиабилеты"
+							>
+								<span
+									class:list={[
+										corpCircleClass,
+										'bg-[#7b3dec] group-hover:bg-[#6829d4]',
+										'[--office-pulse-rgb:123_61_236]',
+									]}
+								>
+									<svg
+										class="h-[23px] w-[23px] shrink-0 text-white"
+										viewBox="80 80 80 80"
+										xmlns="http://www.w3.org/2000/svg"
+										aria-hidden="true"
+									>
+										<g transform={socialLogoTransform80}>
+											<path
+												fill="currentColor"
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d={maxIconPath}
+											/>
+										</g>
+									</svg>
+								</span>
+								<span class="text-center text-[11px] font-semibold leading-tight text-gray-600">
+									Туры
+								</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			)
+		}
+	</div>
 
-  {/* Главная кнопка: pulse, морфинг чат ↔ шеврон «свернуть» */}
-  <button
-    id="office-toggle-btn"
-    type="button"
-    aria-label="Открыть меню контактов"
-    aria-expanded="false"
-    aria-controls="social-list"
-    class="office-toggle-btn group relative z-10 flex h-14 w-14 cursor-pointer items-center justify-center overflow-visible rounded-full bg-primary text-white shadow-[0_4px_22px_rgba(0,171,179,0.42)] ring-1 ring-white/25 transition-all duration-300 ease-[cubic-bezier(0.34,1.45,0.64,1)] animate-pulse-slow pointer-events-auto hover:scale-[1.06] hover:bg-primary hover:shadow-[0_8px_32px_rgba(0,171,179,0.5)] hover:ring-white/35 active:scale-[0.92] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary [&.is-open]:animate-none [&.is-open]:scale-100 [&.is-open]:shadow-[0_6px_28px_rgba(0,171,179,0.55)] [&.is-open]:ring-1 [&.is-open]:ring-white/25"
-  >
-    <span
-      class="pointer-events-none absolute inset-0 rounded-full bg-white/0 transition-[background-color,transform] duration-200 ease-out group-active:bg-white/18 motion-reduce:transition-none"
-      aria-hidden="true"></span>
-    {/* Кольцо: только @media (hover:hover) */}
-    <span
-      class="pointer-events-none absolute inset-[-3px] rounded-full opacity-0 ring-2 ring-primary/30 transition-opacity duration-300 [@media(hover:hover)]:group-hover:opacity-100 motion-reduce:opacity-0"
-      aria-hidden="true"></span>
-    <span class="relative flex h-8 w-8 shrink-0 items-center justify-center">
-      <span
-        id="icon-msg"
-        class="absolute inset-0 flex items-center justify-center origin-center transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none"
-        aria-hidden="true"
-      >
-        <FaIcon
-          name="fa6-solid:comment-dots"
-          iconClass="text-2xl leading-none"
-          baseline={false}
-        />
-      </span>
-      <span
-        id="icon-close"
-        class="absolute inset-0 flex scale-75 rotate-90 items-center justify-center opacity-0 origin-center transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none"
-        aria-hidden="true"
-      >
-        <FaIcon
-          name="fa6-regular:comment-dots"
-          iconClass="text-2xl leading-none"
-          baseline={false}
-        />
-      </span>
-    </span>
-  </button>
+	{/* Главная кнопка: pulse, морфинг чат ↔ шеврон «свернуть» */}
+	<button
+		id="office-toggle-btn"
+		type="button"
+		aria-label="Открыть меню контактов"
+		aria-expanded="false"
+		aria-controls="social-list"
+		class="office-toggle-btn group relative z-10 flex h-14 w-14 cursor-pointer items-center justify-center overflow-visible rounded-full bg-primary text-white shadow-[0_4px_22px_rgba(0,171,179,0.42)] ring-1 ring-white/25 transition-all duration-300 ease-[cubic-bezier(0.34,1.45,0.64,1)] animate-pulse-slow pointer-events-auto hover:scale-[1.06] hover:bg-primary hover:shadow-[0_8px_32px_rgba(0,171,179,0.5)] hover:ring-white/35 active:scale-[0.92] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary [&.is-open]:animate-none [&.is-open]:scale-100 [&.is-open]:shadow-[0_6px_28px_rgba(0,171,179,0.55)] [&.is-open]:ring-1 [&.is-open]:ring-white/25"
+	>
+		<span
+			class="pointer-events-none absolute inset-0 rounded-full bg-white/0 transition-[background-color,transform] duration-200 ease-out group-active:bg-white/18 motion-reduce:transition-none"
+			aria-hidden="true"></span>
+		{/* Кольцо: только @media (hover:hover) */}
+		<span
+			class="pointer-events-none absolute inset-[-3px] rounded-full opacity-0 ring-2 ring-primary/30 transition-opacity duration-300 [@media(hover:hover)]:group-hover:opacity-100 motion-reduce:opacity-0"
+			aria-hidden="true"></span>
+		<span class="relative flex h-8 w-8 shrink-0 items-center justify-center">
+			<span
+				id="icon-msg"
+				class="absolute inset-0 flex items-center justify-center origin-center transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none"
+				aria-hidden="true"
+			>
+				<FaIcon
+					name="fa6-solid:comment-dots"
+					iconClass="text-2xl leading-none"
+					baseline={false}
+				/>
+			</span>
+			<span
+				id="icon-close"
+				class="absolute inset-0 flex scale-75 rotate-90 items-center justify-center opacity-0 origin-center transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none"
+				aria-hidden="true"
+			>
+				<FaIcon
+					name="fa6-regular:comment-dots"
+					iconClass="text-2xl leading-none"
+					baseline={false}
+				/>
+			</span>
+		</span>
+	</button>
 </div>
 
 <script>
-  let scrollHandler: (() => void) | null = null;
-  let resizeHandler: (() => void) | null = null;
-  let footerObserver: IntersectionObserver | null = null;
-  let scrollEndTimer: ReturnType<typeof setTimeout> | null = null;
-  let officeKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
+	let scrollHandler: (() => void) | null = null;
+	let resizeHandler: (() => void) | null = null;
+	let footerObserver: IntersectionObserver | null = null;
+	let scrollEndTimer: ReturnType<typeof setTimeout> | null = null;
+	let officeKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
 
-  function initOfficeWidget() {
-    const btn = document.getElementById('office-toggle-btn');
-    const list = document.getElementById('social-list');
-    const backdrop = document.getElementById('office-widget-backdrop');
-    const iconMsg = document.getElementById('icon-msg');
-    const iconClose = document.getElementById('icon-close');
-    const container = document.getElementById('office-widget-container');
+	function initOfficeWidget() {
+		const btn = document.getElementById('office-toggle-btn');
+		const list = document.getElementById('social-list');
+		const backdrop = document.getElementById('office-widget-backdrop');
+		const iconMsg = document.getElementById('icon-msg');
+		const iconClose = document.getElementById('icon-close');
+		const container = document.getElementById('office-widget-container');
 
-    if (!btn) return;
+		if (!btn) return;
 
-    const toggleBtn = btn;
-    let isOpen = false;
-    let focusReturn: HTMLElement | null = null;
+		const toggleBtn = btn;
+		let isOpen = false;
+		let focusReturn: HTMLElement | null = null;
 
-    // View Transitions: снять старые listeners
-    if (scrollEndTimer) {
-      clearTimeout(scrollEndTimer);
-      scrollEndTimer = null;
-    }
-    if (scrollHandler) {
-      window.removeEventListener('scroll', scrollHandler);
-      scrollHandler = null;
-    }
-    if (resizeHandler) {
-      window.removeEventListener('resize', resizeHandler);
-      resizeHandler = null;
-    }
-    if (footerObserver) {
-      footerObserver.disconnect();
-      footerObserver = null;
-    }
-    if (officeKeydownHandler) {
-      document.removeEventListener('keydown', officeKeydownHandler);
-      officeKeydownHandler = null;
-    }
+		// View Transitions: снять старые listeners
+		if (scrollEndTimer) {
+			clearTimeout(scrollEndTimer);
+			scrollEndTimer = null;
+		}
+		if (scrollHandler) {
+			window.removeEventListener('scroll', scrollHandler);
+			scrollHandler = null;
+		}
+		if (resizeHandler) {
+			window.removeEventListener('resize', resizeHandler);
+			resizeHandler = null;
+		}
+		if (footerObserver) {
+			footerObserver.disconnect();
+			footerObserver = null;
+		}
+		if (officeKeydownHandler) {
+			document.removeEventListener('keydown', officeKeydownHandler);
+			officeKeydownHandler = null;
+		}
 
-    function applyClosed() {
-      isOpen = false;
-      toggleBtn.setAttribute('aria-expanded', 'false');
-      toggleBtn.setAttribute('aria-label', 'Открыть меню контактов');
-      list?.classList.add(
-        'opacity-0',
-        'translate-y-4',
-        'pointer-events-none',
-        'scale-90',
-      );
-      list?.classList.remove('pointer-events-auto', 'office-panel-open');
-      toggleBtn.classList.remove('is-open');
-      iconMsg?.classList.remove('opacity-0', 'scale-75', '-rotate-90');
-      iconClose?.classList.add('opacity-0', 'scale-75', 'rotate-90');
-      iconClose?.classList.remove('opacity-100', 'scale-100', 'rotate-0');
-      toggleBtn.classList.remove('pulse-disabled');
-      toggleBtn.classList.add('animate-pulse-slow');
-      backdrop?.classList.add('opacity-0', 'pointer-events-none');
-      backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
-      backdrop?.setAttribute('aria-hidden', 'true');
-      if (focusReturn && document.contains(focusReturn)) {
-        focusReturn.focus();
-      }
-      focusReturn = null;
-    }
+		function applyClosed() {
+			isOpen = false;
+			toggleBtn.setAttribute('aria-expanded', 'false');
+			toggleBtn.setAttribute('aria-label', 'Открыть меню контактов');
+			list?.classList.add(
+				'opacity-0',
+				'translate-y-4',
+				'pointer-events-none',
+				'scale-90',
+			);
+			list?.classList.remove('pointer-events-auto', 'office-panel-open');
+			toggleBtn.classList.remove('is-open');
+			iconMsg?.classList.remove('opacity-0', 'scale-75', '-rotate-90');
+			iconClose?.classList.add('opacity-0', 'scale-75', 'rotate-90');
+			iconClose?.classList.remove('opacity-100', 'scale-100', 'rotate-0');
+			toggleBtn.classList.remove('pulse-disabled');
+			toggleBtn.classList.add('animate-pulse-slow');
+			backdrop?.classList.add('opacity-0', 'pointer-events-none');
+			backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
+			backdrop?.setAttribute('aria-hidden', 'true');
+			if (focusReturn && document.contains(focusReturn)) {
+				focusReturn.focus();
+			}
+			focusReturn = null;
+		}
 
-    function applyOpen() {
-      focusReturn =
-        document.activeElement instanceof HTMLElement
-          ? document.activeElement
-          : null;
-      isOpen = true;
-      toggleBtn.setAttribute('aria-expanded', 'true');
-      toggleBtn.setAttribute('aria-label', 'Закрыть меню контактов');
-      list?.classList.remove(
-        'opacity-0',
-        'translate-y-4',
-        'pointer-events-none',
-        'scale-90',
-      );
-      list?.classList.add('pointer-events-auto', 'office-panel-open');
-      toggleBtn.classList.add('is-open');
-      iconMsg?.classList.add('opacity-0', 'scale-75', '-rotate-90');
-      iconClose?.classList.remove('opacity-0', 'scale-75', 'rotate-90');
-      iconClose?.classList.add('opacity-100', 'scale-100', 'rotate-0');
-      toggleBtn.classList.remove('animate-pulse-slow');
-      toggleBtn.classList.add('pulse-disabled');
-      backdrop?.classList.remove('opacity-0', 'pointer-events-none');
-      backdrop?.classList.add('opacity-100', 'pointer-events-auto');
-      backdrop?.setAttribute('aria-hidden', 'false');
-      requestAnimationFrame(() => {
-        list?.querySelector<HTMLElement>('a[href]')?.focus();
-      });
-    }
+		function applyOpen() {
+			focusReturn =
+				document.activeElement instanceof HTMLElement
+					? document.activeElement
+					: null;
+			isOpen = true;
+			toggleBtn.setAttribute('aria-expanded', 'true');
+			toggleBtn.setAttribute('aria-label', 'Закрыть меню контактов');
+			list?.classList.remove(
+				'opacity-0',
+				'translate-y-4',
+				'pointer-events-none',
+				'scale-90',
+			);
+			list?.classList.add('pointer-events-auto', 'office-panel-open');
+			toggleBtn.classList.add('is-open');
+			iconMsg?.classList.add('opacity-0', 'scale-75', '-rotate-90');
+			iconClose?.classList.remove('opacity-0', 'scale-75', 'rotate-90');
+			iconClose?.classList.add('opacity-100', 'scale-100', 'rotate-0');
+			toggleBtn.classList.remove('animate-pulse-slow');
+			toggleBtn.classList.add('pulse-disabled');
+			backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+			backdrop?.classList.add('opacity-100', 'pointer-events-auto');
+			backdrop?.setAttribute('aria-hidden', 'false');
+			requestAnimationFrame(() => {
+				list?.querySelector<HTMLElement>('a[href]')?.focus();
+			});
+		}
 
-    toggleBtn.onclick = () => {
-      if (isOpen) applyClosed();
-      else applyOpen();
-    };
+		toggleBtn.onclick = () => {
+			if (isOpen) applyClosed();
+			else applyOpen();
+		};
 
-    if (backdrop) {
-      backdrop.onclick = () => {
-        if (isOpen) applyClosed();
-      };
-    }
+		if (backdrop) {
+			backdrop.onclick = () => {
+				if (isOpen) applyClosed();
+			};
+		}
 
-    officeKeydownHandler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        e.preventDefault();
-        applyClosed();
-      }
-    };
-    document.addEventListener('keydown', officeKeydownHandler);
+		officeKeydownHandler = (e: KeyboardEvent) => {
+			if (e.key === 'Escape' && isOpen) {
+				e.preventDefault();
+				applyClosed();
+			}
+		};
+		document.addEventListener('keydown', officeKeydownHandler);
 
-    const getDefaultBottom = () => (window.innerWidth >= 1024 ? 20 : 16);
-    const BUTTON_HALF = 28; // h-14 → центр
-    function updateWidgetPosition() {
-      if (!container) return;
-      const footer =
-        document.getElementById('site-footer') ??
-        document.querySelector('footer[id="site-footer"]');
-      if (!footer) {
-        container.style.removeProperty('bottom');
-        container.style.removeProperty('transform');
-        return;
-      }
-      const footerRect = footer.getBoundingClientRect();
-      const footerTop = footerRect.top;
-      const defaultBottom = getDefaultBottom();
-      const innerHeight = window.innerHeight;
-      const buttonCenterY = innerHeight - defaultBottom - BUTTON_HALF;
-      if (footerTop >= buttonCenterY) {
-        container.style.removeProperty('bottom');
-        container.style.removeProperty('transform');
-        return;
-      }
-      const targetBottom = Math.max(
-        defaultBottom,
-        Math.round(innerHeight - BUTTON_HALF - footerTop),
-      );
-      container.style.bottom = `${targetBottom}px`;
-      container.style.transform = '';
-    }
+		const getDefaultBottom = () => (window.innerWidth >= 1024 ? 20 : 16);
+		const BUTTON_HALF = 28; // h-14 → центр
+		function updateWidgetPosition() {
+			if (!container) return;
+			const footer =
+				document.getElementById('site-footer') ??
+				document.querySelector('footer[id="site-footer"]');
+			if (!footer) {
+				container.style.removeProperty('bottom');
+				container.style.removeProperty('transform');
+				return;
+			}
+			const footerRect = footer.getBoundingClientRect();
+			const footerTop = footerRect.top;
+			const defaultBottom = getDefaultBottom();
+			const innerHeight = window.innerHeight;
+			const buttonCenterY = innerHeight - defaultBottom - BUTTON_HALF;
+			if (footerTop >= buttonCenterY) {
+				container.style.removeProperty('bottom');
+				container.style.removeProperty('transform');
+				return;
+			}
+			const targetBottom = Math.max(
+				defaultBottom,
+				Math.round(innerHeight - BUTTON_HALF - footerTop),
+			);
+			container.style.bottom = `${targetBottom}px`;
+			container.style.transform = '';
+		}
 
-    let ticking = false;
-    const scheduleUpdate = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => {
-          updateWidgetPosition();
-          ticking = false;
-        });
-      }
-      if (scrollEndTimer) clearTimeout(scrollEndTimer);
-      scrollEndTimer = setTimeout(updateWidgetPosition, 120);
-    };
+		let ticking = false;
+		const scheduleUpdate = () => {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(() => {
+					updateWidgetPosition();
+					ticking = false;
+				});
+			}
+			if (scrollEndTimer) clearTimeout(scrollEndTimer);
+			scrollEndTimer = setTimeout(updateWidgetPosition, 120);
+		};
 
-    scrollHandler = () => scheduleUpdate();
-    resizeHandler = () => scheduleUpdate();
+		scrollHandler = () => scheduleUpdate();
+		resizeHandler = () => scheduleUpdate();
 
-    window.addEventListener('scroll', scrollHandler, { passive: true });
-    window.addEventListener('resize', resizeHandler);
+		window.addEventListener('scroll', scrollHandler, { passive: true });
+		window.addEventListener('resize', resizeHandler);
 
-    const footerEl = document.getElementById('site-footer');
-    if (footerEl) {
-      footerObserver = new IntersectionObserver(() => scheduleUpdate(), {
-        root: null,
-        rootMargin: '0px',
-        threshold: [0, 0.1, 0.5, 1],
-      });
-      footerObserver.observe(footerEl);
-    }
+		const footerEl = document.getElementById('site-footer');
+		if (footerEl) {
+			footerObserver = new IntersectionObserver(() => scheduleUpdate(), {
+				root: null,
+				rootMargin: '0px',
+				threshold: [0, 0.1, 0.5, 1],
+			});
+			footerObserver.observe(footerEl);
+		}
 
-    updateWidgetPosition();
-  }
+		updateWidgetPosition();
+	}
 
-  const runInit = () => {
-    initOfficeWidget();
-    const btn = document.getElementById('office-toggle-btn');
-    if (
-      btn &&
-      !btn.classList.contains('pulse-disabled') &&
-      !btn.classList.contains('animate-pulse-slow')
-    ) {
-      btn.classList.add('animate-pulse-slow');
-    }
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runInit);
-  } else {
-    runInit();
-  }
-  document.addEventListener('astro:page-load', runInit);
+	const runInit = () => {
+		initOfficeWidget();
+		const btn = document.getElementById('office-toggle-btn');
+		if (
+			btn &&
+			!btn.classList.contains('pulse-disabled') &&
+			!btn.classList.contains('animate-pulse-slow')
+		) {
+			btn.classList.add('animate-pulse-slow');
+		}
+	};
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', runInit);
+	} else {
+		runInit();
+	}
+	document.addEventListener('astro:page-load', runInit);
 
-  // debug: window.initOfficeWidget()
-  (window as unknown as { initOfficeWidget?: () => void }).initOfficeWidget =
-    initOfficeWidget;
+	// debug: window.initOfficeWidget()
+	(window as unknown as { initOfficeWidget?: () => void }).initOfficeWidget =
+		initOfficeWidget;
 </script>

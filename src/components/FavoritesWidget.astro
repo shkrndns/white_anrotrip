@@ -3,192 +3,193 @@ import FaIcon from './icons/FaIcon.astro';
 ---
 
 <div
-  id="favorites-widget-container"
-  class="fixed bottom-6 left-4 z-2147483630 hidden lg:flex items-center justify-center transition-transform duration-fast ease-out will-change-transform"
+	id="favorites-widget-container"
+	class="fixed bottom-6 left-4 z-2147483630 hidden lg:flex items-center justify-center transition-transform duration-fast ease-out will-change-transform"
 >
-  <a
-    href="#"
-    id="favorites-widget"
-    class="favorites-widget-btn btn-ripple inline-flex items-center gap-2.5 rounded-full bg-white px-5 py-3 text-gray-800 group border border-primary/40 cursor-pointer hidden lg:inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 leading-none"
-  >
-    <!-- Иконка с индикатором: фиксированная область, иконка по центру ячейки -->
-    <span class="relative inline-flex size-6 shrink-0 items-center justify-center">
-      <FaIcon
-        name="fa6-solid:heart"
-        iconClass="text-lg leading-none transition-transform duration-normal group-hover:scale-110 text-primary"
-      />
+	<button
+		type="button"
+		id="favorites-widget"
+		class="favorites-widget-btn btn-ripple inline-flex items-center gap-2.5 rounded-full bg-white px-5 py-3 text-gray-800 group border border-primary/40 cursor-pointer hidden lg:inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 leading-none"
+	>
+		<!-- Иконка с индикатором: фиксированная область, иконка по центру ячейки -->
+		<span
+			class="relative inline-flex size-6 shrink-0 items-center justify-center"
+		>
+			<FaIcon
+				name="fa6-solid:heart"
+				iconClass="text-lg leading-none transition-transform duration-normal group-hover:scale-110 text-primary"
+			/>
 
-      <!-- Индикатор -->
-      <span
-        id="fav-count"
-        class="absolute -right-1 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-red text-[8px] font-bold text-white opacity-0 transition-opacity duration-normal"
-      >
-        0
-      </span>
-    </span>
+			<!-- Индикатор -->
+			<span
+				id="fav-count"
+				class="absolute -right-1 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-red text-[8px] font-bold text-white opacity-0 transition-opacity duration-normal"
+			>
+				0
+			</span>
+		</span>
 
-    <span
-      class="text-xs font-bold uppercase tracking-wider font-montserrat leading-none"
-    >
-      Избранное
-    </span>
-  </a>
+		<span
+			class="text-xs font-bold uppercase tracking-wider font-montserrat leading-none"
+		>
+			Избранное
+		</span>
+	</button>
 </div>
 
 <script>
-  const widget = document.getElementById('favorites-widget');
-  const container = document.getElementById('favorites-widget-container');
+	const widget = document.getElementById('favorites-widget');
+	const container = document.getElementById('favorites-widget-container');
 
-  // Остановка кнопки на 70px от низа страницы
-  const STOP_FROM_BOTTOM = 70;
-  const DEFAULT_BOTTOM = 24; // bottom-6
-  const MAX_TRANSLATE = STOP_FROM_BOTTOM - DEFAULT_BOTTOM; // 46px
+	// Остановка кнопки на 70px от низа страницы
+	const STOP_FROM_BOTTOM = 70;
+	const DEFAULT_BOTTOM = 24; // bottom-6
+	const MAX_TRANSLATE = STOP_FROM_BOTTOM - DEFAULT_BOTTOM; // 46px
 
-  let scrollHandler: (() => void) | null = null;
-  let resizeHandler: (() => void) | null = null;
-  let ticking = false;
+	let scrollHandler: (() => void) | null = null;
+	let resizeHandler: (() => void) | null = null;
+	let ticking = false;
 
-  const updateFavoritesPosition = () => {
-    if (!container) return;
-    const distanceFromBottom =
-      document.documentElement.scrollHeight -
-      (window.scrollY + window.innerHeight);
-    if (distanceFromBottom >= MAX_TRANSLATE) {
-      container.style.transform = 'translateY(0)';
-    } else {
-      const translateY = Math.max(0, MAX_TRANSLATE - distanceFromBottom);
-      container.style.transform = `translateY(-${translateY}px)`;
-    }
-    ticking = false;
-  };
+	const updateFavoritesPosition = () => {
+		if (!container) return;
+		const distanceFromBottom =
+			document.documentElement.scrollHeight -
+			(window.scrollY + window.innerHeight);
+		if (distanceFromBottom >= MAX_TRANSLATE) {
+			container.style.transform = 'translateY(0)';
+		} else {
+			const translateY = Math.max(0, MAX_TRANSLATE - distanceFromBottom);
+			container.style.transform = `translateY(-${translateY}px)`;
+		}
+		ticking = false;
+	};
 
-  const initFavoritesScroll = () => {
-    if (!container) return;
-    if (scrollHandler) {
-      window.removeEventListener('scroll', scrollHandler);
-      scrollHandler = null;
-    }
-    if (resizeHandler) {
-      window.removeEventListener('resize', resizeHandler);
-      resizeHandler = null;
-    }
-    scrollHandler = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateFavoritesPosition);
-        ticking = true;
-      }
-    };
-    resizeHandler = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateFavoritesPosition);
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', scrollHandler, { passive: true });
-    window.addEventListener('resize', resizeHandler);
-    updateFavoritesPosition();
-  };
+	const initFavoritesScroll = () => {
+		if (!container) return;
+		if (scrollHandler) {
+			window.removeEventListener('scroll', scrollHandler);
+			scrollHandler = null;
+		}
+		if (resizeHandler) {
+			window.removeEventListener('resize', resizeHandler);
+			resizeHandler = null;
+		}
+		scrollHandler = () => {
+			if (!ticking) {
+				window.requestAnimationFrame(updateFavoritesPosition);
+				ticking = true;
+			}
+		};
+		resizeHandler = () => {
+			if (!ticking) {
+				window.requestAnimationFrame(updateFavoritesPosition);
+				ticking = true;
+			}
+		};
+		window.addEventListener('scroll', scrollHandler, { passive: true });
+		window.addEventListener('resize', resizeHandler);
+		updateFavoritesPosition();
+	};
 
-  initFavoritesScroll();
-  document.addEventListener('astro:page-load', initFavoritesScroll);
+	initFavoritesScroll();
+	document.addEventListener('astro:page-load', initFavoritesScroll);
 
-  // Функция обновления счетчика
-  const updateCount = () => {
-    const countEl = document.querySelector('.TVCartPreviewCompactCount');
-    const myCount = document.getElementById('fav-count');
+	// Функция обновления счетчика
+	const updateCount = () => {
+		const countEl = document.querySelector('.TVCartPreviewCompactCount');
+		const myCount = document.getElementById('fav-count');
 
-    if (countEl && myCount) {
-      const txt = countEl.textContent?.trim();
-      // Если цифра не 0 и не скрыта
-      if (txt && txt !== '0' && !countEl.classList.contains('TVHide')) {
-        myCount.textContent = txt;
-        myCount.classList.remove('opacity-0');
-      } else {
-        myCount.classList.add('opacity-0');
-      }
-    }
-  };
+		if (countEl && myCount) {
+			const txt = countEl.textContent?.trim();
+			// Если цифра не 0 и не скрыта
+			if (txt && txt !== '0' && !countEl.classList.contains('TVHide')) {
+				myCount.textContent = txt;
+				myCount.classList.remove('opacity-0');
+			} else {
+				myCount.classList.add('opacity-0');
+			}
+		}
+	};
 
-  // Следим за DOM
-  const observer = new MutationObserver(() => {
-    updateCount();
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
+	// Следим за DOM
+	const observer = new MutationObserver(() => {
+		updateCount();
+	});
+	observer.observe(document.body, { childList: true, subtree: true });
 
-  const openFavoritesCart = () => {
-    const innerBtn = document.querySelector(
-      '.TVCartPreviewControl',
-    ) as HTMLElement;
-    const outerBtn = document.querySelector(
-      '.TVCartStickyButton',
-    ) as HTMLElement;
-    if (innerBtn) {
-      innerBtn.click();
-    } else if (outerBtn) {
-      outerBtn.click();
-    }
-    return !!(innerBtn || outerBtn);
-  };
+	const openFavoritesCart = () => {
+		const innerBtn = document.querySelector(
+			'.TVCartPreviewControl',
+		) as HTMLElement;
+		const outerBtn = document.querySelector(
+			'.TVCartStickyButton',
+		) as HTMLElement;
+		if (innerBtn) {
+			innerBtn.click();
+		} else if (outerBtn) {
+			outerBtn.click();
+		}
+		return !!(innerBtn || outerBtn);
+	};
 
-  const w = window as Window & {
-    loadTourvisor?: (show: boolean) => void;
-    __tourvisorScriptAdded?: boolean;
-    __tourvisorReady?: boolean;
-    openFavoritesWidget?: () => void;
-  };
-  // Prefetch Tourvisor при наведении — чтобы при клике виджет уже грузился
-  widget?.addEventListener(
-    'mouseenter',
-    () => {
-      if (typeof w.loadTourvisor === 'function' && !w.__tourvisorScriptAdded) {
-        w.loadTourvisor(false);
-      }
-    },
-    { once: true },
-  );
-  widget?.addEventListener(
-    'touchstart',
-    () => {
-      if (typeof w.loadTourvisor === 'function' && !w.__tourvisorScriptAdded) {
-        w.loadTourvisor(false);
-      }
-    },
-    { once: true, passive: true },
-  );
+	const w = window as Window & {
+		loadTourvisor?: (show: boolean) => void;
+		__tourvisorScriptAdded?: boolean;
+		__tourvisorReady?: boolean;
+		openFavoritesWidget?: () => void;
+	};
+	// Prefetch Tourvisor при наведении — чтобы при клике виджет уже грузился
+	widget?.addEventListener(
+		'mouseenter',
+		() => {
+			if (typeof w.loadTourvisor === 'function' && !w.__tourvisorScriptAdded) {
+				w.loadTourvisor(false);
+			}
+		},
+		{ once: true },
+	);
+	widget?.addEventListener(
+		'touchstart',
+		() => {
+			if (typeof w.loadTourvisor === 'function' && !w.__tourvisorScriptAdded) {
+				w.loadTourvisor(false);
+			}
+		},
+		{ once: true, passive: true },
+	);
 
-  const openFavoritesWidget = () => {
-    if (openFavoritesCart()) return;
+	const openFavoritesWidget = () => {
+		if (openFavoritesCart()) return;
 
-    // Tourvisor не загружен — загружаем и ждём появления кнопки корзины
-    if (typeof w.loadTourvisor === 'function') {
-      w.loadTourvisor(false);
-    }
-    const checkForCart = () => {
-      if (openFavoritesCart()) return;
-      const observer = new MutationObserver(() => {
-        if (openFavoritesCart()) observer.disconnect();
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-      setTimeout(() => observer.disconnect(), 15000);
-    };
-    if (w.__tourvisorReady) {
-      checkForCart();
-    } else {
-      const checkReady = setInterval(() => {
-        if (w.__tourvisorReady) {
-          clearInterval(checkReady);
-          setTimeout(checkForCart, 200);
-        }
-      }, 100);
-      setTimeout(() => clearInterval(checkReady), 15000);
-    }
-  };
+		// Tourvisor не загружен — загружаем и ждём появления кнопки корзины
+		if (typeof w.loadTourvisor === 'function') {
+			w.loadTourvisor(false);
+		}
+		const checkForCart = () => {
+			if (openFavoritesCart()) return;
+			const observer = new MutationObserver(() => {
+				if (openFavoritesCart()) observer.disconnect();
+			});
+			observer.observe(document.body, { childList: true, subtree: true });
+			setTimeout(() => observer.disconnect(), 15000);
+		};
+		if (w.__tourvisorReady) {
+			checkForCart();
+		} else {
+			const checkReady = setInterval(() => {
+				if (w.__tourvisorReady) {
+					clearInterval(checkReady);
+					setTimeout(checkForCart, 200);
+				}
+			}, 100);
+			setTimeout(() => clearInterval(checkReady), 15000);
+		}
+	};
 
-  // Для пункта меню на mobile/tablet (где виджет скрыт)
-  w.openFavoritesWidget = openFavoritesWidget;
+	// Для пункта меню на mobile/tablet (где виджет скрыт)
+	w.openFavoritesWidget = openFavoritesWidget;
 
-  widget?.addEventListener('click', (e) => {
-    e.preventDefault();
-    openFavoritesWidget();
-  });
+	widget?.addEventListener('click', () => {
+		openFavoritesWidget();
+	});
 </script>

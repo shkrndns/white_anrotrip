@@ -3,37 +3,38 @@
 import { Image } from 'astro:assets';
 import favicon from '../assets/favicon.png';
 import {
-  maxIconPath,
-  socialLogoTransform0,
-  socialLogoTransform80,
-  telegramIconPath,
+	maxIconPath,
+	socialLogoTransform0,
+	socialLogoTransform80,
+	telegramIconPath,
 } from '../lib/social-icons';
 import { getMobileNavIcon } from '../lib/mobile-nav-icons';
 import { siteCabinet, siteHome } from '../lib/site-urls';
+import { companyPhoneHref } from '../data/company';
 import FaIcon from './icons/FaIcon.astro';
 import PhoneSolidIcon from './PhoneSolidIcon.astro';
 
 export interface Props {
-  navItems?: { name: string; href: string }[];
-  ctaText?: string;
-  ctaHref?: string;
-  /** На главной (десктоп nav:): панель `w-max` по центру страницы, равные зазоры лого—меню—телефон. */
-  navVariant?: 'default' | 'corp';
-  /** Круглые кнопки телефона / Telegram / MAX — только главная (`index.astro`). Страницу corp не трогать. */
-  homeQuickContacts?: boolean;
+	navItems?: { name: string; href: string }[];
+	ctaText?: string;
+	ctaHref?: string;
+	/** На главной (десктоп nav:): панель `w-max` по центру страницы, равные зазоры лого—меню—телефон. */
+	navVariant?: 'default' | 'corp';
+	/** Круглые кнопки телефона / Telegram / MAX — только главная (`index.astro`). Страницу corp не трогать. */
+	homeQuickContacts?: boolean;
 }
 
 const HEADER_TG_CHAT = 'https://t.me/anro_trip';
 const HEADER_MAX_URL =
-  'https://max.ru/u/f9LHodD0cOKNXrTMtvUZWd2zLeGEpz34bQ0i1a-Ur_6EKrIw9H11bR6uhLM';
+	'https://max.ru/u/f9LHodD0cOKNXrTMtvUZWd2zLeGEpz34bQ0i1a-Ur_6EKrIw9H11bR6uhLM';
 
 const base = siteHome();
 const baseTrimmed = base.replace(/\/$/, '');
 const isHome =
-  Astro.url.pathname === '/' ||
-  Astro.url.pathname === '' ||
-  Astro.url.pathname === baseTrimmed ||
-  Astro.url.pathname === baseTrimmed + '/';
+	Astro.url.pathname === '/' ||
+	Astro.url.pathname === '' ||
+	Astro.url.pathname === baseTrimmed ||
+	Astro.url.pathname === baseTrimmed + '/';
 /** На главной — якорь к секции «Наш журнал»; на других страницах — переход на главную с хэшем */
 const journalHref = isHome ? '#journal' : `${baseTrimmed}/#journal`;
 /** Как бейдж в Hero (`#hero-services-badge`) — секция «Наши услуги» в About */
@@ -44,89 +45,95 @@ const awardsHref = isHome ? '#awards' : `${baseTrimmed}/#awards`;
 const giftHref = isHome ? '#gift' : `${baseTrimmed}/#gift`;
 
 const defaultNavItems = [
-  { name: 'Авиабилеты', href: '#search' },
-  { name: 'Туры', href: '#popular-tours' },
-  { name: 'Блог', href: journalHref },
-  { name: 'О нас', href: '#about' },
-  { name: 'Направления работы', href: '#directions' },
-  { name: 'Наши услуги', href: servicesHref },
-  { name: 'Отзывы', href: '#reviews' },
-  { name: 'Награды', href: awardsHref },
-  { name: 'Сертификат', href: giftHref },
-  { name: 'Вопросы', href: '#faq' },
-  { name: 'Команда', href: '#team' },
-  { name: 'Контакты', href: '#contacts' },
+	{ name: 'Авиабилеты', href: '#search' },
+	{ name: 'Туры', href: '#popular-tours' },
+	{ name: 'Блог', href: journalHref },
+	{ name: 'О нас', href: '#about' },
+	{ name: 'Направления работы', href: '#directions' },
+	{ name: 'Наши услуги', href: servicesHref },
+	{ name: 'Отзывы', href: '#reviews' },
+	{ name: 'Награды', href: awardsHref },
+	{ name: 'Сертификат', href: giftHref },
+	{ name: 'Вопросы', href: '#faq' },
+	{ name: 'Команда', href: '#team' },
+	{ name: 'Контакты', href: '#contacts' },
 ];
 
 /** Десктоп главной (`isHome && navVariant === 'default'`): 2 подменю + отдельные ссылки.
  * Корпоративная страница и прочие случаи — плоский `navItems`. */
-const defaultNavGroups: { name: string; items: { name: string; href: string }[] }[] = [
-  {
-    name: 'О компании',
-    items: [
-      { name: 'О нас', href: '#about' },
-      { name: 'Направления работы', href: '#directions' },
-      { name: 'Наши услуги', href: servicesHref },
-      { name: 'Отзывы', href: '#reviews' },
-      { name: 'Награды', href: awardsHref },
-    ],
-  },
+const defaultNavGroups: {
+	name: string;
+	items: { name: string; href: string }[];
+}[] = [
+	{
+		name: 'О компании',
+		items: [
+			{ name: 'О нас', href: '#about' },
+			{ name: 'Направления работы', href: '#directions' },
+			{ name: 'Наши услуги', href: servicesHref },
+			{ name: 'Отзывы', href: '#reviews' },
+			{ name: 'Награды', href: awardsHref },
+		],
+	},
 ];
 
 /** Главная, десктоп: без выпадашки — порядок: ссылки до групп и после */
 const defaultNavStandaloneFirst: { name: string; href: string }[] = [
-  { name: 'Авиабилеты', href: '#search' },
-  { name: 'Туры', href: '#popular-tours' },
-  { name: 'Блог', href: journalHref },
+	{ name: 'Авиабилеты', href: '#search' },
+	{ name: 'Туры', href: '#popular-tours' },
+	{ name: 'Блог', href: journalHref },
 ];
 const defaultNavStandalone: { name: string; href: string }[] = [
-  { name: 'Сертификат', href: giftHref },
-  { name: 'Вопросы', href: '#faq' },
-  { name: 'Команда', href: '#team' },
-  { name: 'Контакты', href: '#contacts' },
+	{ name: 'Сертификат', href: giftHref },
+	{ name: 'Вопросы', href: '#faq' },
+	{ name: 'Команда', href: '#team' },
+	{ name: 'Контакты', href: '#contacts' },
 ];
 
 const {
-  navItems = defaultNavItems,
-  ctaText = 'Личный кабинет',
-  ctaHref = siteCabinet(),
-  navVariant = 'default',
-  homeQuickContacts = false,
+	navItems = defaultNavItems,
+	ctaText = 'Личный кабинет',
+	ctaHref = siteCabinet(),
+	navVariant = 'default',
+	homeQuickContacts = false,
 } = Astro.props;
 
 const ctaPrefetch = ctaHref.startsWith('/')
-  ? ({ 'data-astro-transition-prefetch': '' } as const)
-  : {};
+	? ({ 'data-astro-transition-prefetch': '' } as const)
+	: {};
 
 const navDesktopLinkClass =
-  'relative px-1.5 lg:px-2 py-1.5 lg:py-2 text-[8px] lg:text-[9px] xl:text-[10px] font-bold font-montserrat text-gray-600 hover:text-primary uppercase tracking-wider whitespace-nowrap transition-colors duration-fast rounded-lg hover:bg-primary/5 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
+	'relative px-1.5 lg:px-2 py-1.5 lg:py-2 text-[8px] lg:text-[9px] xl:text-[10px] font-bold font-montserrat text-gray-600 hover:text-primary uppercase tracking-wider whitespace-nowrap transition-colors duration-fast rounded-lg hover:bg-primary/5 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
 /** Триггер группы (главная, default): компактнее обычной ссылки + flex с шевроном. `group` — для подчёркивания внутри. */
 const navDesktopTriggerClass =
-  'relative flex items-center gap-1 px-[5px] lg:px-[7px] py-1.5 lg:py-2 text-[8px] lg:text-[9px] xl:text-[10px] font-bold font-montserrat text-gray-600 hover:text-primary uppercase tracking-wider whitespace-nowrap transition-colors duration-fast rounded-lg hover:bg-primary/5 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
+	'relative flex items-center gap-1 px-[5px] lg:px-[7px] py-1.5 lg:py-2 text-[8px] lg:text-[9px] xl:text-[10px] font-bold font-montserrat text-gray-600 hover:text-primary uppercase tracking-wider whitespace-nowrap transition-colors duration-fast rounded-lg hover:bg-primary/5 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
 /** Пункт подменю: типографика nav + зелёная точка, как в основном меню */
 const navDesktopMenuItemClass =
-  'flex w-full items-center px-4 py-2 text-[8px] lg:text-[9px] xl:text-[10px] font-bold font-montserrat text-gray-600 uppercase tracking-wider hover:text-primary hover:bg-primary/5 transition-colors duration-fast whitespace-nowrap rounded-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 cursor-pointer';
+	'flex w-full items-center px-4 py-2 text-[8px] lg:text-[9px] xl:text-[10px] font-bold font-montserrat text-gray-600 uppercase tracking-wider hover:text-primary hover:bg-primary/5 transition-colors duration-fast whitespace-nowrap rounded-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 cursor-pointer';
 
 type HomeNavEntry =
-  | { kind: 'link'; name: string; href: string }
-  | { kind: 'group'; name: string; items: { name: string; href: string }[] };
+	| { kind: 'link'; name: string; href: string }
+	| { kind: 'group'; name: string; items: { name: string; href: string }[] };
 
 /** Главная: тот же порядок и группы, что в десктоп-меню (`nav:`) */
 const homeNavEntries: HomeNavEntry[] = [
-  ...defaultNavStandaloneFirst.map((item) => ({ kind: 'link' as const, ...item })),
-  { kind: 'group' as const, ...defaultNavGroups[0]! },
-  ...defaultNavStandalone.map((item) => ({ kind: 'link' as const, ...item })),
+	...defaultNavStandaloneFirst.map((item) => ({
+		kind: 'link' as const,
+		...item,
+	})),
+	{ kind: 'group' as const, ...defaultNavGroups[0]! },
+	...defaultNavStandalone.map((item) => ({ kind: 'link' as const, ...item })),
 ];
 
 const mobileNavRowBase =
-  'flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm font-semibold text-gray-800 hover:bg-primary/8 hover:text-primary transition-[background-color,color] duration-fast cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [@media(max-height:640px)]:py-1.5 [@media(max-height:520px)]:gap-2.5 [@media(max-height:520px)]:py-1.5';
+	'flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm font-semibold text-gray-800 hover:bg-primary/8 hover:text-primary transition-[background-color,color] duration-fast cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [@media(max-height:640px)]:py-1.5 [@media(max-height:520px)]:gap-2.5 [@media(max-height:520px)]:py-1.5';
 const mobileNavItemClass = mobileNavRowBase;
 /** Подменю главной в drawer: отступ слева, чтобы читались как подпункты */
 const mobileNavSubListClass =
-  'ml-3 flex flex-col gap-0 border-l border-primary/15 pb-0.5 pl-2 pt-0.5 [@media(max-height:520px)]:ml-2.5 [@media(max-height:520px)]:pl-1.5 [@media(max-height:520px)]:pb-0';
+	'ml-3 flex flex-col gap-0 border-l border-primary/15 pb-0.5 pl-2 pt-0.5 [@media(max-height:520px)]:ml-2.5 [@media(max-height:520px)]:pl-1.5 [@media(max-height:520px)]:pb-0';
 const mobileNavGroupSummaryClass = [
-  mobileNavRowBase,
-  'list-none [&::-webkit-details-marker]:hidden',
+	mobileNavRowBase,
+	'list-none [&::-webkit-details-marker]:hidden',
 ].join(' ');
 
 /** Иконка «Избранное» в хедере (mobile) — тот же стиль, что в mobile-nav-icons «Избранное» */
@@ -134,1088 +141,1124 @@ const favHeaderIcon = getMobileNavIcon('Избранное');
 
 /** Круглые кнопки связи (только главная): общая база, как у соцкнопок в OfficeWidget/Footer */
 const homeContactBtnBase =
-  'inline-flex shrink-0 items-center justify-center rounded-full shadow-sm transition-colors duration-fast focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
+	'inline-flex shrink-0 items-center justify-center rounded-full shadow-sm transition-colors duration-fast focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
 
 /** Иконка в ряду «Звонок / Telegram / MAX»: как у телефона — 1.125rem → 16px на узкой высоте окна */
 const homeContactIconBox =
-  'flex h-4.5 w-full shrink-0 items-center justify-center [@media(max-height:520px)]:h-4';
+	'flex h-4.5 w-full shrink-0 items-center justify-center [@media(max-height:520px)]:h-4';
 const homeContactIconText =
-  'text-[9px] font-bold uppercase tracking-wide leading-none whitespace-nowrap';
+	'text-[9px] font-bold uppercase tracking-wide leading-none whitespace-nowrap';
 ---
 
 <header
-  id="site-header"
-  class="fixed top-0 left-0 right-0 z-50 transition-[transform,opacity] duration-normal"
+	id="site-header"
+	class="fixed top-0 left-0 right-0 z-50 transition-[transform,opacity] duration-normal"
 >
-  <div
-    class:list={[
-      'mx-auto px-3 sm:px-4 pt-[8px] md:pt-[12px]',
-      navVariant === 'corp'
-        ? 'max-w-7xl'
-        : isHome && navVariant === 'default'
-          ? 'max-w-[calc(80rem+32px)] nav:max-w-none'
-          : homeQuickContacts
-          ? 'max-w-[calc(90rem)]'
-          : 'max-w-[calc(88rem)]',
-    ]}
-  >
-    <div
-      id="header-inner"
-      class:list={[
-        'relative items-center rounded-2xl glass-panel max-md:backdrop-blur-none md:backdrop-blur-xl px-3 sm:px-4 py-[6px] md:py-2 transition-[background-color,border-color,box-shadow] duration-normal overflow-visible',
-        isHome && navVariant === 'default'
-          ? 'grid grid-cols-[auto_1fr_auto] gap-2 lg:gap-3 nav:flex nav:w-max nav:mx-auto nav:items-center nav:gap-x-12'
-          : [
-              'grid gap-2 lg:gap-3',
-              navVariant === 'corp'
-                ? 'grid-cols-[auto_minmax(0,1fr)_auto]'
-                : 'grid-cols-[auto_1fr_auto]',
-            ],
-      ]}
-    >
-      {
-        /* Логотип: на главной — scroll to top; на corp/cabinet — data-astro-reload (полная перезагрузка для Tourvisor) */
-      }
-      <a
-        href={isHome ? '#' : base}
-        id="logo-btn"
-        class:list={[
-          'flex items-center gap-3 group z-50 cursor-pointer select-none',
-        ]}
-        {...isHome ? {} : { 'data-astro-reload': true }}
-      >
-        <Image
-          src={favicon}
-          alt=""
-          format="png"
-          quality="max"
-          decoding="async"
-          class="h-10 w-10 shrink-0 object-contain drop-shadow-sm"
-        />
+	<div
+		class:list={[
+			'mx-auto px-3 sm:px-4 pt-[8px] md:pt-[12px]',
+			navVariant === 'corp'
+				? 'max-w-7xl'
+				: isHome && navVariant === 'default'
+					? 'max-w-[calc(80rem+32px)] nav:max-w-none'
+					: homeQuickContacts
+						? 'max-w-[calc(90rem)]'
+						: 'max-w-[calc(88rem)]',
+		]}
+	>
+		<div
+			id="header-inner"
+			class:list={[
+				'relative items-center rounded-2xl glass-panel max-md:backdrop-blur-none md:backdrop-blur-xl px-3 sm:px-4 py-[6px] md:py-2 transition-[background-color,border-color,box-shadow] duration-normal overflow-visible',
+				isHome && navVariant === 'default'
+					? 'grid grid-cols-[auto_1fr_auto] gap-2 lg:gap-3 nav:flex nav:w-max nav:mx-auto nav:items-center nav:gap-x-12'
+					: [
+							'grid gap-2 lg:gap-3',
+							navVariant === 'corp'
+								? 'grid-cols-[auto_minmax(0,1fr)_auto]'
+								: 'grid-cols-[auto_1fr_auto]',
+						],
+			]}
+		>
+			{
+				/* Логотип: на главной — scroll to top; на corp/cabinet — data-astro-reload (полная перезагрузка для Tourvisor) */
+			}
+			{
+				/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid -- на главной href="#" + JS scroll-to-top */
+			}
+			<a
+				href={isHome ? '#' : base}
+				id="logo-btn"
+				class:list={[
+					'flex items-center gap-3 group z-50 cursor-pointer select-none',
+				]}
+				{...isHome ? {} : { 'data-astro-reload': true }}
+			>
+				<Image
+					src={favicon}
+					alt=""
+					format="png"
+					quality="max"
+					decoding="async"
+					class="h-10 w-10 shrink-0 object-contain drop-shadow-sm"
+				/>
 
-        <div
-          class="header-logo-text flex flex-col leading-none group-hover:scale-105 origin-left"
-        >
-          <div class="flex items-baseline gap-0.5">
-            <span
-              class="text-[15px] font-black tracking-tight text-black font-montserrat"
-              >ANRO</span
-            >
-            <span
-              class="text-[15px] font-semibold italic font-montserrat text-primary"
-              >trip</span
-            >
-          </div>
-          <span
-            class="text-[7px] sm:text-[7px] text-black/60 uppercase tracking-widest hidden sm:block leading-tight mt-0.5"
-            >Туристическая<br /><span class="block -mt-px">компания</span></span
-          >
-        </div>
-      </a>
+				<div
+					class="header-logo-text flex flex-col leading-none group-hover:scale-105 origin-left"
+				>
+					<div class="flex items-baseline gap-0.5">
+						<span
+							class="text-[15px] font-black tracking-tight text-black font-montserrat"
+							>ANRO</span
+						>
+						<span
+							class="text-[15px] font-semibold italic font-montserrat text-primary"
+							>trip</span
+						>
+					</div>
+					<span
+						class="text-[7px] sm:text-[7px] text-black/60 uppercase tracking-widest hidden sm:block leading-tight mt-0.5"
+						>Туристическая<br /><span class="block -mt-px">компания</span></span
+					>
+				</div>
+			</a>
 
-      <nav
-        class:list={[
-          'hidden nav:flex items-center min-w-0 overflow-visible',
-          isHome && navVariant === 'default'
-            ? 'nav:z-10 shrink-0 gap-x-1.5 nav:gap-x-1.5 nav:translate-x-[7px]'
-            : navVariant === 'corp'
-              ? 'justify-self-center justify-center gap-x-2.5 nav:gap-x-2.5'
-              : 'justify-self-center justify-center gap-x-1.5 nav:gap-x-1.5',
-        ]}
-        aria-label="Основное меню"
-      >
-        {
-          isHome && navVariant === 'default' ? (
-            homeNavEntries.map((entry) => (
-                <>
-                  {entry.kind === 'link' ? (
-                    <a
-                      href={entry.href}
-                      class={navDesktopLinkClass}
-                      style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-wrap-mode: nowrap;"
-                    >
-                      {entry.name}
-                      <span class="absolute bottom-1 left-2 right-2 h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-normal origin-left" />
-                    </a>
-                  ) : (
-                    <div
-                      class="group nav-menu-group relative flex items-center"
-                      data-nav-menu
-                      data-nav-menu-id={entry.name}
-                    >
-                      <button
-                        type="button"
-                        class={navDesktopTriggerClass}
-                        data-nav-menu-trigger
-                        aria-haspopup="menu"
-                        aria-expanded="false"
-                        style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-wrap-mode: nowrap;"
-                      >
-                        {entry.name}
-                        <svg
-                          class="w-2 h-2 shrink-0 transition-transform duration-fast group-[.is-open]:rotate-180"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          aria-hidden="true"
-                        >
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5l3 3 3-3" />
-                        </svg>
-                        <span class="absolute bottom-1 left-2 right-2 h-px bg-primary scale-x-0 group-hover:scale-x-100 group-[.is-open]:scale-x-100 transition-transform duration-normal origin-left" />
-                      </button>
+			<nav
+				class:list={[
+					'hidden nav:flex items-center min-w-0 overflow-visible',
+					isHome && navVariant === 'default'
+						? 'nav:z-10 shrink-0 gap-x-1.5 nav:gap-x-1.5 nav:translate-x-[7px]'
+						: navVariant === 'corp'
+							? 'justify-self-center justify-center gap-x-2.5 nav:gap-x-2.5'
+							: 'justify-self-center justify-center gap-x-1.5 nav:gap-x-1.5',
+				]}
+				aria-label="Основное меню"
+			>
+				{
+					isHome && navVariant === 'default'
+						? homeNavEntries.map((entry) => (
+								<>
+									{entry.kind === 'link' ? (
+										<a
+											href={entry.href}
+											class={navDesktopLinkClass}
+											style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-wrap-mode: nowrap;"
+										>
+											{entry.name}
+											<span class="absolute bottom-1 left-2 right-2 h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-normal origin-left" />
+										</a>
+									) : (
+										<div
+											class="group nav-menu-group relative flex items-center"
+											data-nav-menu
+											data-nav-menu-id={entry.name}
+										>
+											<button
+												type="button"
+												class={navDesktopTriggerClass}
+												data-nav-menu-trigger
+												aria-haspopup="menu"
+												aria-expanded="false"
+												style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-wrap-mode: nowrap;"
+											>
+												{entry.name}
+												<svg
+													class="w-2 h-2 shrink-0 transition-transform duration-fast group-[.is-open]:rotate-180"
+													viewBox="0 0 12 12"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2"
+													aria-hidden="true"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M3 4.5l3 3 3-3"
+													/>
+												</svg>
+												<span class="absolute bottom-1 left-2 right-2 h-px bg-primary scale-x-0 group-hover:scale-x-100 group-[.is-open]:scale-x-100 transition-transform duration-normal origin-left" />
+											</button>
 
-                      <div
-                        data-nav-menu-panel
-                        data-nav-menu-id={entry.name}
-                        class="nav-dropdown-panel fixed z-52 min-w-44 w-max max-w-[calc(100vw-2rem)] pt-4.5 invisible pointer-events-none"
-                      >
-                        <ul
-                          role="menu"
-                          aria-label={entry.name}
-                          class="nav-dropdown-menu w-full overflow-hidden rounded-2xl py-2 shadow-lg shadow-black/5"
-                        >
-                          {entry.items.map((item) => (
-                            <li role="none" class="w-full">
-                              <a
-                                role="menuitem"
-                                href={item.href}
-                                class={navDesktopMenuItemClass}
-                              >
-                                {item.name}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ))
-          ) : (
-            navItems.map((item) => (
-              <a
-                href={item.href}
-                class={navDesktopLinkClass}
-                style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-wrap-mode: nowrap;"
-              >
-                {item.name}
-                <span class="absolute bottom-1 left-2 right-2 h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-normal origin-left" />
-              </a>
-            ))
-          )
-        }
-      </nav>
+											<div
+												data-nav-menu-panel
+												data-nav-menu-id={entry.name}
+												class="nav-dropdown-panel fixed z-52 min-w-44 w-max max-w-[calc(100vw-2rem)] pt-4.5 invisible pointer-events-none"
+											>
+												<ul
+													role="menu"
+													aria-label={entry.name}
+													class="nav-dropdown-menu w-full overflow-hidden rounded-2xl py-2 shadow-lg shadow-black/5"
+												>
+													{entry.items.map((item) => (
+														<li role="none" class="w-full">
+															<a
+																role="menuitem"
+																href={item.href}
+																class={navDesktopMenuItemClass}
+															>
+																{item.name}
+															</a>
+														</li>
+													))}
+												</ul>
+											</div>
+										</div>
+									)}
+								</>
+							))
+						: navItems.map((item) => (
+								<a
+									href={item.href}
+									class={navDesktopLinkClass}
+									style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-wrap-mode: nowrap;"
+								>
+									{item.name}
+									<span class="absolute bottom-1 left-2 right-2 h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-normal origin-left" />
+								</a>
+							))
+				}
+			</nav>
 
-      {/* col-start-3 фиксирует бургер справа на mobile при скрытой nav */}
-      <div
-        class:list={[
-          'flex items-center justify-end gap-1.5 sm:gap-2 z-50 shrink-0',
-          isHome && navVariant === 'default'
-            ? 'col-start-3 justify-self-end nav:col-auto nav:justify-self-auto'
-            : 'col-start-3 justify-self-end',
-        ]}
-      >
-        {
-          homeQuickContacts ? (
-            <>
-              <a
-                href="tel:88002224473"
-                class="hidden nav:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 hover:text-primary hover:bg-primary/5 transition-[color,background-color] duration-fast whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                <PhoneSolidIcon
-                  iconClass="w-3.5 h-3.5"
-                  colorClass="text-primary"
-                />
-                8 (800) 222-44-73
-              </a>
-            </>
-          ) : (
-            <a
-              href="tel:88002224473"
-              class="hidden nav:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 hover:text-primary hover:bg-primary/5 transition-[color,background-color] duration-fast whitespace-nowrap cursor-pointer"
-            >
-              <PhoneSolidIcon
-                iconClass="w-3.5 h-3.5"
-                colorClass="text-primary"
-              />
-              8 (800) 222-44-73
-            </a>
-          )
-        }
+			{/* col-start-3 фиксирует бургер справа на mobile при скрытой nav */}
+			<div
+				class:list={[
+					'flex items-center justify-end gap-1.5 sm:gap-2 z-50 shrink-0',
+					isHome && navVariant === 'default'
+						? 'col-start-3 justify-self-end nav:col-auto nav:justify-self-auto'
+						: 'col-start-3 justify-self-end',
+				]}
+			>
+				{
+					homeQuickContacts ? (
+						<>
+							<a
+								href={companyPhoneHref('tollFree')}
+								class="hidden nav:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 hover:text-primary hover:bg-primary/5 transition-[color,background-color] duration-fast whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+							>
+								<PhoneSolidIcon
+									iconClass="w-3.5 h-3.5"
+									colorClass="text-primary"
+								/>
+								8 (800) 222-44-73
+							</a>
+						</>
+					) : (
+						<a
+							href={companyPhoneHref('tollFree')}
+							class="hidden nav:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 hover:text-primary hover:bg-primary/5 transition-[color,background-color] duration-fast whitespace-nowrap cursor-pointer"
+						>
+							<PhoneSolidIcon
+								iconClass="w-3.5 h-3.5"
+								colorClass="text-primary"
+							/>
+							8 (800) 222-44-73
+						</a>
+					)
+				}
 
-        <a
-          href={ctaHref}
-          class="header-cta-btn btn-ripple hidden nav:inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/30 uppercase tracking-wide shadow-md nav:shadow-sm nav:hover:shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 whitespace-nowrap"
-          {...ctaPrefetch}
-        >
-          {ctaText}
-        </a>
+				<a
+					href={ctaHref}
+					class="header-cta-btn btn-ripple hidden nav:inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/30 uppercase tracking-wide shadow-md nav:shadow-sm nav:hover:shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 whitespace-nowrap"
+					{...ctaPrefetch}
+				>
+					{ctaText}
+				</a>
 
-        {
-          navVariant !== 'corp' ? (
-            <button
-              type="button"
-              id="open-favorites-header"
-              class:list={[
-                'nav:hidden flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 transition-[background-color,opacity] duration-fast hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-              ]}
-              aria-label="Открыть избранное (корзину туров)"
-            >
-              <FaIcon
-                name={favHeaderIcon.icon}
-                iconClass="block text-base leading-none text-primary translate-x-[0.2px] translate-y-[0.6px]"
-              />
-            </button>
-          ) : null
-        }
+				{
+					navVariant !== 'corp' ? (
+						<button
+							type="button"
+							id="open-favorites-header"
+							class:list={[
+								'nav:hidden flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/10 transition-[background-color,opacity] duration-fast hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+							]}
+							aria-label="Открыть избранное (корзину туров)"
+						>
+							<FaIcon
+								name={favHeaderIcon.icon}
+								iconClass="block text-base leading-none text-primary translate-x-[0.2px] translate-y-[0.6px]"
+							/>
+						</button>
+					) : null
+				}
 
-        <button
-          id="menu-toggle"
-          class="nav:hidden flex flex-col gap-1.25 p-2 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
-          aria-label="Меню"
-          aria-expanded="false"
-        >
-          <span
-            class="h-0.5 w-5 bg-gray-700 rounded-full transition-[transform,opacity] duration-fast origin-center"
-          ></span>
-          <span
-            class="h-0.5 w-5 bg-gray-700 rounded-full transition-[transform,opacity] duration-fast"
-          ></span>
-          <span
-            class="h-0.5 w-3.5 bg-gray-700 rounded-full transition-[transform,opacity] duration-fast origin-center self-end"
-          ></span>
-        </button>
-      </div>
-    </div>
-  </div>
+				<button
+					id="menu-toggle"
+					class="nav:hidden flex flex-col gap-1.25 p-2 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+					aria-label="Меню"
+					aria-expanded="false"
+				>
+					<span
+						class="h-0.5 w-5 bg-gray-700 rounded-full transition-[transform,opacity] duration-fast origin-center"
+					></span>
+					<span
+						class="h-0.5 w-5 bg-gray-700 rounded-full transition-[transform,opacity] duration-fast"
+					></span>
+					<span
+						class="h-0.5 w-3.5 bg-gray-700 rounded-full transition-[transform,opacity] duration-fast origin-center self-end"
+					></span>
+				</button>
+			</div>
+		</div>
+	</div>
 
-  <!-- Десктоп: выпадашки вне #header-inner — иначе blur не виден (вложенный backdrop-filter) -->
-  <div
-    id="nav-desktop-dropdown-layer"
-    class="pointer-events-none fixed inset-0 z-51 max-[89.999rem]:hidden"
-    aria-hidden="true"
-  ></div>
+	<!-- Десктоп: выпадашки вне #header-inner — иначе blur не виден (вложенный backdrop-filter) -->
+	<div
+		id="nav-desktop-dropdown-layer"
+		class="pointer-events-none fixed inset-0 z-51 max-[89.999rem]:hidden"
+		aria-hidden="true"
+	>
+	</div>
 
-  <!-- Мобильное меню: затемнение + шторка выше хедера (z-50), логотип и бургер под блюром/затемнением -->
-  <div
-    id="mobile-menu-backdrop"
-    class="fixed inset-0 z-55 bg-black/55 backdrop-blur-none nav:hidden transition-opacity duration-500 ease-out opacity-0 pointer-events-none"
-    aria-hidden="true"
-  >
-  </div>
-  <div
-    id="mobile-menu"
-    class:list={[
-      'fixed top-[max(0.5rem,env(safe-area-inset-top))] right-2 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-56 flex w-[min(268px,calc(100vw-1.25rem))] flex-col overflow-hidden rounded-2xl border touch-pan-y nav:hidden translate-x-[calc(100%+0.5rem)] transform-gpu shadow-xl shadow-black/10 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] will-change-transform pointer-events-none motion-reduce:duration-0',
-      navVariant === 'corp'
-        ? 'border-gray-200 bg-gray-50'
-        : 'border-gray-200 bg-white',
-    ]}
-    role="dialog"
-    aria-modal="true"
-    aria-label="Меню сайта"
-  >
-    <div class="flex h-full min-h-0 w-full flex-col overflow-hidden pt-1.5">
-      <nav
-        class="relative flex min-h-0 flex-1 flex-col overflow-hidden z-10"
-        aria-label="Меню"
-      >
-        <div
-          class="flex shrink-0 flex-col gap-1.5 px-1.5 pt-0.5 [@media(max-height:560px)]:gap-1"
-        >
-          <a
-            href={ctaHref}
-            class="header-cta-btn btn-ripple mb-4 flex items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-[background-color,box-shadow] duration-fast hover:bg-primary-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [@media(max-height:680px)]:mb-3 [@media(max-height:560px)]:mb-3 [@media(max-height:560px)]:py-2.5 [@media(max-height:480px)]:mb-2.5 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-[13px]"
-            {...ctaPrefetch}
-          >
-            <FaIcon
-              name="fa6-solid:circle-user"
-              iconClass="text-lg leading-none text-white"
-            />
-            {ctaText}
-          </a>
-          <div
-            class="mx-1 mb-2 h-px shrink-0 bg-linear-to-r from-transparent via-gray-200 to-transparent"
-            aria-hidden="true"
-          >
-          </div>
-        </div>
+	<!-- Мобильное меню: затемнение + шторка выше хедера (z-50), логотип и бургер под блюром/затемнением -->
+	<div
+		id="mobile-menu-backdrop"
+		class="fixed inset-0 z-55 bg-black/55 backdrop-blur-none nav:hidden transition-opacity duration-500 ease-out opacity-0 pointer-events-none"
+		aria-hidden="true"
+	>
+	</div>
+	<div
+		id="mobile-menu"
+		class:list={[
+			'fixed top-[max(0.5rem,env(safe-area-inset-top))] right-2 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-56 flex w-[min(268px,calc(100vw-1.25rem))] flex-col overflow-hidden rounded-2xl border touch-pan-y nav:hidden translate-x-[calc(100%+0.5rem)] transform-gpu shadow-xl shadow-black/10 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] will-change-transform pointer-events-none motion-reduce:duration-0',
+			navVariant === 'corp'
+				? 'border-gray-200 bg-gray-50'
+				: 'border-gray-200 bg-white',
+		]}
+		role="dialog"
+		aria-modal="true"
+		aria-label="Меню сайта"
+	>
+		<div class="flex h-full min-h-0 w-full flex-col overflow-hidden pt-1.5">
+			<nav
+				class="relative flex min-h-0 flex-1 flex-col overflow-hidden z-10"
+				aria-label="Меню"
+			>
+				<div
+					class="flex shrink-0 flex-col gap-1.5 px-1.5 pt-0.5 [@media(max-height:560px)]:gap-1"
+				>
+					<a
+						href={ctaHref}
+						class="header-cta-btn btn-ripple mb-4 flex items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-[background-color,box-shadow] duration-fast hover:bg-primary-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [@media(max-height:680px)]:mb-3 [@media(max-height:560px)]:mb-3 [@media(max-height:560px)]:py-2.5 [@media(max-height:480px)]:mb-2.5 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-[13px]"
+						{...ctaPrefetch}
+					>
+						<FaIcon
+							name="fa6-solid:circle-user"
+							iconClass="text-lg leading-none text-white"
+						/>
+						{ctaText}
+					</a>
+					<div
+						class="mx-1 mb-2 h-px shrink-0 bg-linear-to-r from-transparent via-gray-200 to-transparent"
+						aria-hidden="true"
+					>
+					</div>
+				</div>
 
-        <div
-          class="scrollbar-hide flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-1.5 [-webkit-overflow-scrolling:touch]"
-        >
-          <ul
-            class="flex flex-col gap-0 pb-0.5 [@media(max-height:640px)]:gap-0 [@media(max-height:520px)]:gap-0"
-          >
-            {
-              isHome && navVariant === 'default'
-                ? homeNavEntries.map((entry) => {
-                    const renderMobileNavLink = (item: {
-                      name: string;
-                      href: string;
-                    }) => {
-                      const navIcon = getMobileNavIcon(item.name, navVariant);
-                      return (
-                        <a href={item.href} class={mobileNavItemClass}>
-                          <span
-                            class:list={[
-                              'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/6 [@media(max-height:520px)]:h-8 [@media(max-height:520px)]:w-8',
-                              navIcon.box,
-                            ]}
-                          >
-                            <FaIcon
-                              name={navIcon.icon}
-                              iconClass={`block text-[1.125rem] leading-none [@media(max-height:520px)]:text-base ${navIcon.color}`}
-                            />
-                          </span>
-                          <span class="min-w-0 flex-1 text-left leading-snug">
-                            {item.name}
-                          </span>
-                        </a>
-                      );
-                    };
+				<div
+					class="scrollbar-hide flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-1.5 [-webkit-overflow-scrolling:touch]"
+				>
+					<ul
+						class="flex flex-col gap-0 pb-0.5 [@media(max-height:640px)]:gap-0 [@media(max-height:520px)]:gap-0"
+					>
+						{
+							isHome && navVariant === 'default'
+								? homeNavEntries.map((entry) => {
+										const renderMobileNavLink = (item: {
+											name: string;
+											href: string;
+										}) => {
+											const navIcon = getMobileNavIcon(item.name, navVariant);
+											return (
+												<a href={item.href} class={mobileNavItemClass}>
+													<span
+														class:list={[
+															'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/6 [@media(max-height:520px)]:h-8 [@media(max-height:520px)]:w-8',
+															navIcon.box,
+														]}
+													>
+														<FaIcon
+															name={navIcon.icon}
+															iconClass={`block text-[1.125rem] leading-none [@media(max-height:520px)]:text-base ${navIcon.color}`}
+														/>
+													</span>
+													<span class="min-w-0 flex-1 text-left leading-snug">
+														{item.name}
+													</span>
+												</a>
+											);
+										};
 
-                    return entry.kind === 'link' ? (
-                      <li>{renderMobileNavLink(entry)}</li>
-                    ) : (() => {
-                        const groupIcon = getMobileNavIcon(entry.name, navVariant);
-                        return (
-                      <li class="list-none">
-                        <details class="group/mobile-sub">
-                          <summary class={mobileNavGroupSummaryClass}>
-                                  <span
-                                    class:list={[
-                                      'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/6 [@media(max-height:520px)]:h-8 [@media(max-height:520px)]:w-8',
-                                      groupIcon.box,
-                                    ]}
-                                  >
-                                    <FaIcon
-                                      name={groupIcon.icon}
-                                      iconClass={`block text-[1.125rem] leading-none [@media(max-height:520px)]:text-base ${groupIcon.color}`}
-                                    />
-                                  </span>
-                                  <span class="min-w-0 flex-1 text-left leading-snug">
-                                    {entry.name}
-                                  </span>
-                                  <svg
-                                    class="ml-auto h-3 w-3 shrink-0 text-gray-500 transition-transform duration-fast group-open/mobile-sub:rotate-180"
-                                    viewBox="0 0 12 12"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    aria-hidden="true"
-                                  >
-                                    <path
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      d="M3 4.5l3 3 3-3"
-                                    />
-                                  </svg>
-                          </summary>
-                          <ul class={mobileNavSubListClass}>
-                            {entry.items.map((item) => (
-                              <li>{renderMobileNavLink(item)}</li>
-                            ))}
-                          </ul>
-                        </details>
-                      </li>
-                        );
-                      })();
-                  })
-                : navItems.map((item) => {
-                    const navIcon = getMobileNavIcon(item.name, navVariant);
-                    return (
-                      <li>
-                        <a href={item.href} class={mobileNavItemClass}>
-                          <span
-                            class:list={[
-                              'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/6 [@media(max-height:520px)]:h-8 [@media(max-height:520px)]:w-8',
-                              navIcon.box,
-                            ]}
-                          >
-                            <FaIcon
-                              name={navIcon.icon}
-                              iconClass={`block text-[1.125rem] leading-none [@media(max-height:520px)]:text-base ${navIcon.color}`}
-                            />
-                          </span>
-                          <span class="min-w-0 flex-1 text-left leading-snug">
-                            {item.name}
-                          </span>
-                        </a>
-                      </li>
-                    );
-                  })
-            }
-          </ul>
-        </div>
+										return entry.kind === 'link' ? (
+											<li>{renderMobileNavLink(entry)}</li>
+										) : (
+											(() => {
+												const groupIcon = getMobileNavIcon(
+													entry.name,
+													navVariant,
+												);
+												return (
+													<li class="list-none">
+														<details class="group/mobile-sub">
+															<summary class={mobileNavGroupSummaryClass}>
+																<span
+																	class:list={[
+																		'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/6 [@media(max-height:520px)]:h-8 [@media(max-height:520px)]:w-8',
+																		groupIcon.box,
+																	]}
+																>
+																	<FaIcon
+																		name={groupIcon.icon}
+																		iconClass={`block text-[1.125rem] leading-none [@media(max-height:520px)]:text-base ${groupIcon.color}`}
+																	/>
+																</span>
+																<span class="min-w-0 flex-1 text-left leading-snug">
+																	{entry.name}
+																</span>
+																<svg
+																	class="ml-auto h-3 w-3 shrink-0 text-gray-500 transition-transform duration-fast group-open/mobile-sub:rotate-180"
+																	viewBox="0 0 12 12"
+																	fill="none"
+																	stroke="currentColor"
+																	stroke-width="2"
+																	aria-hidden="true"
+																>
+																	<path
+																		stroke-linecap="round"
+																		stroke-linejoin="round"
+																		d="M3 4.5l3 3 3-3"
+																	/>
+																</svg>
+															</summary>
+															<ul class={mobileNavSubListClass}>
+																{entry.items.map((item) => (
+																	<li>{renderMobileNavLink(item)}</li>
+																))}
+															</ul>
+														</details>
+													</li>
+												);
+											})()
+										);
+									})
+								: navItems.map((item) => {
+										const navIcon = getMobileNavIcon(item.name, navVariant);
+										return (
+											<li>
+												<a href={item.href} class={mobileNavItemClass}>
+													<span
+														class:list={[
+															'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/6 [@media(max-height:520px)]:h-8 [@media(max-height:520px)]:w-8',
+															navIcon.box,
+														]}
+													>
+														<FaIcon
+															name={navIcon.icon}
+															iconClass={`block text-[1.125rem] leading-none [@media(max-height:520px)]:text-base ${navIcon.color}`}
+														/>
+													</span>
+													<span class="min-w-0 flex-1 text-left leading-snug">
+														{item.name}
+													</span>
+												</a>
+											</li>
+										);
+									})
+						}
+					</ul>
+				</div>
 
-        <div
-          class:list={[
-            'mt-auto shrink-0 px-1.5 pt-2 pb-1.5 [@media(max-height:560px)]:pt-1.5 [@media(max-height:520px)]:pt-1',
-            navVariant === 'corp' ? 'bg-gray-50' : 'bg-white',
-          ]}
-        >
-          <div
-            class="mx-1 mb-2 h-px shrink-0 bg-linear-to-r from-transparent via-gray-200 to-transparent"
-            aria-hidden="true"
-          >
-          </div>
-          <div
-            class="grid grid-cols-3 gap-2 [@media(max-height:520px)]:gap-1.5"
-            role="group"
-            aria-label="Связь: телефон, Telegram, MAX"
-          >
-            <a
-              href="tel:88002224473"
-              class:list={[
-                homeContactBtnBase,
-                'h-12 w-full flex-col gap-1 rounded-full border border-primary/15 bg-primary text-white shadow-md shadow-primary/15 hover:bg-primary-dark focus-visible:ring-primary focus-visible:ring-offset-2 [@media(max-height:560px)]:h-10 [@media(max-height:480px)]:h-9 [@media(max-height:480px)]:gap-0.5 [@media(max-height:480px)]:py-1',
-              ]}
-              aria-label="Позвонить: 8 800 222-44-73"
-            >
-              <span class={homeContactIconBox}>
-                <FaIcon
-                  name="fa6-solid:phone"
-                  iconClass="block text-[1.125rem] leading-none text-white [@media(max-height:520px)]:text-base"
-                />
-              </span>
-              <span class={homeContactIconText}>Звонок</span>
-            </a>
-            <a
-              href={HEADER_TG_CHAT}
-              target="_blank"
-              rel="noopener noreferrer"
-              class:list={[
-                homeContactBtnBase,
-                'h-12 w-full flex-col gap-1 overflow-visible rounded-full border border-sky-500/20 bg-[#0087cb] text-white shadow-md shadow-sky-500/20 hover:bg-[#0074b0] focus-visible:ring-sky-400 focus-visible:ring-offset-2 [@media(max-height:560px)]:h-10 [@media(max-height:480px)]:h-9 [@media(max-height:480px)]:gap-0.5 [@media(max-height:480px)]:py-1',
-              ]}
-              aria-label="Написать в Telegram — чат ANRO TRIP"
-            >
-              <span class:list={[homeContactIconBox, 'overflow-visible']}>
-                <svg
-                  class="block size-4.5 shrink-0 origin-center scale-[1.50] text-white [@media(max-height:520px)]:size-4 [@media(max-height:520px)]:scale-140"
-                  viewBox="0 0 80 80"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <g transform={socialLogoTransform0}>
-                    <path
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d={telegramIconPath}></path>
-                  </g>
-                </svg>
-              </span>
-              <span class={homeContactIconText}>Telegram</span>
-            </a>
-            <a
-              href={HEADER_MAX_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              class:list={[
-                homeContactBtnBase,
-                'h-12 w-full flex-col gap-1 rounded-full border border-violet-400/25 bg-[#7b3dec] text-white shadow-md shadow-violet-500/20 hover:bg-[#6829d4] focus-visible:ring-violet-400 focus-visible:ring-offset-2 [@media(max-height:560px)]:h-10 [@media(max-height:480px)]:h-9 [@media(max-height:480px)]:gap-0.5 [@media(max-height:480px)]:py-1',
-              ]}
-              aria-label="Открыть в MAX"
-            >
-              {
-                /* Логотип MAX — только SVG из social-icons (как на всём сайте); не менять на FA */
-              }
-              <span class={homeContactIconBox}>
-                <svg
-                  class="block size-4.5 shrink-0 text-white [@media(max-height:520px)]:size-4"
-                  viewBox="80 80 80 80"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <g transform={socialLogoTransform80}>
-                    <path
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d={maxIconPath}></path>
-                  </g>
-                </svg>
-              </span>
-              <span class={homeContactIconText}>MAX</span>
-            </a>
-          </div>
-        </div>
-      </nav>
-    </div>
-  </div>
+				<div
+					class:list={[
+						'mt-auto shrink-0 px-1.5 pt-2 pb-1.5 [@media(max-height:560px)]:pt-1.5 [@media(max-height:520px)]:pt-1',
+						navVariant === 'corp' ? 'bg-gray-50' : 'bg-white',
+					]}
+				>
+					<div
+						class="mx-1 mb-2 h-px shrink-0 bg-linear-to-r from-transparent via-gray-200 to-transparent"
+						aria-hidden="true"
+					>
+					</div>
+					<div
+						class="grid grid-cols-3 gap-2 [@media(max-height:520px)]:gap-1.5"
+						role="group"
+						aria-label="Связь: телефон, Telegram, MAX"
+					>
+						<a
+							href={companyPhoneHref('tollFree')}
+							class:list={[
+								homeContactBtnBase,
+								'h-12 w-full flex-col gap-1 rounded-full border border-primary/15 bg-primary text-white shadow-md shadow-primary/15 hover:bg-primary-dark focus-visible:ring-primary focus-visible:ring-offset-2 [@media(max-height:560px)]:h-10 [@media(max-height:480px)]:h-9 [@media(max-height:480px)]:gap-0.5 [@media(max-height:480px)]:py-1',
+							]}
+							aria-label="Позвонить: 8 800 222-44-73"
+						>
+							<span class={homeContactIconBox}>
+								<FaIcon
+									name="fa6-solid:phone"
+									iconClass="block text-[1.125rem] leading-none text-white [@media(max-height:520px)]:text-base"
+								/>
+							</span>
+							<span class={homeContactIconText}>Звонок</span>
+						</a>
+						<a
+							href={HEADER_TG_CHAT}
+							target="_blank"
+							rel="noopener noreferrer"
+							class:list={[
+								homeContactBtnBase,
+								'h-12 w-full flex-col gap-1 overflow-visible rounded-full border border-sky-500/20 bg-[#0087cb] text-white shadow-md shadow-sky-500/20 hover:bg-[#0074b0] focus-visible:ring-sky-400 focus-visible:ring-offset-2 [@media(max-height:560px)]:h-10 [@media(max-height:480px)]:h-9 [@media(max-height:480px)]:gap-0.5 [@media(max-height:480px)]:py-1',
+							]}
+							aria-label="Написать в Telegram — чат ANRO TRIP"
+						>
+							<span class:list={[homeContactIconBox, 'overflow-visible']}>
+								<svg
+									class="block size-4.5 shrink-0 origin-center scale-[1.50] text-white [@media(max-height:520px)]:size-4 [@media(max-height:520px)]:scale-140"
+									viewBox="0 0 80 80"
+									xmlns="http://www.w3.org/2000/svg"
+									aria-hidden="true"
+								>
+									<g transform={socialLogoTransform0}>
+										<path
+											fill="currentColor"
+											fill-rule="evenodd"
+											clip-rule="evenodd"
+											d={telegramIconPath}></path>
+									</g>
+								</svg>
+							</span>
+							<span class={homeContactIconText}>Telegram</span>
+						</a>
+						<a
+							href={HEADER_MAX_URL}
+							target="_blank"
+							rel="noopener noreferrer"
+							class:list={[
+								homeContactBtnBase,
+								'h-12 w-full flex-col gap-1 rounded-full border border-violet-400/25 bg-[#7b3dec] text-white shadow-md shadow-violet-500/20 hover:bg-[#6829d4] focus-visible:ring-violet-400 focus-visible:ring-offset-2 [@media(max-height:560px)]:h-10 [@media(max-height:480px)]:h-9 [@media(max-height:480px)]:gap-0.5 [@media(max-height:480px)]:py-1',
+							]}
+							aria-label="Открыть в MAX"
+						>
+							{
+								/* Логотип MAX — только SVG из social-icons (как на всём сайте); не менять на FA */
+							}
+							<span class={homeContactIconBox}>
+								<svg
+									class="block size-4.5 shrink-0 text-white [@media(max-height:520px)]:size-4"
+									viewBox="80 80 80 80"
+									xmlns="http://www.w3.org/2000/svg"
+									aria-hidden="true"
+								>
+									<g transform={socialLogoTransform80}>
+										<path
+											fill="currentColor"
+											fill-rule="evenodd"
+											clip-rule="evenodd"
+											d={maxIconPath}></path>
+									</g>
+								</svg>
+							</span>
+							<span class={homeContactIconText}>MAX</span>
+						</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
 </header>
 
 <script>
-  let toggleBtn = document.getElementById(
-    'menu-toggle',
-  ) as HTMLButtonElement | null;
-  let menu = document.getElementById('mobile-menu') as HTMLElement | null;
-  let backdrop = document.getElementById(
-    'mobile-menu-backdrop',
-  ) as HTMLElement | null;
-  let headerInner = document.getElementById(
-    'header-inner',
-  ) as HTMLElement | null;
-  let menuOpen = false;
-  let toggleClickHandler: ((e: Event) => void) | null = null;
-  let favoritesHeaderHandler: ((e: Event) => void) | null = null;
-  let menuSwipeAbort: AbortController | null = null;
+	import {
+		createFocusTrap,
+		type FocusTrapController,
+	} from '../lib/client/focus-trap.ts';
 
-  /** Синхронизирует --site-header-h для scroll-mt calc() в секциях Awards, Gift, Business */
-  const syncHeaderHeightVar = () => {
-    const el = document.getElementById('site-header');
-    if (el)
-      document.documentElement.style.setProperty(
-        '--site-header-h',
-        `${el.offsetHeight}px`,
-      );
-  };
-  syncHeaderHeightVar();
-  window.addEventListener('resize', syncHeaderHeightVar);
+	let toggleBtn = document.getElementById(
+		'menu-toggle',
+	) as HTMLButtonElement | null;
+	let menu = document.getElementById('mobile-menu') as HTMLElement | null;
+	let backdrop = document.getElementById(
+		'mobile-menu-backdrop',
+	) as HTMLElement | null;
+	let headerInner = document.getElementById(
+		'header-inner',
+	) as HTMLElement | null;
+	let menuOpen = false;
+	let toggleClickHandler: ((e: Event) => void) | null = null;
+	let favoritesHeaderHandler: ((e: Event) => void) | null = null;
+	let menuSwipeAbort: AbortController | null = null;
+	let menuFocusTrap: FocusTrapController | null = null;
+	let menuPreviousFocus: HTMLElement | null = null;
 
-  // Прокрутка к якорям: Desktop — только #search и #content; Mobile — все пункты меню
-  let anchorScrollController: AbortController | null = null;
-  const initAnchorScroll = () => {
-    anchorScrollController?.abort();
-    anchorScrollController = new AbortController();
-    const { signal } = anchorScrollController;
-    syncHeaderHeightVar();
-    const headerEl = document.getElementById('site-header');
-    const headerHeight = headerEl ? headerEl.offsetHeight : 64;
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+	/** Синхронизирует --site-header-h для scroll-mt calc() в секциях Awards, Gift, Business */
+	const syncHeaderHeightVar = () => {
+		const el = document.getElementById('site-header');
+		if (el)
+			document.documentElement.style.setProperty(
+				'--site-header-h',
+				`${el.offsetHeight}px`,
+			);
+	};
+	syncHeaderHeightVar();
+	window.addEventListener('resize', syncHeaderHeightVar);
 
-    const SEARCH_GAP = isMobile ? -16 : 14; // на десктопе 64+14=78
-    const CORP_CONTENT_GAP = isMobile ? -28 : 22; // на десктопе 64+22=86
-    const GAP_PX = -30; // fallback
+	// Прокрутка к якорям: Desktop — только #search и #content; Mobile — все пункты меню
+	let anchorScrollController: AbortController | null = null;
+	const initAnchorScroll = () => {
+		anchorScrollController?.abort();
+		anchorScrollController = new AbortController();
+		const { signal } = anchorScrollController;
+		syncHeaderHeightVar();
+		const headerEl = document.getElementById('site-header');
+		const headerHeight = headerEl ? headerEl.offsetHeight : 64;
+		const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
-    /** Док-координата по offsetTop-цепочке: не зависит от transform.
-     * reveal-анимация (.reveal-hidden → translateY 32px) до первого показа
-     * смещала getBoundingClientRect бейджа, из-за чего первый клик «проседал ниже». */
-    const getLayoutTop = (el: HTMLElement): number => {
-      let top = 0;
-      let node: HTMLElement | null = el;
-      while (node) {
-        top += node.offsetTop;
-        node = node.offsetParent as HTMLElement | null;
-      }
-      return top;
-    };
+		const SEARCH_GAP = isMobile ? -16 : 14; // на десктопе 64+14=78
+		const CORP_CONTENT_GAP = isMobile ? -28 : 22; // на десктопе 64+22=86
+		const GAP_PX = -30; // fallback
 
-    const scrollToAnchor = (e: Event, href: string) => {
-      const raw =
-        href.indexOf('#') >= 0 ? href.slice(href.indexOf('#') + 1) : '';
-      const id = raw;
-      if (!id) return;
-      const anchor = document.getElementById(id);
-      if (!anchor) return;
-      e.preventDefault();
+		/** Док-координата по offsetTop-цепочке: не зависит от transform.
+		 * reveal-анимация (.reveal-hidden → translateY 32px) до первого показа
+		 * смещала getBoundingClientRect бейджа, из-за чего первый клик «проседал ниже». */
+		const getLayoutTop = (el: HTMLElement): number => {
+			let top = 0;
+			let node: HTMLElement | null = el;
+			while (node) {
+				top += node.offsetTop;
+				node = node.offsetParent as HTMLElement | null;
+			}
+			return top;
+		};
 
-      if (id !== 'search' && id !== 'content') {
-        const badge = anchor.querySelector<HTMLElement>(
-          '.section-badge, .inline-flex.rounded-full',
-        );
-        if (badge) {
-          // #search-widget есть только на главной (как в Layout.astro).
-          // Новая калибровка (offsetTop без reveal-сдвига, -26, +60) — только главная.
-          const isHomePage = !!document.getElementById('search-widget');
-          if (isHomePage) {
-            // «Направления» — reveal-анимация смещает бейдж до первого показа.
-            const extraGap = id === 'directions' ? 20 : 0;
-            const top = getLayoutTop(badge) - headerHeight - 26 - extraGap;
-            window.smoothScrollTo(top);
-          } else {
-            // corp и прочие страницы: было -20, теперь на 80px выше
-            const badgeTop =
-              badge.getBoundingClientRect().top + window.scrollY;
-            const top = badgeTop - headerHeight - 65;
-            window.smoothScrollTo(top);
-          }
-          if (menuOpen && menu) closeMenu();
-          return;
-        }
-      }
+		const scrollToAnchor = (e: Event, href: string) => {
+			const raw =
+				href.indexOf('#') >= 0 ? href.slice(href.indexOf('#') + 1) : '';
+			const id = raw;
+			if (!id) return;
+			const anchor = document.getElementById(id);
+			if (!anchor) return;
+			e.preventDefault();
 
-      let offset: number;
-      if (id === 'search') offset = headerHeight + SEARCH_GAP;
-      else if (id === 'content') offset = headerHeight + CORP_CONTENT_GAP;
-      else offset = headerHeight + GAP_PX;
+			if (id !== 'search' && id !== 'content') {
+				const badge = anchor.querySelector<HTMLElement>(
+					'.section-badge, .inline-flex.rounded-full',
+				);
+				if (badge) {
+					// #search-widget есть только на главной (как в Layout.astro).
+					// Новая калибровка (offsetTop без reveal-сдвига, -26, +60) — только главная.
+					const isHomePage = !!document.getElementById('search-widget');
+					if (isHomePage) {
+						// «Направления» — reveal-анимация смещает бейдж до первого показа.
+						const extraGap = id === 'directions' ? 20 : 0;
+						const top = getLayoutTop(badge) - headerHeight - 26 - extraGap;
+						window.smoothScrollTo(top);
+					} else {
+						// corp и прочие страницы: было -20, теперь на 80px выше
+						const badgeTop = badge.getBoundingClientRect().top + window.scrollY;
+						const top = badgeTop - headerHeight - 65;
+						window.smoothScrollTo(top);
+					}
+					if (menuOpen && menu) closeMenu();
+					return;
+				}
+			}
 
-      const top = anchor.getBoundingClientRect().top + window.scrollY - offset;
-      window.smoothScrollTo(top);
-      if (menuOpen && menu) closeMenu();
-    };
+			let offset: number;
+			if (id === 'search') offset = headerHeight + SEARCH_GAP;
+			else if (id === 'content') offset = headerHeight + CORP_CONTENT_GAP;
+			else offset = headerHeight + GAP_PX;
 
-    document
-      .querySelectorAll<HTMLAnchorElement>('header a[href^="#"]:not(#logo-btn)')
-      .forEach((link) => {
-        const href = link.getAttribute('href') || '';
-        link.addEventListener('click', (e) => scrollToAnchor(e, href), {
-          signal,
-        });
-      });
-  };
-  initAnchorScroll();
-  document.addEventListener('astro:page-load', initAnchorScroll);
+			const top = anchor.getBoundingClientRect().top + window.scrollY - offset;
+			window.smoothScrollTo(top);
+			if (menuOpen && menu) closeMenu();
+		};
 
-  const onScroll = () => {
-    if (window.scrollY > 40) {
-      headerInner?.classList.add('shadow-xl', 'shadow-black/10');
-      headerInner?.classList.remove('shadow-none');
-    } else {
-      headerInner?.classList.remove('shadow-xl', 'shadow-black/10');
-      headerInner?.classList.add('shadow-none');
-    }
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+		document
+			.querySelectorAll<HTMLAnchorElement>('header a[href^="#"]:not(#logo-btn)')
+			.forEach((link) => {
+				const href = link.getAttribute('href') || '';
+				link.addEventListener('click', (e) => scrollToAnchor(e, href), {
+					signal,
+				});
+			});
+	};
+	initAnchorScroll();
+	document.addEventListener('astro:page-load', initAnchorScroll);
 
-  const initLogoClick = () => {
-    const logo = document.getElementById('logo-btn');
-    if (logo?.hasAttribute('data-astro-reload')) return;
-    logo?.addEventListener('click', (e) => {
-      e.preventDefault();
-      const path = window.location.pathname.replace(/\/$/, '') || '/';
-      const basePath = document.body.dataset.base?.replace(/\/$/, '') || '/';
-      document.documentElement.style.transition = 'opacity 0.5s ease';
-      document.body.style.transition = 'opacity 0.5s ease';
-      document.documentElement.style.opacity = '0';
-      document.body.style.opacity = '0';
-      const isHomePath =
-        path === '/' ||
-        path === '/index.html' ||
-        path === basePath ||
-        path === basePath + '/';
-      if (!isHomePath) {
-        setTimeout(() => {
-          window.location.href = document.body.dataset.base || '/';
-        }, 500);
-      } else {
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'instant' });
-          document
-            .querySelectorAll('.reveal-visible')
-            .forEach((el) => el.classList.remove('reveal-visible'));
-          if (window.initScrollReveal) window.initScrollReveal();
-          setTimeout(() => {
-            document.documentElement.style.opacity = '1';
-            document.body.style.opacity = '1';
-            setTimeout(() => {
-              document.documentElement.style.transition = '';
-              document.documentElement.style.opacity = '';
-              document.body.style.transition = '';
-              document.body.style.opacity = '';
-            }, 500);
-          }, 80);
-        }, 500);
-      }
-    });
-  };
-  initLogoClick();
-  document.addEventListener('astro:page-load', initLogoClick);
+	const onScroll = () => {
+		if (window.scrollY > 40) {
+			headerInner?.classList.add('shadow-xl', 'shadow-black/10');
+			headerInner?.classList.remove('shadow-none');
+		} else {
+			headerInner?.classList.remove('shadow-xl', 'shadow-black/10');
+			headerInner?.classList.add('shadow-none');
+		}
+	};
+	window.addEventListener('scroll', onScroll, { passive: true });
+	onScroll();
 
-  const clearMenuDrawerInlineTransform = () => {
-    if (!menu) return;
-    menu.style.transform = '';
-    menu.style.transition = '';
-  };
+	const initLogoClick = () => {
+		const logo = document.getElementById('logo-btn');
+		if (logo?.hasAttribute('data-astro-reload')) return;
+		logo?.addEventListener('click', (e) => {
+			e.preventDefault();
+			const path = window.location.pathname.replace(/\/$/, '') || '/';
+			const basePath = document.body.dataset.base?.replace(/\/$/, '') || '/';
+			document.documentElement.style.transition = 'opacity 0.5s ease';
+			document.body.style.transition = 'opacity 0.5s ease';
+			document.documentElement.style.opacity = '0';
+			document.body.style.opacity = '0';
+			const isHomePath =
+				path === '/' ||
+				path === '/index.html' ||
+				path === basePath ||
+				path === basePath + '/';
+			if (!isHomePath) {
+				setTimeout(() => {
+					window.location.href = document.body.dataset.base || '/';
+				}, 500);
+			} else {
+				setTimeout(() => {
+					window.scrollTo({ top: 0, behavior: 'instant' });
+					document
+						.querySelectorAll('.reveal-visible')
+						.forEach((el) => el.classList.remove('reveal-visible'));
+					if (window.initScrollReveal) window.initScrollReveal();
+					setTimeout(() => {
+						document.documentElement.style.opacity = '1';
+						document.body.style.opacity = '1';
+						setTimeout(() => {
+							document.documentElement.style.transition = '';
+							document.documentElement.style.opacity = '';
+							document.body.style.transition = '';
+							document.body.style.opacity = '';
+						}, 500);
+					}, 80);
+				}, 500);
+			}
+		});
+	};
+	initLogoClick();
+	document.addEventListener('astro:page-load', initLogoClick);
 
-  const openMenu = () => {
-    if (!menu || !toggleBtn) return;
-    clearMenuDrawerInlineTransform();
-    menuOpen = true;
-    backdrop?.classList.remove('opacity-0', 'pointer-events-none');
-    backdrop?.classList.add('opacity-100', 'pointer-events-auto');
-    backdrop?.setAttribute('aria-hidden', 'false');
-    menu.classList.remove(
-      'translate-x-[calc(100%+0.5rem)]',
-      'pointer-events-none',
-    );
-    menu.classList.add('translate-x-0', 'pointer-events-auto');
-    document.body.classList.add('overflow-hidden');
-    toggleBtn.setAttribute('aria-expanded', 'true');
-  };
+	const clearMenuDrawerInlineTransform = () => {
+		if (!menu) return;
+		menu.style.transform = '';
+		menu.style.transition = '';
+	};
 
-  const closeMenu = () => {
-    if (!menu || !toggleBtn) return;
-    clearMenuDrawerInlineTransform();
-    menuOpen = false;
-    backdrop?.classList.add('opacity-0', 'pointer-events-none');
-    backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
-    backdrop?.setAttribute('aria-hidden', 'true');
-    menu.classList.add(
-      'translate-x-[calc(100%+0.5rem)]',
-      'pointer-events-none',
-    );
-    menu.classList.remove('translate-x-0', 'pointer-events-auto');
-    document.body.classList.remove('overflow-hidden');
-    toggleBtn.setAttribute('aria-expanded', 'false');
-  };
+	const openMenu = () => {
+		if (!menu || !toggleBtn) return;
+		clearMenuDrawerInlineTransform();
+		menuOpen = true;
+		menuPreviousFocus = document.activeElement as HTMLElement | null;
+		backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+		backdrop?.classList.add('opacity-100', 'pointer-events-auto');
+		backdrop?.setAttribute('aria-hidden', 'false');
+		menu.classList.remove(
+			'translate-x-[calc(100%+0.5rem)]',
+			'pointer-events-none',
+		);
+		menu.classList.add('translate-x-0', 'pointer-events-auto');
+		document.body.classList.add('overflow-hidden');
+		toggleBtn.setAttribute('aria-expanded', 'true');
+		menuFocusTrap = createFocusTrap(menu);
+		menuFocusTrap.activate(
+			menu.querySelector<HTMLElement>('a, button:not([disabled])'),
+		);
+	};
 
-  const initMobileMenu = () => {
-    toggleBtn = document.getElementById(
-      'menu-toggle',
-    ) as HTMLButtonElement | null;
-    menu = document.getElementById('mobile-menu') as HTMLElement | null;
-    backdrop = document.getElementById(
-      'mobile-menu-backdrop',
-    ) as HTMLElement | null;
-    headerInner = document.getElementById('header-inner') as HTMLElement | null;
-    onScroll();
+	const closeMenu = () => {
+		if (!menu || !toggleBtn) return;
+		menuFocusTrap?.deactivate();
+		menuFocusTrap = null;
+		clearMenuDrawerInlineTransform();
+		menuOpen = false;
+		backdrop?.classList.add('opacity-0', 'pointer-events-none');
+		backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
+		backdrop?.setAttribute('aria-hidden', 'true');
+		menu.classList.add(
+			'translate-x-[calc(100%+0.5rem)]',
+			'pointer-events-none',
+		);
+		menu.classList.remove('translate-x-0', 'pointer-events-auto');
+		document.body.classList.remove('overflow-hidden');
+		toggleBtn.setAttribute('aria-expanded', 'false');
+		menuPreviousFocus?.focus();
+		menuPreviousFocus = null;
+	};
 
-    const favHeaderBtn = document.getElementById(
-      'open-favorites-header',
-    ) as HTMLButtonElement | null;
-    if (favoritesHeaderHandler && favHeaderBtn) {
-      favHeaderBtn.removeEventListener('click', favoritesHeaderHandler);
-    }
-    favoritesHeaderHandler = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const w = window as Window & { openFavoritesWidget?: () => void };
-      w.openFavoritesWidget?.();
-      if (menuOpen) closeMenu();
-    };
-    favHeaderBtn?.addEventListener('click', favoritesHeaderHandler);
+	const initMobileMenu = () => {
+		toggleBtn = document.getElementById(
+			'menu-toggle',
+		) as HTMLButtonElement | null;
+		menu = document.getElementById('mobile-menu') as HTMLElement | null;
+		backdrop = document.getElementById(
+			'mobile-menu-backdrop',
+		) as HTMLElement | null;
+		headerInner = document.getElementById('header-inner') as HTMLElement | null;
+		onScroll();
 
-    const resetDrawerClosed = () => {
-      clearMenuDrawerInlineTransform();
-      backdrop?.classList.add('opacity-0', 'pointer-events-none');
-      backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
-      backdrop?.setAttribute('aria-hidden', 'true');
-      menu?.classList.add(
-        'translate-x-[calc(100%+0.5rem)]',
-        'pointer-events-none',
-      );
-      menu?.classList.remove('translate-x-0', 'pointer-events-auto');
-      document.body.classList.remove('overflow-hidden');
-    };
+		const favHeaderBtn = document.getElementById(
+			'open-favorites-header',
+		) as HTMLButtonElement | null;
+		if (favoritesHeaderHandler && favHeaderBtn) {
+			favHeaderBtn.removeEventListener('click', favoritesHeaderHandler);
+		}
+		favoritesHeaderHandler = (e: Event) => {
+			e.preventDefault();
+			e.stopPropagation();
+			const w = window as Window & { openFavoritesWidget?: () => void };
+			w.openFavoritesWidget?.();
+			if (menuOpen) closeMenu();
+		};
+		favHeaderBtn?.addEventListener('click', favoritesHeaderHandler);
 
-    if (typeof window !== 'undefined' && window.innerWidth >= 1440) {
-      menuSwipeAbort?.abort();
-      menuSwipeAbort = null;
-      resetDrawerClosed();
-      menuOpen = false;
-      toggleBtn?.setAttribute('aria-expanded', 'false');
-      return;
-    }
-    if (!toggleBtn || !menu) return;
+		const resetDrawerClosed = () => {
+			clearMenuDrawerInlineTransform();
+			backdrop?.classList.add('opacity-0', 'pointer-events-none');
+			backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
+			backdrop?.setAttribute('aria-hidden', 'true');
+			menu?.classList.add(
+				'translate-x-[calc(100%+0.5rem)]',
+				'pointer-events-none',
+			);
+			menu?.classList.remove('translate-x-0', 'pointer-events-auto');
+			document.body.classList.remove('overflow-hidden');
+		};
 
-    menuOpen = false;
-    resetDrawerClosed();
-    toggleBtn.setAttribute('aria-expanded', 'false');
+		if (typeof window !== 'undefined' && window.innerWidth >= 1440) {
+			menuSwipeAbort?.abort();
+			menuSwipeAbort = null;
+			resetDrawerClosed();
+			menuOpen = false;
+			toggleBtn?.setAttribute('aria-expanded', 'false');
+			return;
+		}
+		if (!toggleBtn || !menu) return;
 
-    if (toggleClickHandler)
-      toggleBtn.removeEventListener('click', toggleClickHandler);
-    toggleClickHandler = (e: Event) => {
-      e.stopPropagation();
-      menuOpen ? closeMenu() : openMenu();
-    };
-    toggleBtn.addEventListener('click', toggleClickHandler);
+		menuOpen = false;
+		resetDrawerClosed();
+		toggleBtn.setAttribute('aria-expanded', 'false');
 
-    menu.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => closeMenu());
-    });
+		if (toggleClickHandler)
+			toggleBtn.removeEventListener('click', toggleClickHandler);
+		toggleClickHandler = (e: Event) => {
+			e.stopPropagation();
+			if (menuOpen) closeMenu();
+			else openMenu();
+		};
+		toggleBtn.addEventListener('click', toggleClickHandler);
 
-    /** Свайп вправо по панели или затемнению — закрыть шторку (до breakpoint lg) */
-    menuSwipeAbort?.abort();
-    menuSwipeAbort = new AbortController();
-    const swipeSig = menuSwipeAbort.signal;
-    let swipeStartX = 0;
-    let swipeStartY = 0;
-    let swipeDragging = false;
+		menu.querySelectorAll('a').forEach((link) => {
+			link.addEventListener('click', () => closeMenu());
+		});
 
-    const onSwipeStart = (e: TouchEvent) => {
-      if (!menuOpen || e.touches.length !== 1) return;
-      swipeStartX = e.touches[0].clientX;
-      swipeStartY = e.touches[0].clientY;
-      swipeDragging = false;
-    };
+		/** Свайп вправо по панели или затемнению — закрыть шторку (до breakpoint lg) */
+		menuSwipeAbort?.abort();
+		menuSwipeAbort = new AbortController();
+		const swipeSig = menuSwipeAbort.signal;
+		let swipeStartX = 0;
+		let swipeStartY = 0;
+		let swipeDragging = false;
 
-    const onSwipeMove = (e: TouchEvent) => {
-      if (!menuOpen || !menu || e.touches.length !== 1) return;
-      const x = e.touches[0].clientX;
-      const y = e.touches[0].clientY;
-      const dx = x - swipeStartX;
-      const dy = y - swipeStartY;
-      if (!swipeDragging) {
-        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
-        if (Math.abs(dy) >= Math.abs(dx)) return;
-        if (dx <= 0) return;
-        swipeDragging = true;
-        menu.style.transition = 'none';
-      }
-      if (swipeDragging) {
-        e.preventDefault();
-        const w = menu.offsetWidth;
-        const clamped = Math.min(Math.max(0, dx), w);
-        menu.style.transform = `translate3d(${clamped}px, 0, 0)`;
-      }
-    };
+		const onSwipeStart = (e: TouchEvent) => {
+			if (!menuOpen || e.touches.length !== 1) return;
+			swipeStartX = e.touches[0].clientX;
+			swipeStartY = e.touches[0].clientY;
+			swipeDragging = false;
+		};
 
-    const onSwipeEnd = (e: TouchEvent) => {
-      if (!menu) return;
-      const wasDragging = swipeDragging;
-      swipeDragging = false;
-      if (!menuOpen) return;
-      const x = e.changedTouches[0]?.clientX ?? swipeStartX;
-      const dx = x - swipeStartX;
-      const w = menu.offsetWidth;
-      menu.style.transition = '';
-      menu.style.transform = '';
-      if (!wasDragging) return;
-      const threshold = Math.min(96, Math.max(64, w * 0.22));
-      if (dx > threshold) closeMenu();
-    };
+		const onSwipeMove = (e: TouchEvent) => {
+			if (!menuOpen || !menu || e.touches.length !== 1) return;
+			const x = e.touches[0].clientX;
+			const y = e.touches[0].clientY;
+			const dx = x - swipeStartX;
+			const dy = y - swipeStartY;
+			if (!swipeDragging) {
+				if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
+				if (Math.abs(dy) >= Math.abs(dx)) return;
+				if (dx <= 0) return;
+				swipeDragging = true;
+				menu.style.transition = 'none';
+			}
+			if (swipeDragging) {
+				e.preventDefault();
+				const w = menu.offsetWidth;
+				const clamped = Math.min(Math.max(0, dx), w);
+				menu.style.transform = `translate3d(${clamped}px, 0, 0)`;
+			}
+		};
 
-    const onSwipeCancel = () => {
-      swipeDragging = false;
-      if (menu) {
-        menu.style.transition = '';
-        menu.style.transform = '';
-      }
-    };
+		const onSwipeEnd = (e: TouchEvent) => {
+			if (!menu) return;
+			const wasDragging = swipeDragging;
+			swipeDragging = false;
+			if (!menuOpen) return;
+			const x = e.changedTouches[0]?.clientX ?? swipeStartX;
+			const dx = x - swipeStartX;
+			const w = menu.offsetWidth;
+			menu.style.transition = '';
+			menu.style.transform = '';
+			if (!wasDragging) return;
+			const threshold = Math.min(96, Math.max(64, w * 0.22));
+			if (dx > threshold) closeMenu();
+		};
 
-    const swipeOpts = { signal: swipeSig };
-    menu.addEventListener('touchstart', onSwipeStart, {
-      ...swipeOpts,
-      passive: true,
-    });
-    menu.addEventListener('touchmove', onSwipeMove, {
-      ...swipeOpts,
-      passive: false,
-    });
-    menu.addEventListener('touchend', onSwipeEnd, {
-      ...swipeOpts,
-      passive: true,
-    });
-    menu.addEventListener('touchcancel', onSwipeCancel, {
-      ...swipeOpts,
-      passive: true,
-    });
-    backdrop?.addEventListener('touchstart', onSwipeStart, {
-      ...swipeOpts,
-      passive: true,
-    });
-    backdrop?.addEventListener('touchmove', onSwipeMove, {
-      ...swipeOpts,
-      passive: false,
-    });
-    backdrop?.addEventListener('touchend', onSwipeEnd, {
-      ...swipeOpts,
-      passive: true,
-    });
-    backdrop?.addEventListener('touchcancel', onSwipeCancel, {
-      ...swipeOpts,
-      passive: true,
-    });
-  };
-  initMobileMenu();
-  document.addEventListener('astro:page-load', initMobileMenu);
+		const onSwipeCancel = () => {
+			swipeDragging = false;
+			if (menu) {
+				menu.style.transition = '';
+				menu.style.transform = '';
+			}
+		};
 
-  document.addEventListener('click', (e) => {
-    const target = e.target;
-    const favHeader = document.getElementById('open-favorites-header');
-    if (menuOpen && menu && target instanceof Node) {
-      if (
-        !menu.contains(target) &&
-        !toggleBtn?.contains(target) &&
-        !favHeader?.contains(target)
-      ) {
-        closeMenu();
-      }
-    }
-  });
-  /** Десктопные выпадашки главной: одно меню, без group-hover (подвисания / несколько открытых). */
-  let navMenuAbort: AbortController | null = null;
-  let navMenuCloseTimer: ReturnType<typeof setTimeout> | null = null;
+		const swipeOpts = { signal: swipeSig };
+		menu.addEventListener('touchstart', onSwipeStart, {
+			...swipeOpts,
+			passive: true,
+		});
+		menu.addEventListener('touchmove', onSwipeMove, {
+			...swipeOpts,
+			passive: false,
+		});
+		menu.addEventListener('touchend', onSwipeEnd, {
+			...swipeOpts,
+			passive: true,
+		});
+		menu.addEventListener('touchcancel', onSwipeCancel, {
+			...swipeOpts,
+			passive: true,
+		});
+		backdrop?.addEventListener('touchstart', onSwipeStart, {
+			...swipeOpts,
+			passive: true,
+		});
+		backdrop?.addEventListener('touchmove', onSwipeMove, {
+			...swipeOpts,
+			passive: false,
+		});
+		backdrop?.addEventListener('touchend', onSwipeEnd, {
+			...swipeOpts,
+			passive: true,
+		});
+		backdrop?.addEventListener('touchcancel', onSwipeCancel, {
+			...swipeOpts,
+			passive: true,
+		});
+	};
+	initMobileMenu();
+	document.addEventListener('astro:page-load', initMobileMenu);
 
-  const getNavMenuPanel = (group: HTMLElement): HTMLElement | null => {
-    const id = group.getAttribute('data-nav-menu-id');
-    if (id) {
-      return document.querySelector<HTMLElement>(
-        `[data-nav-menu-panel][data-nav-menu-id="${CSS.escape(id)}"]`,
-      );
-    }
-    return group.querySelector<HTMLElement>('[data-nav-menu-panel]');
-  };
+	document.addEventListener('click', (e) => {
+		const target = e.target;
+		const favHeader = document.getElementById('open-favorites-header');
+		if (menuOpen && menu && target instanceof Node) {
+			if (
+				!menu.contains(target) &&
+				!toggleBtn?.contains(target) &&
+				!favHeader?.contains(target)
+			) {
+				closeMenu();
+			}
+		}
+	});
+	/** Десктопные выпадашки главной: одно меню, без group-hover (подвисания / несколько открытых). */
+	let navMenuAbort: AbortController | null = null;
+	let navMenuCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
-  const restoreNavDropdownPanel = (group: HTMLElement) => {
-    const panel = getNavMenuPanel(group);
-    if (!panel || group.contains(panel)) return;
-    group.appendChild(panel);
-    panel.style.removeProperty('top');
-    panel.style.removeProperty('left');
-    panel.style.removeProperty('transform');
-  };
+	const getNavMenuPanel = (group: HTMLElement): HTMLElement | null => {
+		const id = group.getAttribute('data-nav-menu-id');
+		if (id) {
+			return document.querySelector<HTMLElement>(
+				`[data-nav-menu-panel][data-nav-menu-id="${CSS.escape(id)}"]`,
+			);
+		}
+		return group.querySelector<HTMLElement>('[data-nav-menu-panel]');
+	};
 
-  const setNavDropdownPanelOpen = (panel: HTMLElement | null, open: boolean) => {
-    if (!panel) return;
-    panel.classList.toggle('invisible', !open);
-    panel.classList.toggle('pointer-events-none', !open);
-    panel.classList.toggle('visible', open);
-    panel.classList.toggle('pointer-events-auto', open);
-  };
+	const restoreNavDropdownPanel = (group: HTMLElement) => {
+		const panel = getNavMenuPanel(group);
+		if (!panel || group.contains(panel)) return;
+		group.appendChild(panel);
+		panel.style.removeProperty('top');
+		panel.style.removeProperty('left');
+		panel.style.removeProperty('transform');
+	};
 
-  const positionNavDropdownPanel = (group: HTMLElement) => {
-    const trigger = group.querySelector<HTMLElement>('[data-nav-menu-trigger]');
-    const panel = getNavMenuPanel(group);
-    const layer = document.getElementById('nav-desktop-dropdown-layer');
-    if (!trigger || !panel || !layer) return;
+	const setNavDropdownPanelOpen = (
+		panel: HTMLElement | null,
+		open: boolean,
+	) => {
+		if (!panel) return;
+		panel.classList.toggle('invisible', !open);
+		panel.classList.toggle('pointer-events-none', !open);
+		panel.classList.toggle('visible', open);
+		panel.classList.toggle('pointer-events-auto', open);
+	};
 
-    if (panel.parentElement !== layer) {
-      layer.appendChild(panel);
-    }
+	const positionNavDropdownPanel = (group: HTMLElement) => {
+		const trigger = group.querySelector<HTMLElement>('[data-nav-menu-trigger]');
+		const panel = getNavMenuPanel(group);
+		const layer = document.getElementById('nav-desktop-dropdown-layer');
+		if (!trigger || !panel || !layer) return;
 
-    const rect = trigger.getBoundingClientRect();
-    panel.style.top = `${rect.bottom}px`;
-    panel.style.left = `${rect.left + rect.width / 2}px`;
-    panel.style.transform = 'translateX(-50%)';
-  };
+		if (panel.parentElement !== layer) {
+			layer.appendChild(panel);
+		}
 
-  const isNavMenuHoverTarget = (group: HTMLElement, target: EventTarget | null) => {
-    if (!(target instanceof Node)) return false;
-    const panel = getNavMenuPanel(group);
-    return group.contains(target) || (panel?.contains(target) ?? false);
-  };
+		const rect = trigger.getBoundingClientRect();
+		panel.style.top = `${rect.bottom}px`;
+		panel.style.left = `${rect.left + rect.width / 2}px`;
+		panel.style.transform = 'translateX(-50%)';
+	};
 
-  const closeDesktopNavMenus = () => {
-    if (navMenuCloseTimer) {
-      clearTimeout(navMenuCloseTimer);
-      navMenuCloseTimer = null;
-    }
-    document.querySelectorAll<HTMLElement>('[data-nav-menu]').forEach((g) => {
-      g.classList.remove('is-open');
-      g
-        .querySelector<HTMLElement>('[data-nav-menu-trigger]')
-        ?.setAttribute('aria-expanded', 'false');
-      const panel = getNavMenuPanel(g);
-      setNavDropdownPanelOpen(panel, false);
-      restoreNavDropdownPanel(g);
-    });
-  };
+	const isNavMenuHoverTarget = (
+		group: HTMLElement,
+		target: EventTarget | null,
+	) => {
+		if (!(target instanceof Node)) return false;
+		const panel = getNavMenuPanel(group);
+		return group.contains(target) || (panel?.contains(target) ?? false);
+	};
 
-  const initDesktopNavMenus = () => {
-    navMenuAbort?.abort();
-    navMenuAbort = new AbortController();
-    const { signal } = navMenuAbort;
-    closeDesktopNavMenus();
+	const closeDesktopNavMenus = () => {
+		if (navMenuCloseTimer) {
+			clearTimeout(navMenuCloseTimer);
+			navMenuCloseTimer = null;
+		}
+		document.querySelectorAll<HTMLElement>('[data-nav-menu]').forEach((g) => {
+			g.classList.remove('is-open');
+			g.querySelector<HTMLElement>('[data-nav-menu-trigger]')?.setAttribute(
+				'aria-expanded',
+				'false',
+			);
+			const panel = getNavMenuPanel(g);
+			setNavDropdownPanelOpen(panel, false);
+			restoreNavDropdownPanel(g);
+		});
+	};
 
-    if (!window.matchMedia('(min-width: 90rem)').matches) return;
+	const initDesktopNavMenus = () => {
+		navMenuAbort?.abort();
+		navMenuAbort = new AbortController();
+		const { signal } = navMenuAbort;
+		closeDesktopNavMenus();
 
-    const nav = document.querySelector(
-      '#site-header nav[aria-label="Основное меню"]',
-    );
-    if (!nav) return;
+		if (!window.matchMedia('(min-width: 90rem)').matches) return;
 
-    const groups = nav.querySelectorAll<HTMLElement>('[data-nav-menu]');
-    if (!groups.length) return;
+		const nav = document.querySelector(
+			'#site-header nav[aria-label="Основное меню"]',
+		);
+		if (!nav) return;
 
-    const layer = document.getElementById('nav-desktop-dropdown-layer');
-    if (!layer) return;
+		const groups = nav.querySelectorAll<HTMLElement>('[data-nav-menu]');
+		if (!groups.length) return;
 
-    const closeAll = closeDesktopNavMenus;
+		const layer = document.getElementById('nav-desktop-dropdown-layer');
+		if (!layer) return;
 
-    const openGroup = (g: HTMLElement) => {
-      if (navMenuCloseTimer) {
-        clearTimeout(navMenuCloseTimer);
-        navMenuCloseTimer = null;
-      }
-      groups.forEach((el) => {
-        const on = el === g;
-        el.classList.toggle('is-open', on);
-        el
-          .querySelector<HTMLElement>('[data-nav-menu-trigger]')
-          ?.setAttribute('aria-expanded', on ? 'true' : 'false');
-        const panel = getNavMenuPanel(el);
-        setNavDropdownPanelOpen(panel, on);
-        if (on) {
-          positionNavDropdownPanel(el);
-        } else {
-          restoreNavDropdownPanel(el);
-        }
-      });
-    };
+		const closeAll = closeDesktopNavMenus;
 
-    const scheduleClose = () => {
-      if (navMenuCloseTimer) clearTimeout(navMenuCloseTimer);
-      navMenuCloseTimer = setTimeout(closeAll, 120);
-    };
+		const openGroup = (g: HTMLElement) => {
+			if (navMenuCloseTimer) {
+				clearTimeout(navMenuCloseTimer);
+				navMenuCloseTimer = null;
+			}
+			groups.forEach((el) => {
+				const on = el === g;
+				el.classList.toggle('is-open', on);
+				el.querySelector<HTMLElement>('[data-nav-menu-trigger]')?.setAttribute(
+					'aria-expanded',
+					on ? 'true' : 'false',
+				);
+				const panel = getNavMenuPanel(el);
+				setNavDropdownPanelOpen(panel, on);
+				if (on) {
+					positionNavDropdownPanel(el);
+				} else {
+					restoreNavDropdownPanel(el);
+				}
+			});
+		};
 
-    const repositionOpenNavDropdown = () => {
-      const open = document.querySelector<HTMLElement>('[data-nav-menu].is-open');
-      if (open) positionNavDropdownPanel(open);
-    };
+		const scheduleClose = () => {
+			if (navMenuCloseTimer) clearTimeout(navMenuCloseTimer);
+			navMenuCloseTimer = setTimeout(closeAll, 120);
+		};
 
-    groups.forEach((group) => {
-      const panel = getNavMenuPanel(group);
+		const repositionOpenNavDropdown = () => {
+			const open = document.querySelector<HTMLElement>(
+				'[data-nav-menu].is-open',
+			);
+			if (open) positionNavDropdownPanel(open);
+		};
 
-      group.addEventListener('mouseenter', () => openGroup(group), { signal });
-      group.addEventListener(
-        'mouseleave',
-        (e) => {
-          if (isNavMenuHoverTarget(group, e.relatedTarget)) return;
-          scheduleClose();
-        },
-        { signal },
-      );
-      group.addEventListener('focusin', () => openGroup(group), { signal });
-      group.addEventListener(
-        'focusout',
-        (e) => {
-          const related = e.relatedTarget;
-          if (related instanceof Node && group.contains(related)) return;
-          if (isNavMenuHoverTarget(group, related)) return;
-          scheduleClose();
-        },
-        { signal },
-      );
+		groups.forEach((group) => {
+			const panel = getNavMenuPanel(group);
 
-      panel?.addEventListener('mouseenter', () => openGroup(group), { signal });
-      panel?.addEventListener(
-        'mouseleave',
-        (e) => {
-          if (isNavMenuHoverTarget(group, e.relatedTarget)) return;
-          scheduleClose();
-        },
-        { signal },
-      );
-    });
+			group.addEventListener('mouseenter', () => openGroup(group), { signal });
+			group.addEventListener(
+				'mouseleave',
+				(e) => {
+					if (isNavMenuHoverTarget(group, e.relatedTarget)) return;
+					scheduleClose();
+				},
+				{ signal },
+			);
+			group.addEventListener('focusin', () => openGroup(group), { signal });
+			group.addEventListener(
+				'focusout',
+				(e) => {
+					const related = e.relatedTarget;
+					if (related instanceof Node && group.contains(related)) return;
+					if (isNavMenuHoverTarget(group, related)) return;
+					scheduleClose();
+				},
+				{ signal },
+			);
 
-    nav.addEventListener(
-      'mouseleave',
-      (e) => {
-        const related =
-          e instanceof MouseEvent ? e.relatedTarget : null;
-        if (related instanceof Node && layer.contains(related)) {
-          return;
-        }
-        closeAll();
-      },
-      { signal },
-    );
+			panel?.addEventListener('mouseenter', () => openGroup(group), { signal });
+			panel?.addEventListener(
+				'mouseleave',
+				(e) => {
+					if (isNavMenuHoverTarget(group, e.relatedTarget)) return;
+					scheduleClose();
+				},
+				{ signal },
+			);
+		});
 
-    window.addEventListener('resize', repositionOpenNavDropdown, { signal });
-    window.addEventListener('scroll', repositionOpenNavDropdown, {
-      signal,
-      passive: true,
-    });
-  };
+		nav.addEventListener(
+			'mouseleave',
+			(e) => {
+				const related = e instanceof MouseEvent ? e.relatedTarget : null;
+				if (related instanceof Node && layer.contains(related)) {
+					return;
+				}
+				closeAll();
+			},
+			{ signal },
+		);
 
-  initDesktopNavMenus();
-  document.addEventListener('astro:page-load', initDesktopNavMenus);
+		window.addEventListener('resize', repositionOpenNavDropdown, { signal });
+		window.addEventListener('scroll', repositionOpenNavDropdown, {
+			signal,
+			passive: true,
+		});
+	};
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    if (document.querySelector('[data-nav-menu].is-open')) {
-      closeDesktopNavMenus();
-      return;
-    }
-    if (menuOpen) {
-      closeMenu();
-      toggleBtn?.focus();
-    }
-  });
+	initDesktopNavMenus();
+	document.addEventListener('astro:page-load', initDesktopNavMenus);
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key !== 'Escape') return;
+		if (document.querySelector('[data-nav-menu].is-open')) {
+			closeDesktopNavMenus();
+			return;
+		}
+		if (menuOpen) {
+			closeMenu();
+			toggleBtn?.focus();
+		}
+	});
 </script>

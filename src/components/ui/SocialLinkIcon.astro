@@ -1,0 +1,77 @@
+---
+import {
+	maxIconPath,
+	socialLogoTransform0,
+	socialLogoTransform80,
+	telegramIconPath,
+	vkIconPath,
+} from '../../lib/social-icons';
+import type { SocialIcon } from '../../data/social-links';
+
+interface Props {
+	icon: SocialIcon;
+	/** Размеры иконок как в Footer / FooterMinimal */
+	variant?: 'footer' | 'minimal';
+}
+
+const { icon, variant = 'footer' } = Astro.props;
+
+const tgClass = variant === 'footer' ? 'h-6.5 w-6.5' : 'h-6.5 w-6.5';
+const maxClass = variant === 'footer' ? 'h-4.5 w-4.5' : 'h-4.5 w-4.5';
+const vkClass = variant === 'footer' ? 'h-6 w-6' : 'h-6 w-6';
+---
+
+{
+	icon === 'tg' && (
+		<svg
+			class={`${tgClass} shrink-0 overflow-visible text-current`}
+			viewBox="0 0 80 80"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+		>
+			<g transform={socialLogoTransform0}>
+				<path
+					fill="currentColor"
+					fill-rule="evenodd"
+					clip-rule="evenodd"
+					d={telegramIconPath}
+				/>
+			</g>
+		</svg>
+	)
+}
+{
+	icon === 'max' && (
+		<svg
+			class={`${maxClass} shrink-0 overflow-visible text-current`}
+			viewBox="80 80 80 80"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+		>
+			<g transform={socialLogoTransform80}>
+				<path
+					fill="currentColor"
+					fill-rule="evenodd"
+					clip-rule="evenodd"
+					d={maxIconPath}
+				/>
+			</g>
+		</svg>
+	)
+}
+{
+	icon === 'vk' && (
+		<svg
+			class={`${vkClass} shrink-0 overflow-visible text-current`}
+			viewBox="0 0 80 80"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+		>
+			<g transform={socialLogoTransform0}>
+				<path fill="currentColor" d={vkIconPath} />
+			</g>
+		</svg>
+	)
+}

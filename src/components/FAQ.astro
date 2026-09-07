@@ -2,326 +2,306 @@
 // src/components/FAQ.astro
 // FAQ-блок для GEO/AEO и SEO. Schema.org FAQPage в JSON-LD.
 
-const faqItems = [
-  {
-    question: 'Как забронировать тур?',
-    summary:
-      'Для бронирования тура свяжитесь с ANRO TRIP по телефону 8 (800) 222-44-73, в WhatsApp или Telegram на +7 (922) 026-70-59 либо приходите в офис в Челябинске. Менеджер подберёт маршрут и оформит бронирование под ваши даты и бюджет.',
-    details: `• в мессенджерах по номеру +7-922-026-70-59
-• позвоните по телефону 8 (800) 222-44-73
-• приходите в офис в Челябинске по адресу ул. 250-летия Челябинска, 29`,
-  },
-  {
-    question: 'Какие способы оплаты вы принимаете?',
-    summary:
-      'Принимаем оплату наличными и картой в офисе Челябинска, через интернет-эквайринг, СБП, QR-код и перевод на расчётный счёт. Конкретный способ согласуем при бронировании — подберём удобный вариант для вас.',
-    details: `• Наличными в офисе Челябинска
-• Банковской картой через терминал
-• Онлайн через интернет-эквайринг
-• По QR-коду через мобильный банк
-• Системой быстрых платежей (СБП)
-• Переводом на расчётный счёт`,
-  },
-  {
-    question: 'Где находятся офисы ANRO TRIP?',
-    summary:
-      'Офис ANRO TRIP расположен в Челябинске по адресу ул. 250-летия Челябинска, 29. Режим работы указан в разделе «Контакты». Связаться с нами можно онлайн — по телефону, email или в мессенджерах в любое время.',
-  },
-  {
-    question: 'Организуете ли корпоративные туры?',
-    summary:
-      'Да, организуем корпоративные поездки: командировки, деловые встречи и выездные мероприятия. Заключаем договор на индивидуальных условиях и предоставляем отчётные документы через электронный документооборот.',
-  },
-  {
-    question: 'Можно ли отменить или изменить бронирование?',
-    mobileBreakBefore: 'бронирование',
-    summary:
-      'Да, отменить или изменить бронирование можно. Условия зависят от тарифов авиакомпаний, отелей и туроператоров. Менеджер сообщит точные правила и возможные штрафы при оформлении заказа.',
-  },
-  {
-    question: 'Помогаете ли с оформлением виз?',
-    summary:
-      'Да, помогаем с визами по всем направлениям: готовим пакет документов, консультируем по требованиям и сопровождаем подачу в визовый центр или консульство.',
-  },
-  {
-    question: 'Как связаться с агентством?',
-    summary: 'Связаться с ANRO TRIP можно:',
-    details: `• в мессенджерах по номеру +7-922-026-70-59
-• по телефону 8 (800) 222-44-73
-• по почте anro@anrotrip.ru
-• ждем вас в офис в Челябинске по адресу ул. 250-летия Челябинска, 29 с понедельника по пятницу с 9:00 до 18:00
+import {
+	company,
+	companyMailto,
+	companyPhoneHref,
+	companyWhatsAppHref,
+} from '../data/company';
+import { faqItems } from '../data/faq';
+import SectionHeading from './ui/SectionHeading.astro';
 
-Онлайн работаем 7 дней в неделю.`,
-  },
-];
+const { phones, emails, offices } = company;
+const chelyabinsk = offices.chelyabinsk;
 
 const labelClass = 'whitespace-nowrap text-gray-900';
 const linkClass =
-  'text-primary hover:text-primary-dark hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded cursor-pointer';
+	'text-primary hover:text-primary-dark hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded cursor-pointer';
 const sep =
-  '<br class="md:hidden"><span class="hidden md:inline-block ml-1 text-gray-900 select-none" aria-hidden="true">·</span>';
+	'<br class="md:hidden"><span class="hidden md:inline-block ml-1 text-gray-900 select-none" aria-hidden="true">·</span>';
 
 /** Временно прячет HTML, чтобы повторные replace не ломали уже вставленные ссылки */
 function linkifyContacts(text: string): string {
-  const tokens: string[] = [];
-  const stash = (html: string) => {
-    const key = `\x00${tokens.length}\x00`;
-    tokens.push(html);
-    return key;
-  };
+	const tokens: string[] = [];
+	const stash = (html: string) => {
+		const key = `\x00${tokens.length}\x00`;
+		tokens.push(html);
+		return key;
+	};
 
-  let out = text
-    .replace(/Телефон: 8 \(800\) 222-44-73\./g, () =>
-      stash(
-        `<span class="${labelClass}">Телефон: </span><a href="tel:88002224473" class="${linkClass}">8 (800) 222-44-73</a>${sep}`,
-      ),
-    )
-    .replace(/WhatsApp: \+7 \(922\) 026-70-59\./g, () =>
-      stash(
-        `<span class="${labelClass}">WhatsApp: </span><a href="https://wa.me/79220267059" target="_blank" rel="noopener noreferrer" class="${linkClass}">+7 (922) 026-70-59</a>${sep}`,
-      ),
-    )
-    .replace(/Telegram: @anrotrip\./g, () =>
-      stash(
-        `<span class="${labelClass}">Telegram: </span><a href="https://t.me/anrotrip" target="_blank" rel="noopener noreferrer" class="${linkClass}">@anrotrip</a>${sep}`,
-      ),
-    )
-    .replace(/Email: anro@anrotrip\.ru\./g, () =>
-      stash(
-        `<span class="${labelClass}">Email: </span><a href="mailto:anro@anrotrip.ru" class="${linkClass}">anro@anrotrip.ru</a>${sep}`,
-      ),
-    )
-    .replace(/\+7-922-026-70-59/g, () =>
-      stash(`<a href="tel:+79220267059" class="${linkClass}">+7-922-026-70-59</a>`),
-    )
-    .replace(/\+7 \(922\) 026-70-59/g, () =>
-      stash(`<a href="tel:+79220267059" class="${linkClass}">+7 (922) 026-70-59</a>`),
-    )
-    .replace(/8 \(800\) 222-44-73/g, () =>
-      stash(`<a href="tel:88002224473" class="${linkClass}">8 (800) 222-44-73</a>`),
-    )
-    .replace(/ул\. 250-летия Челябинска, 29/g, () =>
-      stash(`<a href="#contacts" class="${linkClass}">ул. 250-летия Челябинска, 29</a>`),
-    )
-    .replace(/разделе «Контакты»/g, () =>
-      stash(`разделе <a href="#contacts" class="${linkClass}">«Контакты»</a>`),
-    )
-    .replace(/anro@anrotrip\.ru/g, () =>
-      stash(`<a href="mailto:anro@anrotrip.ru" class="${linkClass}">anro@anrotrip.ru</a>`),
-    )
-    .replace(/по телефону/g, () =>
-      stash(`<a href="tel:88002224473" class="${linkClass}">по телефону</a>`),
-    )
-    .replace(/\bemail\b/g, () =>
-      stash(`<a href="mailto:anro@anrotrip.ru" class="${linkClass}">email</a>`),
-    )
-    .replace(/Работаем ежедневно\./g, () =>
-      stash('<span class="whitespace-nowrap text-gray-900">Работаем ежедневно.</span>'),
-    );
+	let out = text
+		.replace(
+			new RegExp(
+				`Телефон: ${phones.tollFree.display.replace(/[()]/g, '\\$&')}\\.`,
+				'g',
+			),
+			() =>
+				stash(
+					`<span class="${labelClass}">Телефон: </span><a href="${companyPhoneHref('tollFree')}" class="${linkClass}">${phones.tollFree.display}</a>${sep}`,
+				),
+		)
+		.replace(
+			new RegExp(
+				`WhatsApp: ${phones.mobile.display.replace(/[()]/g, '\\$&')}\\.`,
+				'g',
+			),
+			() =>
+				stash(
+					`<span class="${labelClass}">WhatsApp: </span><a href="${companyWhatsAppHref()}" target="_blank" rel="noopener noreferrer" class="${linkClass}">${phones.mobile.display}</a>${sep}`,
+				),
+		)
+		.replace(/Telegram: @anrotrip\./g, () =>
+			stash(
+				`<span class="${labelClass}">Telegram: </span><a href="${company.social.telegram}" target="_blank" rel="noopener noreferrer" class="${linkClass}">@anrotrip</a>${sep}`,
+			),
+		)
+		.replace(
+			new RegExp(`Email: ${emails.public.replace('.', '\\.')}\\.`, 'g'),
+			() =>
+				stash(
+					`<span class="${labelClass}">Email: </span><a href="${companyMailto('public')}" class="${linkClass}">${emails.public}</a>${sep}`,
+				),
+		)
+		.replace(
+			new RegExp(phones.mobile.displayCompact.replace(/[+()-]/g, '\\$&'), 'g'),
+			() =>
+				stash(
+					`<a href="${companyPhoneHref('mobile')}" class="${linkClass}">${phones.mobile.displayCompact}</a>`,
+				),
+		)
+		.replace(
+			new RegExp(phones.mobile.display.replace(/[()+ ]/g, '\\$&'), 'g'),
+			() =>
+				stash(
+					`<a href="${companyPhoneHref('mobile')}" class="${linkClass}">${phones.mobile.display}</a>`,
+				),
+		)
+		.replace(
+			new RegExp(phones.tollFree.display.replace(/[() ]/g, '\\$&'), 'g'),
+			() =>
+				stash(
+					`<a href="${companyPhoneHref('tollFree')}" class="${linkClass}">${phones.tollFree.display}</a>`,
+				),
+		)
+		.replace(
+			new RegExp(chelyabinsk.address.streetShort.replace(/\./g, '\\.'), 'g'),
+			() =>
+				stash(
+					`<a href="#contacts" class="${linkClass}">${chelyabinsk.address.streetShort}</a>`,
+				),
+		)
+		.replace(/разделе «Контакты»/g, () =>
+			stash(`разделе <a href="#contacts" class="${linkClass}">«Контакты»</a>`),
+		)
+		.replace(new RegExp(emails.public.replace('.', '\\.'), 'g'), () =>
+			stash(
+				`<a href="${companyMailto('public')}" class="${linkClass}">${emails.public}</a>`,
+			),
+		)
+		.replace(/по телефону/g, () =>
+			stash(
+				`<a href="${companyPhoneHref('tollFree')}" class="${linkClass}">по телефону</a>`,
+			),
+		)
+		.replace(/\bemail\b/g, () =>
+			stash(
+				`<a href="${companyMailto('public')}" class="${linkClass}">email</a>`,
+			),
+		)
+		.replace(/Работаем ежедневно\./g, () =>
+			stash(
+				'<span class="whitespace-nowrap text-gray-900">Работаем ежедневно.</span>',
+			),
+		);
 
-  tokens.forEach((html, i) => {
-    out = out.replace(`\x00${i}\x00`, html);
-  });
+	tokens.forEach((html, i) => {
+		out = out.replace(`\x00${i}\x00`, html);
+	});
 
-  return out;
+	return out;
 }
 
 /** Текст ответа для UI и JSON-LD */
 function getFaqAnswerText(item: (typeof faqItems)[number]): string {
-  return item.details ? `${item.summary}\n${item.details}` : item.summary;
+	return item.details ? `${item.summary}\n${item.details}` : item.summary;
 }
 
 /** Форматирует ответ: lead 40–60 слов, затем детали */
 function formatFaqAnswer(item: (typeof faqItems)[number]): string {
-  const parts = [`<p>${linkifyContacts(item.summary)}</p>`];
-  if (item.details) {
-    parts.push(formatFaqDetails(item.details));
-  }
-  return parts.join('');
+	const parts = [`<p>${linkifyContacts(item.summary)}</p>`];
+	if (item.details) {
+		parts.push(formatFaqDetails(item.details));
+	}
+	return parts.join('');
 }
 
 /** Форматирует блок деталей: абзацы и списки с • */
 function formatFaqDetails(text: string): string {
-  const lines = text.split('\n').map((line) => line.trim());
-  const parts: string[] = [];
-  let bulletBuffer: string[] = [];
+	const lines = text.split('\n').map((line) => line.trim());
+	const parts: string[] = [];
+	let bulletBuffer: string[] = [];
 
-  const flushBullets = () => {
-    if (!bulletBuffer.length) return;
-    parts.push(
-      `<ul class="my-2 space-y-1.5 list-none">${bulletBuffer
-        .map(
-          (content) =>
-            `<li class="flex gap-2"><span class="text-primary shrink-0" aria-hidden="true">•</span><span>${linkifyContacts(content)}</span></li>`,
-        )
-        .join('')}</ul>`,
-    );
-    bulletBuffer = [];
-  };
+	const flushBullets = () => {
+		if (!bulletBuffer.length) return;
+		parts.push(
+			`<ul class="my-2 space-y-1.5 list-none">${bulletBuffer
+				.map(
+					(content) =>
+						`<li class="flex gap-2"><span class="text-primary shrink-0" aria-hidden="true">•</span><span>${linkifyContacts(content)}</span></li>`,
+				)
+				.join('')}</ul>`,
+		);
+		bulletBuffer = [];
+	};
 
-  for (const line of lines) {
-    if (!line) {
-      flushBullets();
-      continue;
-    }
-    if (line.startsWith('•')) {
-      bulletBuffer.push(line.replace(/^•\s*/, ''));
-      continue;
-    }
-    flushBullets();
-    parts.push(`<p>${linkifyContacts(line)}</p>`);
-  }
+	for (const line of lines) {
+		if (!line) {
+			flushBullets();
+			continue;
+		}
+		if (line.startsWith('•')) {
+			bulletBuffer.push(line.replace(/^•\s*/, ''));
+			continue;
+		}
+		flushBullets();
+		parts.push(`<p>${linkifyContacts(line)}</p>`);
+	}
 
-  flushBullets();
-  return parts.join('');
+	flushBullets();
+	return parts.join('');
 }
 
 const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqItems.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: getFaqAnswerText(item),
-    },
-  })),
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqItems.map((item) => ({
+		'@type': 'Question',
+		name: item.question,
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: getFaqAnswerText(item),
+		},
+	})),
 };
 
 export interface Props {
-  /** Дополнительные классы для секции */
-  class?: string;
+	/** Дополнительные классы для секции */
+	class?: string;
 }
 const { class: classes = '' } = Astro.props;
 ---
 
-<section id="faq" class={`relative z-10 overflow-hidden bg-white pt-[50px] pb-[50px] ${classes}`}>
-    <div class="container mx-auto px-4 sm:px-6 max-w-7xl">
-      <div
-        class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-16 lg:items-start"
-      >
-        <!-- Левая колонка: заголовок + аккордеон -->
-        <div>
-          <div class="mb-5 md:mb-7 reveal-hidden">
-            <div class="section-badge mb-4">
-              <span class="section-badge__dot" aria-hidden="true"></span>
-              <span class="section-badge__label">Частые вопросы</span>
-            </div>
-            <h2
-              class="section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-tight"
-            >
-              Часто задаваемые<br />
-              <span class="text-primary">вопросы</span>
-            </h2>
-          </div>
+<section
+	id="faq"
+	class={`relative z-10 overflow-hidden bg-white pt-[50px] pb-[50px] ${classes}`}
+>
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl">
+		<div
+			class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-16 lg:items-start"
+		>
+			<!-- Левая колонка: заголовок + аккордеон -->
+			<div>
+				<div class="mb-5 md:mb-7 reveal-hidden">
+					<SectionHeading badge="Частые вопросы">
+						Часто задаваемые<br />
+						<span class="text-primary">вопросы</span>
+					</SectionHeading>
+				</div>
 
-          <div
-            class="max-w-5xl lg:max-w-7xl lg:-mr-16 space-y-3 reveal-hidden min-w-0"
-            id="faq-accordion"
-          >
-            {
-              faqItems.map((item, i) => (
-                <div
-                  class="faq-item rounded-2xl border border-gray-200 bg-white shadow-[0_2px_8px_rgba(0,171,179,0.06)] transition-[box-shadow,transform] duration-200 hover:shadow-[0_4px_16px_rgba(0,171,179,0.1)] data-[open=true]:shadow-[0_4px_20px_rgba(0,171,179,0.12)] data-[open=true]:border-primary/20 min-w-0"
-                  data-open="false"
-                >
-                  <button
-                    type="button"
-                    class="faq-trigger flex w-full cursor-pointer list-none items-center justify-between gap-3 md:gap-4 px-4 md:px-5 py-3 md:py-4 min-h-[44px] touch-manipulation text-left text-sm md:text-base font-semibold text-gray-900 transition-colors duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-w-0"
-                    aria-expanded="false"
-                    aria-controls={`faq-answer-${i}`}
-                    id={`faq-question-${i}`}
-                  >
-                    <span class="min-w-0 flex-1 pr-2 wrap-break-word">
-                      {item.mobileBreakBefore ? (
-                        <>
-                          {item.question.split(item.mobileBreakBefore)[0]}
-                          <br class="md:hidden" />
-                          {item.mobileBreakBefore}
-                          {item.question.split(item.mobileBreakBefore)[1]}
-                        </>
-                      ) : (
-                        item.question
-                      )}
-                    </span>
-                    <span
-                      class="faq-chevron shrink-0 w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary transition-[transform,background-color] duration-200"
-                      aria-hidden="true"
-                    >
-                      <svg
-                        class="w-3.5 h-3.5 md:w-4 md:h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </span>
-                  </button>
-                  <div
-                    id={`faq-answer-${i}`}
-                    role="region"
-                    aria-labelledby={`faq-question-${i}`}
-                    class="faq-content grid grid-rows-[0fr] transition-[grid-template-rows] duration-200 ease-out"
-                  >
-                    <div class="faq-content-inner overflow-hidden min-h-0">
-                      <div class="border-t border-gray-100 px-4 md:px-5 py-3 md:py-4">
-                        <div
-                          class="faq-answer text-sm md:text-base text-gray-600 leading-relaxed space-y-2 [&_p]:leading-relaxed"
-                          set:html={formatFaqAnswer(item)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            }
-          </div>
-        </div>
+				<div
+					class="max-w-5xl lg:max-w-7xl lg:-mr-16 space-y-3 reveal-hidden min-w-0"
+					id="faq-accordion"
+				>
+					{
+						faqItems.map((item, i) => (
+							<div
+								class="faq-item rounded-2xl border border-gray-200 bg-white shadow-[0_2px_8px_rgba(0,171,179,0.06)] transition-[box-shadow,transform] duration-200 hover:shadow-[0_4px_16px_rgba(0,171,179,0.1)] data-[open=true]:shadow-[0_4px_20px_rgba(0,171,179,0.12)] data-[open=true]:border-primary/20 min-w-0"
+								data-open="false"
+							>
+								<button
+									type="button"
+									class="faq-trigger flex w-full cursor-pointer list-none items-center justify-between gap-3 md:gap-4 px-4 md:px-5 py-3 md:py-4 min-h-[44px] touch-manipulation text-left text-sm md:text-base font-semibold text-gray-900 transition-colors duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 min-w-0"
+									aria-expanded="false"
+									aria-controls={`faq-answer-${i}`}
+									id={`faq-question-${i}`}
+								>
+									<span class="min-w-0 flex-1 pr-2 wrap-break-word">
+										{item.mobileBreakBefore ? (
+											<>
+												{item.question.split(item.mobileBreakBefore)[0]}
+												<br class="md:hidden" />
+												{item.mobileBreakBefore}
+												{item.question.split(item.mobileBreakBefore)[1]}
+											</>
+										) : (
+											item.question
+										)}
+									</span>
+									<span
+										class="faq-chevron shrink-0 w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary transition-[transform,background-color] duration-200"
+										aria-hidden="true"
+									>
+										<svg
+											class="w-3.5 h-3.5 md:w-4 md:h-4"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2.5"
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												d="M19 9l-7 7-7-7"
+											/>
+										</svg>
+									</span>
+								</button>
+								<div
+									id={`faq-answer-${i}`}
+									role="region"
+									aria-labelledby={`faq-question-${i}`}
+									class="faq-content grid grid-rows-[0fr] transition-[grid-template-rows] duration-200 ease-out"
+								>
+									<div class="faq-content-inner overflow-hidden min-h-0">
+										<div class="border-t border-gray-100 px-4 md:px-5 py-3 md:py-4">
+											<div
+												class="faq-answer text-sm md:text-base text-gray-600 leading-relaxed space-y-2 [&_p]:leading-relaxed"
+												set:html={formatFaqAnswer(item)}
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
 
-        <!-- Правая колонка (только desktop): декоративная буква «?» -->
-        <aside
-          class="hidden lg:flex relative w-full max-w-[200px] lg:sticky lg:top-18 items-center justify-end min-h-[280px]"
-        >
-          <div
-            class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[225px] text-[28rem] font-montserrat font-black text-primary/[0.04] leading-none select-none pointer-events-none -mr-16"
-            aria-hidden="true"
-          >
-            ?
-          </div>
-        </aside>
-      </div>
-    </div>
+			<!-- Правая колонка (только desktop): декоративная буква «?» -->
+			<aside
+				class="hidden lg:flex relative w-full max-w-[200px] lg:sticky lg:top-18 items-center justify-end min-h-[280px]"
+			>
+				<div
+					class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[225px] text-[28rem] font-montserrat font-black text-primary/[0.04] leading-none select-none pointer-events-none -mr-16"
+					aria-hidden="true"
+				>
+					?
+				</div>
+			</aside>
+		</div>
+	</div>
 
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+	<script
+		is:inline
+		type="application/ld+json"
+		set:html={JSON.stringify(faqSchema)}
+	/>
 
-  <script is:inline>
-    (function () {
-      var accordion = document.getElementById('faq-accordion');
-      if (!accordion) return;
-      accordion.addEventListener(
-        'click',
-        function (e) {
-          var btn = e.target.closest && e.target.closest('.faq-trigger');
-          if (!btn) return;
-          var item = btn.closest('.faq-item');
-          if (!item) return;
-          e.preventDefault();
-          e.stopPropagation();
-          var isOpen = item.getAttribute('data-open') === 'true';
-          item.removeAttribute('data-closing');
-          item.setAttribute('data-open', String(!isOpen));
-          btn.setAttribute('aria-expanded', String(!isOpen));
-        },
-        true,
-      );
-    })();
-  </script>
+	<script>
+		import { initFaqAccordion } from '../lib/client/faq-accordion.ts';
+
+		initFaqAccordion();
+		document.addEventListener('astro:page-load', initFaqAccordion);
+	</script>
 </section>

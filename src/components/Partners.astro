@@ -1,137 +1,153 @@
 ---
 import { Image } from 'astro:assets';
+import { clientPartners as partners } from '../data/partners';
 import FaIcon from './icons/FaIcon.astro';
-import chelbasketImg from '../assets/partners/chelbasket.webp';
-import ferrosplavImg from '../assets/partners/ferrosplav.webp';
-import inrostImg from '../assets/partners/inrost.webp';
-import mercedesImg from '../assets/partners/mercedes.webp';
-import napoleonImg from '../assets/partners/napoleon.webp';
-import niagaraImg from '../assets/partners/niagara.webp';
-import niksImg from '../assets/partners/niks.webp';
-import r1projectImg from '../assets/partners/r1project.webp';
-import redpepperImg from '../assets/partners/redpepper.webp';
-import unisteamImg from '../assets/partners/unisteam.webp';
-
-const partners = [
-  { name: 'Napoleon IT', logo: napoleonImg },
-  { name: 'R1 Проектное бюро', logo: r1projectImg },
-  { name: 'Ниагара', logo: niagaraImg },
-  { name: 'НИКС', logo: niksImg },
-  { name: 'Mercedes Benz', logo: mercedesImg },
-  { name: 'Ферросплав', logo: ferrosplavImg },
-  { name: 'Unisteam', logo: unisteamImg },
-  { name: 'Red Pepper Film', logo: redpepperImg },
-  { name: 'Инрост', logo: inrostImg },
-  { name: 'Челбаскет', logo: chelbasketImg },
-];
+import SectionHeading from './ui/SectionHeading.astro';
 
 // Дублируем для бесшовного marquee
 const row1 = [...partners, ...partners];
 
 const stats = [
-  { text: 'Все услуги в рамках одного корпоративного договора', icon: 'fa6-solid:briefcase' },
-  { text: 'Оптимизация расходов компании на командировки', icon: 'fa6-solid:chart-line' },
-  { text: 'Оперативная поддержка 24/7', icon: 'fa6-solid:headset' },
-  { text: 'ЭДО и своевременные закрывающие документы', icon: 'fa6-solid:file-invoice' },
+	{
+		text: 'Все услуги в рамках одного корпоративного договора',
+		icon: 'fa6-solid:briefcase',
+	},
+	{
+		text: 'Оптимизация расходов компании на командировки',
+		icon: 'fa6-solid:chart-line',
+	},
+	{ text: 'Оперативная поддержка 24/7', icon: 'fa6-solid:headset' },
+	{
+		text: 'ЭДО и своевременные закрывающие документы',
+		icon: 'fa6-solid:file-invoice',
+	},
 ];
 
 interface Props {
-  class?: string;
+	class?: string;
 }
 const { class: classes = '' }: Props = Astro.props;
 ---
 
 <section id="partners" class={`relative py-[50px] overflow-hidden ${classes}`}>
+	<!-- Фоновый градиент -->
+	<div
+		class="absolute inset-0 bg-linear-to-br from-slate-50 via-white to-blue-50/40 pointer-events-none"
+	>
+	</div>
+	<!-- Декоративные орбы: на мобайле blur-2xl (легче для GPU), на десктопе blur-3xl -->
+	<div
+		class="absolute -top-32 -left-32 w-80 h-80 bg-primary/5 rounded-full blur-2xl md:blur-3xl pointer-events-none"
+	>
+	</div>
+	<div
+		class="absolute -bottom-32 -right-32 w-96 h-96 bg-secondary/5 rounded-full blur-2xl md:blur-3xl pointer-events-none"
+	>
+	</div>
 
-  <!-- Фоновый градиент -->
-  <div class="absolute inset-0 bg-linear-to-br from-slate-50 via-white to-blue-50/40 pointer-events-none"></div>
-  <!-- Декоративные орбы: на мобайле blur-2xl (легче для GPU), на десктопе blur-3xl -->
-  <div class="absolute -top-32 -left-32 w-80 h-80 bg-primary/5 rounded-full blur-2xl md:blur-3xl pointer-events-none"></div>
-  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-secondary/5 rounded-full blur-2xl md:blur-3xl pointer-events-none"></div>
+	<div class="relative container mx-auto px-4 sm:px-6 max-w-7xl">
+		<!-- ===== ЗАГОЛОВОК ===== -->
+		<div
+			class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-5 md:mb-7 reveal-hidden"
+		>
+			<div>
+				<SectionHeading badge="Наши клиенты">
+					Нам <span class="text-primary">доверяют</span>
+				</SectionHeading>
+			</div>
 
-  <div class="relative container mx-auto px-4 sm:px-6 max-w-7xl">
+			<p class="section-caption">
+				Крупнейшие компании России выбирают ANRO TRIP<br />
+				для корпоративных поездок и деловых путешествий
+			</p>
+		</div>
 
-    <!-- ===== ЗАГОЛОВОК ===== -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-5 md:mb-7 reveal-hidden">
-      <div>
-        <div class="section-badge mb-4">
-          <span class="section-badge__dot" aria-hidden="true"></span>
-          <span class="section-badge__label">Наши клиенты</span>
-        </div>
-
-        <h2 class="section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-tight">
-          Нам <span class="text-primary">доверяют</span>
-        </h2>
-      </div>
-
-      <p class="section-caption">
-        Крупнейшие компании России выбирают ANRO TRIP<br />
-        для корпоративных поездок и деловых путешествий
-      </p>
-    </div>
-
-    <!-- ===== ПРЕИМУЩЕСТВА ===== -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-14 md:mb-18" data-reveal-stagger>
-      {stats.map((stat) => (
-        <div
-          class="reveal-hidden glass-panel-interactive rounded-2xl p-5 sm:p-6 flex flex-col items-center text-center group
+		<!-- ===== ПРЕИМУЩЕСТВА ===== -->
+		<div
+			class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-14 md:mb-18"
+			data-reveal-stagger
+		>
+			{
+				stats.map((stat) => (
+					<div
+						class="reveal-hidden glass-panel-interactive rounded-2xl p-5 sm:p-6 flex flex-col items-center text-center group
                  max-sm:contain-[layout] max-sm:transition-shadow max-sm:duration-fast max-sm:hover:translate-y-0
                  sm:transition-all justify-center"
-        >
-          <!-- Иконка -->
-          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors duration-normal shrink-0">
-            <FaIcon name={stat.icon} iconClass="text-xl text-primary" />
-          </div>
-          <!-- Текст -->
-          <div class="text-sm sm:text-base font-medium text-gray-800 leading-snug">{stat.text}</div>
-        </div>
-      ))}
-    </div>
+					>
+						<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors duration-normal shrink-0">
+							<FaIcon name={stat.icon} iconClass="text-xl text-primary" />
+						</div>
+						<div class="text-sm sm:text-base font-medium text-gray-800 leading-snug">
+							{stat.text}
+						</div>
+					</div>
+				))
+			}
+		</div>
 
-    <!-- ===== ЛЕНТА ЛОГОТИПОВ ===== -->
-    <!-- Мобилка: дублированный контент + бесшовный цикл — нет жёстких краёв начала/конца -->
-    <div class="relative md:hidden">
-      <div class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-blue-50/60 to-transparent z-10 pointer-events-none"></div>
-      <div
-        id="partners-mobile-scroll"
-        class="flex overflow-x-auto overflow-y-hidden gap-4 pb-4 scrollbar-hide -mx-4 px-4 overscroll-x-contain touch-pan-x touch-pan-y scroll-auto"
-      >
-        {row1.map((partner) => (
-          <div class="shrink-0 w-40 min-h-30 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-4">
-            <Image
-              src={partner.logo}
-              alt={partner.name}
-              width={160}
-              height={120}
-              class="max-h-full w-auto max-w-full object-contain"
-              loading="eager"
-              decoding="async"
-            />
-          </div>
-        ))}
-      </div>
-    </div>
+		<!-- ===== ЛЕНТА ЛОГОТИПОВ ===== -->
+		<!-- Мобилка: дублированный контент + бесшовный цикл — нет жёстких краёв начала/конца -->
+		<div class="relative md:hidden">
+			<div
+				class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-slate-50 to-transparent z-10 pointer-events-none"
+			>
+			</div>
+			<div
+				class="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-blue-50/60 to-transparent z-10 pointer-events-none"
+			>
+			</div>
+			<div
+				id="partners-mobile-scroll"
+				class="flex overflow-x-auto overflow-y-hidden gap-4 pb-4 scrollbar-hide -mx-4 px-4 overscroll-x-contain touch-pan-x touch-pan-y scroll-auto"
+			>
+				{
+					row1.map((partner) => (
+						<div class="shrink-0 w-40 min-h-30 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-4">
+							<Image
+								src={partner.logo}
+								alt={partner.name}
+								width={160}
+								height={120}
+								class="max-h-full w-auto max-w-full object-contain"
+								loading="eager"
+								decoding="async"
+							/>
+						</div>
+					))
+				}
+			</div>
+		</div>
 
-    <!-- Десктоп: marquee, без изменений -->
-    <div class="reveal-hidden relative hidden md:block">
-      <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 bg-linear-to-r from-white to-transparent z-10 pointer-events-none"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 bg-linear-to-l from-white to-transparent z-10 pointer-events-none"></div>
-      <div class="partners-marquee-viewport mb-4">
-        <div class="partners-track partners-track--forward flex gap-4 w-max" aria-hidden="true">
-          {row1.map((partner) => (
-            <div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                class="max-h-full w-auto object-contain opacity-100 group-hover:opacity-100 transition-opacity duration-normal group-hover:grayscale-0"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <!-- <div class="overflow-hidden">
+		<!-- Десктоп: marquee, без изменений -->
+		<div class="reveal-hidden relative hidden md:block">
+			<div
+				class="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 bg-linear-to-r from-white to-transparent z-10 pointer-events-none"
+			>
+			</div>
+			<div
+				class="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 bg-linear-to-l from-white to-transparent z-10 pointer-events-none"
+			>
+			</div>
+			<div class="partners-marquee-viewport mb-4">
+				<div
+					class="partners-track partners-track--forward flex gap-4 w-max"
+					aria-hidden="true"
+				>
+					{
+						row1.map((partner) => (
+							<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
+								<Image
+									src={partner.logo}
+									alt={partner.name}
+									class="max-h-full w-auto object-contain opacity-100 group-hover:opacity-100 transition-opacity duration-normal group-hover:grayscale-0"
+									loading="lazy"
+								/>
+							</div>
+						))
+					}
+				</div>
+			</div>
+			<!-- <div class="overflow-hidden">
         <div class="partners-track partners-track--reverse flex gap-4 w-max" aria-hidden="true">
           {row2doubled.map((partner) => (
             <div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
@@ -145,101 +161,27 @@ const { class: classes = '' }: Props = Astro.props;
           ))}
         </div>
       </div> -->
-    </div>
+		</div>
 
-    <!-- ===== CTA ===== -->
-    <div class="text-center mt-12 reveal-hidden">
-
-      <a
-        href="#contacts"
-        class="partners-cta-btn inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-primary text-white font-semibold font-montserrat text-sm hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/30 btn-ripple shadow-[0_4px_20px_rgba(0,171,179,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 cursor-pointer"
-      >
-        Стать клиентом
-        <FaIcon name="fa6-solid:arrow-right" iconClass="text-sm leading-none shrink-0" />
-      </a>
-    </div>
-
-  </div>
+		<!-- ===== CTA ===== -->
+		<div class="text-center mt-12 reveal-hidden">
+			<a
+				href="#contacts"
+				class="partners-cta-btn inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-primary text-white font-semibold font-montserrat text-sm hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/30 btn-ripple shadow-[0_4px_20px_rgba(0,171,179,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 cursor-pointer"
+			>
+				Стать клиентом
+				<FaIcon
+					name="fa6-solid:arrow-right"
+					iconClass="text-sm leading-none shrink-0"
+				/>
+			</a>
+		</div>
+	</div>
 </section>
 
 <script>
-  // ── Десктоп: вычисляем точное смещение первой половины трека ──────────────
-  function initPartnersMarquee() {
-    const track = document.querySelector<HTMLElement>('.partners-track--forward');
-    if (!track) return;
+	import { initPartnersMarquee } from '../lib/client/partners-marquee.ts';
 
-    // Останавливаем анимацию на момент измерения, чтобы transform не влиял на offsetLeft
-    track.style.animationPlayState = 'paused';
-
-    requestAnimationFrame(() => {
-      const cards = track.children;
-      const half = Math.floor(cards.length / 2);
-      if (half === 0) {
-        track.style.animationPlayState = '';
-        return;
-      }
-
-      // offsetLeft — позиция относительно родителя, не зависит от CSS transform
-      const firstLeft = (cards[0] as HTMLElement).offsetLeft;
-      const halfLeft = (cards[half] as HTMLElement).offsetLeft;
-
-      // Ширина первой половины = расстояние от начала первой карточки до начала (half+1)-й
-      const halfWidth = halfLeft - firstLeft;
-      const totalWidth = track.scrollWidth;
-
-      if (totalWidth > 0 && halfWidth > 0) {
-        const offset = -(halfWidth / totalWidth) * 100;
-        track.style.setProperty('--marquee-offset', `${offset.toFixed(4)}%`);
-      }
-
-      // Возобновляем анимацию
-      track.style.animationPlayState = '';
-    });
-  }
-
-  // ── Мобилка: бесшовный цикл при ручном скролле ───────────────────────────
-  function initPartnersSeamlessLoop() {
-    const el = document.getElementById('partners-mobile-scroll');
-    if (!el || window.innerWidth >= 768) return;
-    const half = () => el.scrollWidth / 2;
-    const max = () => Math.max(0, el.scrollWidth - el.clientWidth);
-    const threshold = 120;
-    let jumping = false;
-    let rafId = 0;
-
-    const resetJumping = () => { jumping = false; };
-
-    const checkAndLoop = () => {
-      if (jumping) return;
-      const m = max();
-      if (m <= 0) return;
-      const left = el.scrollLeft;
-      const h = half();
-      const cw = el.clientWidth;
-      if (left < threshold) {
-        jumping = true;
-        el.scrollLeft = h + left;
-        setTimeout(resetJumping, 50);
-      } else if (left > m - threshold) {
-        jumping = true;
-        el.scrollLeft = h - cw - (m - left);
-        setTimeout(resetJumping, 50);
-      }
-      rafId = 0;
-    };
-
-    el.addEventListener('scroll', () => {
-      if (jumping || rafId) return;
-      rafId = requestAnimationFrame(checkAndLoop);
-    }, { passive: true });
-  }
-
-  function init() {
-    initPartnersMarquee();
-    initPartnersSeamlessLoop();
-  }
-
-  init();
-  document.addEventListener('astro:page-load', init);
+	initPartnersMarquee();
+	document.addEventListener('astro:page-load', initPartnersMarquee);
 </script>
-

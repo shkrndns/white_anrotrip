@@ -3,355 +3,257 @@
 // cspell:words ANRO anrotrip anro Rozhkova rozhkova Rozhkov rozhkov Denisova denisova Nedelko nedelko Sherbakova sherbakova Mosinceva mosinceva Koroleva koroleva Subotina subotina Semushina semushina Dankova dankova Ledneva ledneva Tsypysheva tsypysheva Musina musina Bochkareva bochkareva Krestovskich krestovskich Golovanova golovanova Pasynkova pasynkova Bateneva bateneva Golikova golikova Domashevskaya domashevskaya Mamykina mamykina Mamikina Vafina vafina Nagovicyna nagovicyna
 import { Image } from 'astro:assets';
 import FaIcon from './icons/FaIcon.astro';
+import SectionHeading from './ui/SectionHeading.astro';
 
-import annaRozhkovaImg  from '../assets/team/a_rozhkova.webp';
+import annaRozhkovaImg from '../assets/team/a_rozhkova.webp';
 import nikitaRozhkovImg from '../assets/team/n_rozhkov.webp';
-import teamGroupImg     from '../assets/team/team.webp';
+import teamGroupImg from '../assets/team/team.webp';
 
-import uDenisovaImg     from '../assets/team/u_denisova.webp';
-import eNedelkoImg      from '../assets/team/e_nedelko.webp';
-import aDenisovaImg     from '../assets/team/a_denisova.webp';
-import eSherbakovaImg   from '../assets/team/e_sherbakova.webp';
-import sMosincevaImg    from '../assets/team/s_mosinceva.webp';
-import nKorolevaImg     from '../assets/team/n_koroleva.webp';
-import uSubotinaImg     from '../assets/team/u_subotina.webp';
-import dSemushinaImg    from '../assets/team/d_semushina.webp';
-import tDankovaImg      from '../assets/team/t_dankova.webp';
-import sLednevaImg      from '../assets/team/s_ledneva.webp';
-import kTsypyshevaImg   from '../assets/team/k_tsypysheva.webp';
-import kMusinaImg       from '../assets/team/k_musina.webp';
-import aBochkarevaImg   from '../assets/team/a_bochkareva.webp';
-import aKrestovskichImg from '../assets/team/a_krestovskich.webp';
-import eGolovanovaImg   from '../assets/team/e_golovanova.webp';
-import uPasynkovaImg    from '../assets/team/u_pasynkova.webp';
-import aBatenevaImg     from '../assets/team/a_bateneva.webp';
-import mVinokurovaImg   from '../assets/team/m_vinokurova.webp';
-import oGolikovaImg     from '../assets/team/o_golikova.webp';
-import oDomashevskayaImg from '../assets/team/o_domashevskaya.webp';
-import eMamikinaImg     from '../assets/team/e_mamykina.webp';
-import nVafinaImg       from '../assets/team/n_vafina.webp';
-import kNagovicynaImg   from '../assets/team/k_nagovicyna.webp';
+import { teamMembers as team } from '../data/team';
 
 /** tel: для «8 (800) … доб. 115» → tel:88002224473,115 (не склеивать цифры добавочного с основным) */
 function phoneToTelHref(phone: string): string {
-  const ext = phone.match(/доб\.?\s*(\d+)/iu);
-  const main = phone.replace(/доб\.?\s*\d+/giu, '').replace(/[^\d+]/g, '');
-  if (ext?.[1]) return `tel:${main},${ext[1]}`;
-  return `tel:${main}`;
+	const ext = phone.match(/доб\.?\s*(\d+)/iu);
+	const main = phone.replace(/доб\.?\s*\d+/giu, '').replace(/[^\d+]/g, '');
+	if (ext?.[1]) return `tel:${main},${ext[1]}`;
+	return `tel:${main}`;
 }
-
-const team = [
-  { name: 'Юлия Денисова',         role: 'Административный директор',     dept: 'г. Челябинск',        email: 'online@anrotrip.ru',           phone: '8 (800) 222-44-73',          img: uDenisovaImg     },
-  { name: 'Екатерина Неделько',    role: 'Руководитель',       dept: 'Авиаотдел',           email: 'e.nedelko@anrotrip.ru',        phone: '8 (800) 222-44-73 доб. 115', img: eNedelkoImg,      photoClass: '-translate-y-2 object-[50%_40%] scale-[1.14] group-hover:scale-[1.18]' },
-  { name: 'Анна Денисова',         role: 'Руководитель',       dept: 'Туристический отдел', email: 'a.denisova@anrotrip.ru',       phone: '8 (800) 222-44-73',          img: aDenisovaImg,     photoClass: 'object-[50%_42%] scale-[1.08] group-hover:scale-[1.12]' },
-  { name: 'Елена Щербакова',       role: 'Авиакассир',         dept: 'Авиаотдел',           email: 'lena@anrotrip.ru',             phone: '8 (800) 222-44-73 доб. 114', img: eSherbakovaImg,   photoClass: 'object-[50%_42%] scale-[1.08] group-hover:scale-[1.12]' },
-  { name: 'Светлана Мосинцева',    role: 'Авиакассир',         dept: 'Авиаотдел',           email: 'svetlana.m@anrotrip.ru',       phone: '8 (800) 222-44-73 доб. 111', img: sMosincevaImg    },
-  { name: 'Наталья Королёва',      role: 'Авиакассир',         dept: 'Авиаотдел',           email: 'koroleva@anrotrip.ru',         phone: '8 (800) 222-44-73 доб. 112', img: nKorolevaImg     },
-  { name: 'Юлия Субботина',        role: 'Авиакассир',         dept: 'Авиаотдел',           email: 'iuliia.s@anrotrip.ru',         phone: '8 (800) 222-44-73 доб. 116', img: uSubotinaImg     },
-  { name: 'Диана Семушова',        role: 'Авиакассир',         dept: 'Авиаотдел',           email: 'diana@anrotrip.ru',            phone: '8 (800) 222-44-73 доб. 110', img: dSemushinaImg    },
-  { name: 'Татьяна Данкова',       role: 'Авиакассир',         dept: 'Авиаотдел',           email: 't.dankova@anrotrip.ru',        phone: '8 (800) 222-44-73',          img: tDankovaImg      },
-  { name: 'Светлана Леднева',      role: 'Авиакассир',         dept: 'Авиаотдел',           email: 'svetlana.l@anrotrip.ru',       phone: '8 (800) 222-44-73 доб. 115', img: sLednevaImg      },
-  { name: 'Кристина Цыпышева',     role: 'Авиакассир',         dept: 'Авиаотдел',           email: 'k.tsypysheva@anrotrip.ru',     phone: '8 (800) 222-44-73 доб. 222', img: kTsypyshevaImg,   photoClass: 'object-[50%_42%] scale-[1.08] group-hover:scale-[1.12]' },
-  { name: 'Ксения Мусина',         role: 'Менеджер',           dept: 'Отдел сервиса',       email: 'ksenia@anrotrip.ru',           phone: '8 (800) 222-44-73 доб. 666', img: kMusinaImg       },
-  { name: 'Анна Бочкарева',        role: 'Менеджер',           dept: 'Туристический отдел', email: 'bochkareva@anrotrip.ru',       phone: '8 (800) 222-44-73 доб. 120', img: aBochkarevaImg,   photoClass: 'object-[50%_42%] scale-[1.00] group-hover:scale-[1.04]' },
-  { name: 'Анастасия Крестовских', role: 'Менеджер',           dept: 'Туристический отдел', email: 'anastasiya@anrotrip.ru',       phone: '8 (800) 222-44-73 доб. 117', img: aKrestovskichImg },
-  { name: 'Елена Голованова',      role: 'Менеджер',           dept: 'Туристический отдел', email: 'anro.chelyabinsk@anrotrip.ru', phone: '8 (800) 222-44-73 доб. 119', img: eGolovanovaImg   },
-  { name: 'Юлия Пасынкова',        role: 'Менеджер',           dept: 'Туристический отдел', email: 'anro.chelyabinsk@anrotrip.ru', phone: '8 (800) 222-44-73 доб. 118', img: uPasynkovaImg    },
-  { name: 'Анна Батенева',         role: 'Менеджер',           dept: 'Туристический отдел', email: 'a.bateneva@anrotrip.ru',       phone: '8 (800) 222-44-73 доб. 122', img: aBatenevaImg     },
-  { name: 'Мария Винокурова',      role: 'Менеджер',           dept: 'Туристический отдел', email: 'm.vinokurova@anrotrip.ru',     phone: '8 (800) 222-44-73',          img: mVinokurovaImg,   photoClass: 'object-[50%_42%] scale-[1.08] group-hover:scale-[1.12]' },
-  { name: 'Ольга Голикова',        role: 'Визовый специалист', dept: 'Туристический отдел', email: 'visa@anrotrip.ru',             phone: '8 (800) 222-44-73',          img: oGolikovaImg     },
-  { name: 'Ольга Домашевская',     role: 'Главный бухгалтер',  dept: 'Финансовый отдел',    email: 'finance@anrotrip.ru',          phone: '8 (800) 222-44-73 доб. 333', img: oDomashevskayaImg },
-  { name: 'Екатерина Мамыкина',    role: 'Бухгалтер',          dept: 'Финансовый отдел',    email: 'katya@anrotrip.ru',            phone: '8 (800) 222-44-73',          img: eMamikinaImg     },
-  { name: 'Наталья Вафина',        role: 'Бухгалтер',          dept: 'Финансовый отдел',    email: 'natalia.v@anrotrip.ru',        phone: '8 (800) 222-44-73',          img: nVafinaImg       },
-  { name: 'Кристина Наговицына',   role: 'Бухгалтер',          dept: 'Финансовый отдел',    email: 'buh1@anrotrip.ru',             phone: '8 (800) 222-44-73',          img: kNagovicynaImg,   photoClass: 'object-[50%_42%] scale-[1.10] group-hover:scale-[1.14]' },
-];
 ---
 
 <!-- ═══ ОСНОВАТЕЛИ ═══ -->
-<section id="team" class="relative pt-[50px] pb-[50px] bg-gray-950 text-white overflow-hidden">
-  <!-- Декор -->
-  <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[60px_60px] pointer-events-none"></div>
-  <div class="absolute top-0 right-0 w-96 h-96 bg-primary/8 rounded-full blur-none md:blur-3xl pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
+<section
+	id="team"
+	class="relative pt-[50px] pb-[50px] bg-gray-950 text-white overflow-hidden"
+>
+	<!-- Декор -->
+	<div
+		class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[60px_60px] pointer-events-none"
+	>
+	</div>
+	<div
+		class="absolute top-0 right-0 w-96 h-96 bg-primary/8 rounded-full blur-none md:blur-3xl pointer-events-none translate-x-1/2 -translate-y-1/2"
+	>
+	</div>
 
-  <div class="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
+		<!-- Заголовок -->
+		<div
+			class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-3.5 md:mb-5.5 reveal-hidden"
+		>
+			<div>
+				<SectionHeading
+					badge="Команда"
+					headingClass="section-heading-plus font-montserrat font-extrabold text-white uppercase tracking-tight"
+				>
+					Команда<br />
+					<span class="text-primary">ANRO TRIP</span>
+				</SectionHeading>
+			</div>
+			<p class="section-caption section-caption--on-dark">
+				Профессионалы, которые делают ваши путешествия идеальными — с первого
+				звонка до возвращения домой
+			</p>
+		</div>
 
-    <!-- Заголовок -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-3.5 md:mb-5.5 reveal-hidden">
-      <div>
-        <div class="section-badge mb-4">
-          <span class="section-badge__dot" aria-hidden="true"></span>
-          <span class="section-badge__label">Команда</span>
-        </div>
-        <h2 class="section-heading-plus font-montserrat font-extrabold text-white uppercase tracking-tight">
-          Команда<br />
-          <span class="text-primary">ANRO TRIP</span>
-        </h2>
-      </div>
-      <p class="section-caption section-caption--on-dark">
-        Профессионалы, которые делают ваши путешествия идеальными — с первого звонка до возвращения домой
-      </p>
-    </div>
+		<!-- Основатели + групповое фото: мобайл — колонка, десктоп — 3 в ряд (групповое шире) -->
+		<div
+			class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_2fr] gap-4 md:gap-5 mb-14"
+			data-reveal-stagger
+		>
+			<!-- Анна Рожкова -->
+			<div class="reveal-hidden">
+				<div
+					class="team-founder-card group relative overflow-hidden rounded-3xl bg-white/5 border border-white/8 flex flex-col"
+				>
+					<!-- Без градиента — артефакт исчез (градиент конфликтовал с рендерингом при scale) -->
+					<div
+						class="relative overflow-hidden h-[320px] sm:h-[360px] bg-gray-900"
+					>
+						<Image
+							src={annaRozhkovaImg}
+							alt="Анна Рожкова"
+							class="w-full h-full -translate-y-8 object-cover object-[50%_45%] scale-[1.32] transition-transform duration-slow ease-out group-hover:scale-[1.36]"
+							loading="lazy"
+						/>
+					</div>
+					<!-- Подпись внизу -->
+					<div class="relative px-5 py-4 bg-white/4">
+						<h3
+							class="font-montserrat font-extrabold text-white text-lg leading-tight"
+						>
+							Анна Рожкова
+						</h3>
+						<p class="text-white/45 text-[10px] uppercase tracking-widest mt-1">
+							Основатель и генеральный директор
+						</p>
+					</div>
+				</div>
+			</div>
 
-    <!-- Основатели + групповое фото: мобайл — колонка, десктоп — 3 в ряд (групповое шире) -->
-    <div class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_2fr] gap-4 md:gap-5 mb-14" data-reveal-stagger>
+			<!-- Никита Рожков -->
+			<div class="reveal-hidden">
+				<div
+					class="team-founder-card group relative overflow-hidden rounded-3xl bg-white/5 border border-white/8 flex flex-col"
+				>
+					<div
+						class="relative overflow-hidden h-[320px] sm:h-[360px] bg-gray-900"
+					>
+						<Image
+							src={nikitaRozhkovImg}
+							alt="Никита Рожков"
+							class="w-full h-full -translate-y-4 object-cover object-[50%_32%] scale-[1.32] transition-transform duration-slow ease-out group-hover:scale-[1.36]"
+							loading="lazy"
+						/>
+					</div>
+					<div class="relative px-5 py-4 bg-white/4">
+						<h3
+							class="font-montserrat font-extrabold text-white text-lg leading-tight"
+						>
+							Никита Рожков
+						</h3>
+						<p class="text-white/45 text-[10px] uppercase tracking-widest mt-1">
+							Исполнительный директор
+						</p>
+					</div>
+				</div>
+			</div>
 
-      <!-- Анна Рожкова -->
-      <div class="reveal-hidden">
-        <div class="team-founder-card group relative overflow-hidden rounded-3xl bg-white/5 border border-white/8 flex flex-col">
-          <!-- Без градиента — артефакт исчез (градиент конфликтовал с рендерингом при scale) -->
-          <div class="relative overflow-hidden h-[320px] sm:h-[360px] bg-gray-900">
-            <Image
-              src={annaRozhkovaImg}
-              alt="Анна Рожкова"
-              class="w-full h-full -translate-y-8 object-cover object-[50%_45%] scale-[1.32] transition-transform duration-slow ease-out group-hover:scale-[1.36]"
-              loading="lazy"
-            />
-          </div>
-          <!-- Подпись внизу -->
-          <div class="relative px-5 py-4 bg-white/4">
-            <h3 class="font-montserrat font-extrabold text-white text-lg leading-tight">Анна Рожкова</h3>
-            <p class="text-white/45 text-[10px] uppercase tracking-widest mt-1">Основатель и генеральный директор</p>
-          </div>
-        </div>
-      </div>
+			<!-- Групповое фото команды -->
+			<div class="reveal-hidden">
+				<div
+					class="team-founder-card group relative overflow-hidden rounded-3xl bg-white/5 border border-white/8 flex flex-col"
+				>
+					<div
+						class="relative overflow-hidden h-[320px] sm:h-[360px] bg-gray-900"
+					>
+						<Image
+							src={teamGroupImg}
+							alt="Команда ANRO TRIP"
+							class="w-full h-full object-cover transition-transform duration-slow ease-out group-hover:scale-[1.04]"
+							loading="lazy"
+						/>
+					</div>
+					<div class="relative px-5 py-4 bg-white/4">
+						<h3
+							class="font-montserrat font-extrabold text-white text-lg leading-tight"
+						>
+							Наша команда
+						</h3>
+						<p class="text-white/45 text-[10px] uppercase tracking-widest mt-1">
+							Специалисты · Авиа · Туры · Визы
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-      <!-- Никита Рожков -->
-      <div class="reveal-hidden">
-        <div class="team-founder-card group relative overflow-hidden rounded-3xl bg-white/5 border border-white/8 flex flex-col">
-          <div class="relative overflow-hidden h-[320px] sm:h-[360px] bg-gray-900">
-            <Image
-              src={nikitaRozhkovImg}
-              alt="Никита Рожков"
-              class="w-full h-full -translate-y-4 object-cover object-[50%_32%] scale-[1.32] transition-transform duration-slow ease-out group-hover:scale-[1.36]"
-              loading="lazy"
-            />
-          </div>
-          <div class="relative px-5 py-4 bg-white/4">
-            <h3 class="font-montserrat font-extrabold text-white text-lg leading-tight">Никита Рожков</h3>
-            <p class="text-white/45 text-[10px] uppercase tracking-widest mt-1">Исполнительный директор</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Групповое фото команды -->
-      <div class="reveal-hidden">
-        <div class="team-founder-card group relative overflow-hidden rounded-3xl bg-white/5 border border-white/8 flex flex-col">
-          <div class="relative overflow-hidden h-[320px] sm:h-[360px] bg-gray-900">
-            <Image
-              src={teamGroupImg}
-              alt="Команда ANRO TRIP"
-              class="w-full h-full object-cover transition-transform duration-slow ease-out group-hover:scale-[1.04]"
-              loading="lazy"
-            />
-          </div>
-          <div class="relative px-5 py-4 bg-white/4">
-            <h3 class="font-montserrat font-extrabold text-white text-lg leading-tight">Наша команда</h3>
-            <p class="text-white/45 text-[10px] uppercase tracking-widest mt-1">Специалисты · Авиа · Туры · Визы</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- Кнопка: открыть / свернуть список (всегда на месте) -->
-  <div class="flex justify-center relative z-20" id="team-btn-wrapper">
-    <button
-      type="button"
-      id="toggle-team-btn"
-      aria-expanded="false"
-      aria-controls="team-list"
-      class="team-toggle-btn inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-white/10 border border-primary/15 text-white font-bold text-sm uppercase tracking-wider hover:bg-white/18 btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 transition-[background-color,box-shadow] duration-slow ease-out"
-    >
-      <FaIcon
-        name="fa6-solid:users"
-        iconClass="text-base leading-none shrink-0 text-primary"
-      />
-      <span class="team-btn-label font-montserrat">Вся команда</span>
-      <FaIcon
-        name="fa6-solid:chevron-down"
-        iconClass="team-btn-chevron text-sm leading-none shrink-0 text-primary transition-transform duration-slow ease-out"
-      />
-    </button>
-  </div>
+	<!-- Кнопка: открыть / свернуть список (всегда на месте) -->
+	<div class="flex justify-center relative z-20" id="team-btn-wrapper">
+		<button
+			type="button"
+			id="toggle-team-btn"
+			aria-expanded="false"
+			aria-controls="team-list"
+			class="team-toggle-btn inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-white/10 border border-primary/15 text-white font-bold text-sm uppercase tracking-wider hover:bg-white/18 btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 transition-[background-color,box-shadow] duration-slow ease-out"
+		>
+			<FaIcon
+				name="fa6-solid:users"
+				iconClass="text-base leading-none shrink-0 text-primary"
+			/>
+			<span class="team-btn-label font-montserrat">Вся команда</span>
+			<FaIcon
+				name="fa6-solid:chevron-down"
+				iconClass="team-btn-chevron text-sm leading-none shrink-0 text-primary transition-transform duration-slow ease-out"
+			/>
+		</button>
+	</div>
 </section>
 
 <!-- ═══ ВСЯ КОМАНДА ═══ -->
-<section id="team-list" class="team-list-panel relative bg-gray-50 overflow-hidden transition-[max-height,opacity] duration-slow ease-in-out opacity-0 hidden border-t border-gray-100 motion-reduce:transition-none" aria-hidden="true">
-  <div class="container mx-auto px-4 sm:px-6 max-w-7xl py-[50px]">
+<section
+	id="team-list"
+	class="team-list-panel relative bg-gray-50 overflow-hidden transition-[max-height,opacity] duration-slow ease-in-out opacity-0 hidden border-t border-gray-100 motion-reduce:transition-none"
+	aria-hidden="true"
+>
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl py-[50px]">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+			{
+				team.map((member) => (
+					<div class="flex flex-col items-center text-center group">
+						<div class="w-40 h-40 sm:w-48 sm:h-48 rounded-4xl overflow-hidden mb-5 ring-2 ring-gray-100 group-hover:ring-primary/30 group-hover:shadow-xl transition-all duration-slow ease-out bg-gray-200 shrink-0">
+							<Image
+								src={member.img}
+								alt={member.name}
+								class:list={[
+									'h-full w-full object-cover transition-transform duration-slow ease-out',
+									member.photoClass ?? 'group-hover:scale-[1.04]',
+								]}
+								loading="lazy"
+							/>
+						</div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-      {team.map((member) => (
-        <div class="flex flex-col items-center text-center group">
-          <!-- Фото (круглое) -->
-          <div class="w-40 h-40 sm:w-48 sm:h-48 rounded-4xl overflow-hidden mb-5 ring-2 ring-gray-100 group-hover:ring-primary/30 group-hover:shadow-xl transition-all duration-slow ease-out bg-gray-200 shrink-0">
-            <Image
-              src={member.img}
-              alt={member.name}
-              class:list={[
-                'h-full w-full object-cover transition-transform duration-slow ease-out',
-                member.photoClass ?? 'group-hover:scale-[1.04]',
-              ]}
-              loading="lazy"
-            />
-          </div>
+						<h3 class="font-montserrat font-bold text-gray-900 text-lg leading-tight mb-1">
+							{member.name}
+						</h3>
+						<p class="text-[13px] text-gray-400 leading-snug">{member.role}</p>
+						{member.dept && (
+							<p class="text-[13px] text-gray-400 mb-2 leading-snug">
+								{member.dept}
+							</p>
+						)}
 
-          <!-- Имя -->
-          <h3 class="font-montserrat font-bold text-gray-900 text-lg leading-tight mb-1">{member.name}</h3>
-          <!-- Должность -->
-          <p class="text-[13px] text-gray-400 leading-snug">{member.role}</p>
-          <!-- Отдел / город -->
-          {member.dept && (
-            <p class="text-[13px] text-gray-400 mb-2 leading-snug">{member.dept}</p>
-          )}
+						<div class="w-full">
+							<a
+								href={`mailto:${member.email}`}
+								class="block text-[13px] text-primary hover:text-secondary transition-colors font-medium truncate px-1 cursor-pointer"
+								title={member.email}
+							>
+								{member.email}
+							</a>
+							{member.phone && (
+								<a
+									href={phoneToTelHref(member.phone)}
+									class="block text-[13px] text-primary hover:text-secondary transition-colors truncate px-1 mb-6 cursor-pointer"
+									title={member.phone}
+								>
+									{member.phone}
+								</a>
+							)}
+						</div>
+					</div>
+				))
+			}
+		</div>
 
-          <!-- Контакты -->
-          <div class="w-full">
-            <a href={`mailto:${member.email}`}
-              class="block text-[13px] text-primary hover:text-secondary transition-colors font-medium truncate px-1 cursor-pointer"
-              title={member.email}>
-              {member.email}
-            </a>
-            {member.phone && (
-              <a href={phoneToTelHref(member.phone)}
-                class="block text-[13px] text-primary hover:text-secondary transition-colors truncate px-1 mb-6 cursor-pointer"
-                title={member.phone}>
-                {member.phone}
-              </a>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <!-- Свернуть список — после всех фото (как в главной кнопке «Вся команда») -->
-    <div class="flex justify-center mt-12 md:mt-14">
-      <button
-        type="button"
-        id="team-collapse-bottom"
-        class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm transition-[color,background-color,transform,box-shadow] duration-slow ease-out hover:bg-primary/10 hover:border-primary/35 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-50 md:text-sm"
-      >
-        <FaIcon name="fa6-solid:chevron-up" iconClass="text-sm leading-none shrink-0" />
-        Свернуть
-      </button>
-    </div>
-  </div>
+		<!-- Свернуть список — после всех фото (как в главной кнопке «Вся команда») -->
+		<div class="flex justify-center mt-12 md:mt-14">
+			<button
+				type="button"
+				id="team-collapse-bottom"
+				class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm transition-[color,background-color,transform,box-shadow] duration-slow ease-out hover:bg-primary/10 hover:border-primary/35 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-50 md:text-sm"
+			>
+				<FaIcon
+					name="fa6-solid:chevron-up"
+					iconClass="text-sm leading-none shrink-0"
+				/>
+				Свернуть
+			</button>
+		</div>
+	</div>
 </section>
 
-<script is:inline>
-  (function () {
-    function initTeamListToggle() {
-      var btn = document.getElementById('toggle-team-btn');
-      var wrapper = document.getElementById('team-list');
-      var collapseBottom = document.getElementById('team-collapse-bottom');
-      var teamSection = document.getElementById('team');
+<script>
+	import { initTeamListToggle } from '../lib/client/team-list-toggle.ts';
 
-      if (!btn || !wrapper) return;
+	function runInit() {
+		initTeamListToggle();
+	}
 
-      var panel = wrapper;
-      var toggleBtn = btn;
-
-      var labelEl = toggleBtn.querySelector('.team-btn-label');
-      var chevronEl = toggleBtn.querySelector('.team-btn-chevron');
-
-      var COLLAPSE_MS = 520;
-
-      function isExpanded() {
-        return toggleBtn.getAttribute('aria-expanded') === 'true';
-      }
-
-      function setExpandedUi(expanded) {
-        toggleBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        if (labelEl) {
-          labelEl.textContent = expanded ? 'Свернуть' : 'Вся команда';
-        }
-        if (chevronEl) {
-          chevronEl.classList.toggle('rotate-180', expanded);
-        }
-      }
-
-      function openList() {
-        panel.classList.remove('hidden');
-        panel.setAttribute('aria-hidden', 'false');
-        panel.style.maxHeight = '0px';
-        void panel.offsetHeight;
-        requestAnimationFrame(function () {
-          var h = panel.scrollHeight;
-          if (h < 1) {
-            panel.style.maxHeight = 'none';
-          } else {
-            panel.style.maxHeight = h + 'px';
-          }
-          panel.classList.remove('opacity-0');
-          panel.classList.add('opacity-100');
-        });
-        setExpandedUi(true);
-      }
-
-      function closeList(opts) {
-        var scrollToTeam = opts && opts.scrollToTeam === true;
-        if (panel.classList.contains('hidden')) return;
-
-        var h = panel.scrollHeight;
-        panel.style.maxHeight = h + 'px';
-        void panel.offsetHeight;
-        panel.style.maxHeight = '0px';
-        panel.classList.remove('opacity-100');
-        panel.classList.add('opacity-0');
-        setExpandedUi(false);
-
-        var done = false;
-        function finish() {
-          if (done) return;
-          done = true;
-          panel.classList.add('hidden');
-          panel.setAttribute('aria-hidden', 'true');
-          panel.style.maxHeight = '';
-          if (scrollToTeam && teamSection) {
-            window.smoothScrollIntoView(teamSection);
-          }
-        }
-
-        function onEnd(e) {
-          if (e.target !== panel || e.propertyName !== 'max-height') return;
-          panel.removeEventListener('transitionend', onEnd);
-          finish();
-        }
-        panel.addEventListener('transitionend', onEnd);
-        window.setTimeout(finish, COLLAPSE_MS);
-      }
-
-      function toggle() {
-        if (isExpanded()) {
-          closeList({ scrollToTeam: false });
-        } else {
-          openList();
-        }
-      }
-
-      toggleBtn.onclick = function () {
-        toggle();
-      };
-      if (collapseBottom) {
-        collapseBottom.onclick = function () {
-          closeList({ scrollToTeam: true });
-        };
-      }
-    }
-
-    function runInit() {
-      initTeamListToggle();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', runInit);
-    } else {
-      runInit();
-    }
-    if (!window.__anroTeamPageLoadInit) {
-      window.__anroTeamPageLoadInit = true;
-      document.addEventListener('astro:page-load', runInit);
-    }
-  })();
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', runInit);
+	} else {
+		runInit();
+	}
+	document.addEventListener('astro:page-load', runInit);
 </script>

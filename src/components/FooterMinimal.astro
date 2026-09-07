@@ -3,237 +3,115 @@
 import { Image } from 'astro:assets';
 import favicon from '../assets/favicon.png';
 import { sitePrivacy, siteTerms } from '../lib/site-urls';
-import {
-  maxIconPath,
-  socialLogoTransform0,
-  socialLogoTransform80,
-  telegramIconPath,
-  vkIconPath,
-} from '../lib/social-icons';
+import { footerSocialLinks } from '../data/social-links';
 import FooterSocialLink from './FooterSocialLink.astro';
+import SocialLinkIcon from './ui/SocialLinkIcon.astro';
 
 const currentYear = new Date().getFullYear();
-
-type Icon = 'tg' | 'max' | 'vk';
-
-const socials: {
-  href: string;
-  ariaLabel: string;
-  tooltip: string;
-  tooltipTextClass: string;
-  hover: string;
-  ring: string;
-  icon: Icon;
-  caption: string;
-  captionColor: string;
-}[] = [
-  {
-    href: 'https://t.me/anrotrip',
-    ariaLabel: 'Telegram — Все новости',
-    tooltip: 'Telegram',
-    tooltipTextClass: 'text-sky-400',
-    hover: 'hover:bg-sky-500/20 hover:text-sky-400',
-    ring: 'focus-visible:ring-primary',
-    icon: 'tg',
-    caption: 'Новости',
-    captionColor: 'text-[#4db8ea]',
-  },
-  {
-    href: 'https://max.ru/id6658540239_biz',
-    ariaLabel: 'MAX — Все новости',
-    tooltip: 'MAX · Все новости',
-    tooltipTextClass: 'text-violet-300',
-    hover: 'hover:bg-violet-500/20 hover:text-violet-300',
-    ring: 'focus-visible:ring-violet-400',
-    icon: 'max',
-    caption: 'Новости',
-    captionColor: 'text-[#a78bfa]',
-  },
-  {
-    href: 'https://t.me/anro_trip',
-    ariaLabel: 'Telegram — Чат',
-    tooltip: 'Telegram · Чат',
-    tooltipTextClass: 'text-cyan-300',
-    hover: 'hover:bg-cyan-500/20 hover:text-cyan-300',
-    ring: 'focus-visible:ring-primary',
-    icon: 'tg',
-    caption: 'Наш чат',
-    captionColor: 'text-[#5ec8df]',
-  },
-  {
-    href: 'https://vk.com/anrotrip',
-    ariaLabel: 'ВКонтакте',
-    tooltip: 'ВКонтакте',
-    tooltipTextClass: 'text-[#0077FF]',
-    hover: 'hover:bg-[#0077FF]/15 hover:text-[#0077FF]',
-    ring: 'focus-visible:ring-[#0077FF]',
-    icon: 'vk',
-    caption: 'ВКонтакте',
-    captionColor: 'text-[#5ca3ff]',
-  },
-  {
-    href: 'https://max.ru/u/f9LHodD0cOKNXrTMtvUZWd2zLeGEpz34bQ0i1a-Ur_6EKrIw9H11bR6uhLM',
-    ariaLabel: 'MAX — Наш канал',
-    tooltip: 'MAX · Наш канал',
-    tooltipTextClass: 'text-purple-300',
-    hover: 'hover:bg-[#5b21b6]/30 hover:text-purple-300',
-    ring: 'focus-visible:ring-purple-400',
-    icon: 'max',
-    caption: 'Канал',
-    captionColor: 'text-[#b4a3e8]',
-  },
-];
 ---
 
 <footer
-  id="site-footer"
-  class="border-t border-white/10 bg-gray-950 text-white"
-  aria-label="Подвал страницы"
+	id="site-footer"
+	class="border-t border-white/10 bg-gray-950 text-white"
+	aria-label="Подвал страницы"
 >
-  <div
-    class="container mx-auto grid max-w-7xl grid-cols-1 items-center gap-6 px-4 py-8 sm:grid-cols-[1fr_auto_1fr] sm:gap-x-4 sm:gap-y-0 sm:px-6 sm:py-9"
-  >
-    <div
-      class="flex flex-col items-center gap-1 text-center sm:items-start sm:justify-self-start sm:text-left"
-    >
-      <div class="flex select-none items-center gap-3">
-        <Image
-          src={favicon}
-          alt=""
-          format="png"
-          quality="max"
-          decoding="async"
-          class="h-10 w-10 shrink-0 object-contain drop-shadow-sm"
-        />
-        <div class="flex flex-col leading-none">
-          <div class="flex items-baseline gap-0.5">
-            <span
-              class="font-montserrat text-[15px] font-black tracking-tight text-white"
-              >ANRO</span
-            >
-            <span
-              class="font-montserrat text-[15px] font-semibold italic text-primary"
-              >trip</span
-            >
-          </div>
-          <span
-            class="mt-0.5 text-[7px] uppercase leading-tight tracking-widest text-white/60"
-            >Туристическая<br /><span class="block -mt-px">компания</span></span
-          >
-        </div>
-      </div>
-      <p class="text-[11px] leading-snug text-white/60">
-        © {currentYear}
-      </p>
-    </div>
+	<div
+		class="container mx-auto grid max-w-7xl grid-cols-1 items-center gap-6 px-4 py-8 sm:grid-cols-[1fr_auto_1fr] sm:gap-x-4 sm:gap-y-0 sm:px-6 sm:py-9"
+	>
+		<div
+			class="flex flex-col items-center gap-1 text-center sm:items-start sm:justify-self-start sm:text-left"
+		>
+			<div class="flex select-none items-center gap-3">
+				<Image
+					src={favicon}
+					alt=""
+					format="png"
+					quality="max"
+					decoding="async"
+					class="h-10 w-10 shrink-0 object-contain drop-shadow-sm"
+				/>
+				<div class="flex flex-col leading-none">
+					<div class="flex items-baseline gap-0.5">
+						<span
+							class="font-montserrat text-[15px] font-black tracking-tight text-white"
+							>ANRO</span
+						>
+						<span
+							class="font-montserrat text-[15px] font-semibold italic text-primary"
+							>trip</span
+						>
+					</div>
+					<span
+						class="mt-0.5 text-[7px] uppercase leading-tight tracking-widest text-white/60"
+						>Туристическая<br /><span class="block -mt-px">компания</span></span
+					>
+				</div>
+			</div>
+			<p class="text-[11px] leading-snug text-white/60">
+				© {currentYear}
+			</p>
+		</div>
 
-    {/* Иконки h-10; порядок и подписи как в Footer.astro */}
-    <ul
-      class="m-0 flex list-none flex-wrap items-start justify-center gap-x-2 gap-y-2 p-0 sm:justify-self-center sm:gap-x-2.5"
-      aria-label="Социальные сети"
-    >
-      {
-        socials.map(
-          ({
-            href,
-            ariaLabel,
-            tooltip,
-            tooltipTextClass,
-            hover,
-            ring,
-            icon,
-            caption,
-            captionColor,
-          }) => (
-            <li class="flex shrink-0 flex-col items-center gap-1">
-              <FooterSocialLink
-                href={href}
-                ariaLabel={ariaLabel}
-                tooltip={tooltip}
-                tooltipTextClass={tooltipTextClass}
-                tooltipPlacement="top"
-                tooltipHideBelowClass="max-lg:hidden"
-                linkClass={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/8 text-white/60 transition-[color,background-color,transform] duration-fast ${hover} cursor-pointer focus:outline-none focus-visible:ring-2 ${ring} focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950`}
-              >
-                {icon === 'tg' && (
-                  <svg
-                    class="h-6.5 w-6.5 shrink-0 overflow-visible text-current"
-                    viewBox="0 0 80 80"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform0}>
-                      <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d={telegramIconPath}
-                      />
-                    </g>
-                  </svg>
-                )}
-                {icon === 'max' && (
-                  <svg
-                    class="h-4.5 w-4.5 shrink-0 overflow-visible text-current"
-                    viewBox="80 80 80 80"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform80}>
-                      <path
-                        fill="currentColor"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d={maxIconPath}
-                      />
-                    </g>
-                  </svg>
-                )}
-                {icon === 'vk' && (
-                  <svg
-                    class="h-6 w-6 shrink-0 overflow-visible text-current"
-                    viewBox="0 0 80 80"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <g transform={socialLogoTransform0}>
-                      <path fill="currentColor" d={vkIconPath} />
-                    </g>
-                  </svg>
-                )}
-              </FooterSocialLink>
-              <span
-                class:list={[
-                  'pointer-events-none hidden max-w-21 max-lg:block text-center text-[9px] font-bold leading-tight',
-                  captionColor,
-                ]}
-                aria-hidden="true"
-              >
-                {caption}
-              </span>
-            </li>
-          ),
-        )
-      }
-    </ul>
+		{/* Иконки h-10; порядок и подписи как в Footer.astro */}
+		<ul
+			class="m-0 flex list-none flex-wrap items-start justify-center gap-x-2 gap-y-2 p-0 sm:justify-self-center sm:gap-x-2.5"
+			aria-label="Социальные сети"
+		>
+			{
+				footerSocialLinks.map(
+					({
+						href,
+						ariaLabel,
+						tooltip,
+						tooltipTextClass,
+						hover,
+						ring,
+						icon,
+						caption,
+						captionColor,
+					}) => (
+						<li class="flex shrink-0 flex-col items-center gap-1">
+							<FooterSocialLink
+								href={href}
+								ariaLabel={ariaLabel}
+								tooltip={tooltip}
+								tooltipTextClass={tooltipTextClass}
+								tooltipPlacement="top"
+								tooltipHideBelowClass="max-lg:hidden"
+								linkClass={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/8 text-white/60 transition-[color,background-color,transform] duration-fast ${hover} cursor-pointer focus:outline-none focus-visible:ring-2 ${ring} focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950`}
+							>
+								<SocialLinkIcon icon={icon} variant="minimal" />
+							</FooterSocialLink>
+							<span
+								class:list={[
+									'pointer-events-none hidden max-w-21 max-lg:block text-center text-[9px] font-bold leading-tight',
+									captionColor,
+								]}
+								aria-hidden="true"
+							>
+								{caption}
+							</span>
+						</li>
+					),
+				)
+			}
+		</ul>
 
-    <nav
-      class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-white/60 sm:justify-self-end sm:justify-end"
-      aria-label="Юридическая информация"
-    >
-      <a
-        href={sitePrivacy()}
-        class="transition-colors hover:text-white/75 focus:outline-none focus-visible:text-white focus-visible:underline"
-        >Конфиденциальность</a
-      >
-      <span class="hidden text-white/25 sm:inline" aria-hidden="true">·</span>
-      <a
-        href={siteTerms()}
-        class="transition-colors hover:text-white/75 focus:outline-none focus-visible:text-white focus-visible:underline"
-        >Соглашение</a
-      >
-    </nav>
-  </div>
+		<nav
+			class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-white/60 sm:justify-self-end sm:justify-end"
+			aria-label="Юридическая информация"
+		>
+			<a
+				href={sitePrivacy()}
+				class="transition-colors hover:text-white/75 focus:outline-none focus-visible:text-white focus-visible:underline"
+				>Конфиденциальность</a
+			>
+			<span class="hidden text-white/25 sm:inline" aria-hidden="true">·</span>
+			<a
+				href={siteTerms()}
+				class="transition-colors hover:text-white/75 focus:outline-none focus-visible:text-white focus-visible:underline"
+				>Соглашение</a
+			>
+		</nav>
+	</div>
 </footer>

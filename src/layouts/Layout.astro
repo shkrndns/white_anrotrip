@@ -5,64 +5,63 @@ import { ClientRouter } from 'astro:transitions';
 import ScrollProgress from '../components/ScrollProgress.astro';
 import ScrollToTop from '../components/ScrollToTop.astro';
 import CallbackModal from '../components/CallbackModal.astro';
-import ReviewModal from '../components/ReviewModal.astro';
 import FavoritesWidget from '../components/FavoritesWidget.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import OfficeWidget from '../components/OfficeWidget.astro';
 import GiftModal from '../components/GiftModal.astro';
 import { getPublicOrigin, resolveOgImageUrl, siteHome } from '../lib/site-urls';
+import { company, companySameAs } from '../data/company';
+import { twoGisRating, yandexRating } from '../lib/external-reviews';
 
 interface Props {
-  title: string;
-  description?: string;
-  /** Полный URL страницы для canonical и og:url (если не задан — берётся из Astro.url) */
-  canonicalURL?: string;
-  /** Путь или URL картинки для превью в соцсетях (1200×630, логотип). По умолчанию /og-image.jpg */
-  ogImage?: string;
-  showFavorites?: boolean;
-  showScrollProgress?: boolean;
-  showScrollToTop?: boolean;
-  /** Позиция кнопки «Наверх» (только при showScrollToTop) */
-  scrollToTopVariant?: 'default' | 'blog';
-  showOfficeWidget?: boolean;
-  /** Виджет офиса (карточка «Связаться» + мессенджеры) */
-  officeWidgetVariant?: 'default' | 'corp';
-  /** Показывать Schema.org JSON-LD (для страниц вроде cabinet/terms/privacy — false) */
-  showSchema?: boolean;
-  /** Meta robots (404 — noindex; по умолчанию max-image-preview:large) */
-  robots?: string;
+	title: string;
+	description?: string;
+	/** Полный URL страницы для canonical и og:url (если не задан — берётся из Astro.url) */
+	canonicalURL?: string;
+	/** Путь или URL картинки для превью в соцсетях (1200×630, логотип). По умолчанию /og-image.jpg */
+	ogImage?: string;
+	showFavorites?: boolean;
+	showScrollProgress?: boolean;
+	showScrollToTop?: boolean;
+	/** Позиция кнопки «Наверх» (только при showScrollToTop) */
+	scrollToTopVariant?: 'default' | 'blog';
+	showOfficeWidget?: boolean;
+	/** Виджет офиса (карточка «Связаться» + мессенджеры) */
+	officeWidgetVariant?: 'default' | 'corp';
+	/** Показывать Schema.org JSON-LD (для страниц вроде cabinet/terms/privacy — false) */
+	showSchema?: boolean;
+	/** Meta robots (404 — noindex; по умолчанию max-image-preview:large) */
+	robots?: string;
 }
 
 const {
-  title,
-  description = 'ANRO TRIP — Путешествия, которые меняют жизнь.',
-  canonicalURL,
-  ogImage = '/og-image.png',
-  showFavorites = true,
-  showScrollProgress = true,
-  showScrollToTop = true,
-  scrollToTopVariant = 'default',
-  showOfficeWidget = true,
-  officeWidgetVariant = 'default',
-  showSchema = true,
-  robots = 'max-image-preview:large',
+	title,
+	description = 'ANRO TRIP — Путешествия, которые меняют жизнь.',
+	canonicalURL,
+	ogImage = '/og-image.png',
+	showFavorites = true,
+	showScrollProgress = true,
+	showScrollToTop = true,
+	scrollToTopVariant = 'default',
+	showOfficeWidget = true,
+	officeWidgetVariant = 'default',
+	showSchema = true,
+	robots = 'max-image-preview:large',
 } = Astro.props;
 
 const ogImageVersion = import.meta.env.OG_IMAGE_VERSION ?? '';
 
 const baseUrl = getPublicOrigin(
-  Astro.request,
-  Astro.url.origin,
-  Astro.site?.origin,
+	Astro.request,
+	Astro.url.origin,
+	Astro.site?.origin,
 );
 const base = siteHome();
 const basePath = new URL(base, baseUrl).pathname.replace(/\/$/, '') || '/';
 const canonical =
-  canonicalURL ??
-  new URL(
-    `${Astro.url.pathname}${Astro.url.search}${Astro.url.hash}`,
-    baseUrl,
-  ).href;
+	canonicalURL ??
+	new URL(`${Astro.url.pathname}${Astro.url.search}${Astro.url.hash}`, baseUrl)
+		.href;
 const ogImageUrl = resolveOgImageUrl(ogImage, baseUrl, ogImageVersion);
 const ogImageType = ogImage.endsWith('.png') ? 'image/png' : 'image/jpeg';
 
@@ -70,40 +69,58 @@ const ogImageType = ogImage.endsWith('.png') ? 'image/png' : 'image/jpeg';
 const organizationId = `${baseUrl}/#organization`;
 const parentOrganization = { '@id': organizationId };
 
+const { phones, offices, brand } = company;
+const chelyabinskOffice = offices.chelyabinsk;
+const ekaterinburgOffice = offices.ekaterinburg;
+
+/** Сводный рейтинг с Яндекс Карт и 2ГИС (external-reviews.ts) */
+const aggregateRatingSchema = {
+	'@type': 'AggregateRating',
+	ratingValue: '5',
+	reviewCount: yandexRating.reviewsCount + twoGisRating.reviewsCount,
+	ratingCount: yandexRating.ratingsCount + twoGisRating.ratingsCount,
+	bestRating: '5',
+	worstRating: '1',
+};
+
+const chelyabinskGeo = {
+	'@type': 'GeoCoordinates',
+	latitude: chelyabinskOffice.geo.latitude,
+	longitude: chelyabinskOffice.geo.longitude,
+};
+
 /** JSON-LD TravelAgency — корневая сущность; url сайта, не canonical страницы */
 const travelAgencySchema = {
-  '@type': 'TravelAgency',
-  '@id': organizationId,
-  name: 'ANRO TRIP',
-  description:
-    'Туристическая компания. Более 18 лет организуем путешествия и командировки по всему миру.',
-  url: baseUrl,
-  logo: `${baseUrl}/og-image.jpg`,
-  image: `${baseUrl}/og-image.jpg`,
-  telephone: '+78002224473',
-  priceRange: '₽₽',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Екатеринбург',
-    addressCountry: 'RU',
-  },
-  areaServed: {
-    '@type': 'Place',
-    name: 'Россия и мир',
-  },
-  sameAs: [
-    'https://t.me/anro_trip',
-    'https://max.ru/u/f9LHodD0cOKNXrTMtvUZWd2zLeGEpz34bQ0i1a-Ur_6EKrIw9H11bR6uhLM',
-    'https://t.me/anrotrip',
-    'https://vk.com/anrotrip',
-    'https://max.ru/id6658540239_biz',
-  ],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    telephone: '+78002224473',
-    contactType: 'customer service',
-    availableLanguage: 'Russian',
-  },
+	'@type': 'TravelAgency',
+	'@id': organizationId,
+	name: brand,
+	description:
+		'Туристическая компания. Более 18 лет организуем путешествия и командировки по всему миру.',
+	url: baseUrl,
+	logo: `${baseUrl}/og-image.jpg`,
+	image: `${baseUrl}/og-image.jpg`,
+	telephone: phones.tollFree.e164,
+	priceRange: '₽₽',
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: chelyabinskOffice.address.streetAddress,
+		addressLocality: chelyabinskOffice.address.locality,
+		postalCode: chelyabinskOffice.address.postalCode,
+		addressCountry: chelyabinskOffice.address.country,
+	},
+	geo: chelyabinskGeo,
+	aggregateRating: aggregateRatingSchema,
+	areaServed: {
+		'@type': 'Place',
+		name: 'Россия и мир',
+	},
+	sameAs: [...companySameAs],
+	contactPoint: {
+		'@type': 'ContactPoint',
+		telephone: phones.tollFree.e164,
+		contactType: 'customer service',
+		availableLanguage: 'Russian',
+	},
 };
 
 /**
@@ -111,722 +128,223 @@ const travelAgencySchema = {
  * Екатеринбург — на сайте без улицы (представительство), в разметке только город и регион.
  */
 const localBusinessEkaterinburg = {
-  '@type': 'LocalBusiness',
-  '@id': `${baseUrl}/#localbusiness-ekaterinburg`,
-  name: 'ANRO TRIP — Екатеринбург',
-  description:
-    'Представительство туристической компании ANRO TRIP в Екатеринбурге. Встреча по предварительной договорённости.',
-  image: ogImageUrl,
-  url: baseUrl,
-  telephone: '+78002224473',
-  priceRange: '₽₽',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Екатеринбург',
-    addressRegion: 'Свердловская область',
-    addressCountry: 'RU',
-  },
-  parentOrganization,
+	'@type': 'LocalBusiness',
+	'@id': `${baseUrl}/#localbusiness-ekaterinburg`,
+	name: ekaterinburgOffice.name,
+	description:
+		'Представительство туристической компании ANRO TRIP в Екатеринбурге. Встреча по предварительной договорённости.',
+	image: ogImageUrl,
+	url: baseUrl,
+	telephone: phones.tollFree.e164,
+	priceRange: '₽₽',
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: ekaterinburgOffice.address.locality,
+		addressRegion: ekaterinburgOffice.address.region,
+		addressCountry: ekaterinburgOffice.address.country,
+	},
+	parentOrganization,
 };
 
 const localBusinessChelyabinsk = {
-  '@type': 'LocalBusiness',
-  '@id': `${baseUrl}/#localbusiness-chelyabinsk`,
-  name: 'ANRO TRIP — Челябинск',
-  description:
-    'Офис туристической компании ANRO TRIP в Челябинске. Пн–пт 9:00–18:00, сб–вс по договорённости.',
-  image: ogImageUrl,
-  url: baseUrl,
-  telephone: '+73512252991',
-  priceRange: '₽₽',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'ул. 250-летия Челябинска, д. 29, пом. 2',
-    addressLocality: 'Челябинск',
-    postalCode: '454003',
-    addressCountry: 'RU',
-  },
-  parentOrganization,
-  openingHoursSpecification: [
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      opens: '09:00',
-      closes: '18:00',
-    },
-  ],
+	'@type': 'LocalBusiness',
+	'@id': `${baseUrl}/#localbusiness-chelyabinsk`,
+	name: chelyabinskOffice.name,
+	description:
+		'Офис туристической компании ANRO TRIP в Челябинске. Пн–пт 9:00–18:00, сб–вс по договорённости.',
+	image: ogImageUrl,
+	url: baseUrl,
+	telephone: phones.chelyabinskOffice.e164,
+	priceRange: '₽₽',
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: chelyabinskOffice.address.streetAddress,
+		addressLocality: chelyabinskOffice.address.locality,
+		postalCode: chelyabinskOffice.address.postalCode,
+		addressCountry: chelyabinskOffice.address.country,
+	},
+	parentOrganization,
+	geo: chelyabinskGeo,
+	aggregateRating: aggregateRatingSchema,
+	openingHoursSpecification: chelyabinskOffice.openingHours.specification.map(
+		(item) => ({
+			'@type': 'OpeningHoursSpecification',
+			dayOfWeek: [...item.dayOfWeek],
+			opens: item.opens,
+			closes: item.closes,
+		}),
+	),
 };
 
-/** Один блок JSON-LD: TravelAgency + филиалы */
+const websiteSchema = {
+	'@type': 'WebSite',
+	'@id': `${baseUrl}/#website`,
+	url: baseUrl,
+	name: brand,
+	inLanguage: 'ru-RU',
+	publisher: { '@id': organizationId },
+	potentialAction: {
+		'@type': 'SearchAction',
+		target: {
+			'@type': 'EntryPoint',
+			urlTemplate: `${baseUrl}/#search-widget`,
+		},
+		'query-input': 'required name=search_term_string',
+	},
+};
+
+/** Один блок JSON-LD: TravelAgency + филиалы + WebSite */
 const schemaOrgGraph = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    travelAgencySchema,
-    localBusinessEkaterinburg,
-    localBusinessChelyabinsk,
-  ],
+	'@context': 'https://schema.org',
+	'@graph': [
+		websiteSchema,
+		travelAgencySchema,
+		localBusinessEkaterinburg,
+		localBusinessChelyabinsk,
+	],
 };
 ---
 
 <!doctype html>
 <html lang="ru" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="only light" />
-    <meta name="description" content={description} />
-    <meta name="theme-color" content="#00abb3" />
-    <meta name="geo.region" content="RU-SVE" />
-
-    {
-      import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION && (
-        <meta
-          name="google-site-verification"
-          content={import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION}
-        />
-      )
-    }
-    {
-      import.meta.env.PUBLIC_YANDEX_VERIFICATION && (
-        <meta
-          name="yandex-verification"
-          content={import.meta.env.PUBLIC_YANDEX_VERIFICATION}
-        />
-      )
-    }
-
-    <!-- Favicon (из assets — оптимизируется при сборке) -->
-    <link rel="icon" type="image/png" href={favicon.src} />
-    <link rel="apple-touch-icon" href={favicon.src} />
-
-    <meta name="robots" content={robots} />
-
-    <link rel="canonical" href={canonical} />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="ANRO TRIP" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:secure_url" content={ogImageUrl} />
-    <meta property="og:image:type" content={ogImageType} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="ANRO TRIP" />
-    <meta property="og:locale" content="ru_RU" />
-
-    <!-- Twitter / X Card (превью при шеринге; дублирует OG для совместимости с X и краулерами) -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImageUrl} />
-    <meta name="twitter:image:alt" content="ANRO TRIP" />
-
-    <!-- Schema.org JSON-LD -->
-    {
-      showSchema && (
-        <script
-          is:inline
-          type="application/ld+json"
-          set:html={JSON.stringify(schemaOrgGraph)}
-        />
-      )
-    }
-
-    <script is:inline define:vars={{ basePath }}>
-      (function () {
-        var currentPath = window.location.pathname.replace(/\/$/, '') || '/';
-        var normalizedBase = basePath.replace(/\/$/, '') || '/';
-        var isHome =
-          currentPath === normalizedBase ||
-          currentPath === normalizedBase + '/index.html';
-
-        var pendingHash = null;
-        try {
-          pendingHash = sessionStorage.getItem('pendingHomeHash');
-        } catch (e) {
-          pendingHash = null;
-        }
-
-        if (isHome && (window.location.hash || pendingHash)) {
-          document.documentElement.classList.add('has-pending-home-anchor');
-        }
-      })();
-    </script>
-
-    <ClientRouter />
-
-    <title>{title}</title>
-    <slot name="head" />
-  </head>
-  <body
-    class="bg-white text-gray-900 font-inter antialiased overflow-x-hidden selection:bg-primary/20 selection:text-primary-dark"
-    data-base={base}
-  >
-    {
-      /* Единый плавный скролл: детерминированная анимация на requestAnimationFrame —
-         одинаковая длительность и easing во ВСЕХ браузерах (нативный scroll-behavior:smooth
-         крутит с разной скоростью в Firefox/Chrome). Используется хедером, кнопкой «Наверх»,
-         Hero, PopularTours, corp, Team; делегированный фолбэк ловит прочие якорные ссылки. */
-    }
-    <script is:inline>
-      (function () {
-        function prefersReduced() {
-          return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        }
-        function clampTop(top) {
-          var max = document.documentElement.scrollHeight - window.innerHeight;
-          return Math.max(0, Math.min(top, max));
-        }
-        function easeInOutCubic(t) {
-          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        }
-
-        window.smoothScrollTo = function (top, onDone) {
-          var target = clampTop(top);
-          var startY = window.scrollY;
-          var dist = target - startY;
-          if (prefersReduced() || Math.abs(dist) < 2) {
-            window.scrollTo(0, target);
-            if (onDone) onDone();
-            return;
-          }
-          // Длительность зависит от дистанции, но в едином диапазоне (плавный, неспешный скролл)
-          var duration = Math.min(1600, Math.max(750, Math.abs(dist) * 0.7));
-          var startT = performance.now();
-          function step(now) {
-            var p = Math.min(1, (now - startT) / duration);
-            window.scrollTo(0, Math.round(startY + dist * easeInOutCubic(p)));
-            if (p < 1) requestAnimationFrame(step);
-            else if (onDone) onDone();
-          }
-          requestAnimationFrame(step);
-        };
-
-        window.smoothScrollIntoView = function (el, onDone) {
-          if (!el) return;
-          var smt = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-          var top = el.getBoundingClientRect().top + window.scrollY - smt;
-          window.smoothScrollTo(top, onDone);
-        };
-
-        // Фолбэк для прочих якорей (футер и т.п.); свои обработчики имеют приоритет
-        // через e.defaultPrevented. window/document переживают View Transitions —
-        // вешаем слушатель один раз.
-        if (!window.__anchorSmoothInit) {
-          window.__anchorSmoothInit = true;
-          document.addEventListener('click', function (e) {
-            if (
-              e.defaultPrevented ||
-              e.button !== 0 ||
-              e.metaKey ||
-              e.ctrlKey ||
-              e.shiftKey ||
-              e.altKey
-            )
-              return;
-            var t = e.target;
-            var a = t && t.closest ? t.closest('a[href^="#"]') : null;
-            if (!a) return;
-            var href = a.getAttribute('href') || '';
-            if (href.length < 2) return;
-            var el = document.getElementById(href.slice(1));
-            if (!el) return;
-            e.preventDefault();
-            window.smoothScrollIntoView(el);
-          });
-        }
-      })();
-    </script>
-    {/* Skip Link: виден при фокусе (Tab), для клавиатуры и скринридеров */}
-    <a
-      href="#content"
-      class="fixed left-4 top-0 z-9999 -translate-y-full rounded-b-md bg-primary px-4 py-2.5 text-sm font-semibold text-white focus:shadow-lg transition-transform duration-fast focus:translate-y-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-    >
-      Перейти к содержимому
-    </a>
-    {showScrollProgress && <ScrollProgress />}
-    <slot />
-    {showScrollToTop && <ScrollToTop variant={scrollToTopVariant} />}
-    {showFavorites && <FavoritesWidget />}
-    {showOfficeWidget && <OfficeWidget variant={officeWidgetVariant} />}
-    <CookieBanner />
-    <GiftModal />
-    <CallbackModal />
-    <ReviewModal />
-
-    {
-      /* Tourvisor не поддерживает View Transition → полная перезагрузка при переходе на главную; при «Назад» из bfcache тоже перезагружаем */
-    }
-    <script is:inline>
-      function scrollHomeToHash(hash, doc) {
-        var root = doc || document;
-        var view = root.defaultView || window;
-        if (!hash || hash.length < 2) return false;
-
-        var id = decodeURIComponent(hash.charAt(0) === '#' ? hash.slice(1) : hash);
-        var anchor = root.getElementById(id);
-        if (!anchor) return false;
-
-        var headerEl = root.getElementById('site-header');
-        var headerHeight = headerEl ? headerEl.offsetHeight : 64;
-        var top;
-
-        if (id !== 'search' && id !== 'content') {
-          var badge = anchor.querySelector(
-            '.section-badge, .inline-flex.rounded-full',
-          );
-          if (badge) {
-            var layoutTop = 0;
-            var node = badge;
-            while (node) {
-              layoutTop += node.offsetTop;
-              node = node.offsetParent;
-            }
-            var extraGap = id === 'directions' ? 20 : 0;
-            top = layoutTop - headerHeight - 26 - extraGap;
-          }
-        }
-
-        if (top === undefined) {
-          var isMobile = view.matchMedia('(max-width: 767px)').matches;
-          var offset =
-            id === 'search'
-              ? isMobile
-                ? headerHeight - 16
-                : 78
-              : headerHeight + 25;
-          top =
-            anchor.getBoundingClientRect().top + view.scrollY - offset;
-        }
-
-        view.scrollTo(0, Math.max(0, top));
-        return true;
-      }
-
-      function revealHomeAfterAnchor() {
-        document.documentElement.classList.add('is-home-anchor-ready');
-        window.setTimeout(function () {
-          document.documentElement.classList.remove(
-            'has-pending-home-anchor',
-            'is-home-anchor-ready',
-          );
-        }, 200);
-      }
-
-      window.scrollHomeToHash = scrollHomeToHash;
-      window.revealHomeAfterAnchor = revealHomeAfterAnchor;
-
-      function getHomeNavigation(url) {
-        var base = document.body.dataset.base || '/';
-        var basePath =
-          new URL(base, window.location.origin).pathname.replace(/\/$/, '') ||
-          '/';
-        var targetPath = url.pathname.replace(/\/$/, '') || '/';
-        var isHome =
-          url.origin === window.location.origin &&
-          (targetPath === basePath || targetPath === basePath + '/index.html');
-
-        return { isHome: isHome, hash: url.hash || '' };
-      }
-
-      function runHomeAnchorScroll(doc) {
-        var hash =
-          (doc && doc.defaultView && doc.defaultView.location.hash) ||
-          window.location.hash ||
-          sessionStorage.getItem('pendingHomeHash') ||
-          '';
-        if (!hash) return false;
-
-        var scrolled = scrollHomeToHash(hash, doc || undefined);
-        if (scrolled && !doc) {
-          sessionStorage.removeItem('pendingHomeHash');
-        }
-        return scrolled;
-      }
-
-      document.addEventListener('click', function (event) {
-        if (event.defaultPrevented) return;
-
-        var target = event.target;
-        var link = target && target.closest ? target.closest('a[href]') : null;
-        if (!link) return;
-
-        try {
-          var url = new URL(link.href);
-          var homeNavigation = getHomeNavigation(url);
-
-          if (homeNavigation.isHome && homeNavigation.hash) {
-            var rawHref = link.getAttribute('href') || '';
-            // Якорь на текущей странице — не прятать body (только переход на главную с другой страницы)
-            if (rawHref.charAt(0) === '#') return;
-            var currentPath =
-              window.location.pathname.replace(/\/$/, '') || '/';
-            var targetPath = url.pathname.replace(/\/$/, '') || '/';
-            if (
-              url.origin === window.location.origin &&
-              targetPath === currentPath
-            ) {
-              return;
-            }
-
-            sessionStorage.setItem('pendingHomeHash', homeNavigation.hash);
-            if (homeNavigation.hash === '#journal') {
-              sessionStorage.removeItem('blogExitToJournal');
-            }
-            document.documentElement.classList.add('has-pending-home-anchor');
-          } else {
-            sessionStorage.removeItem('pendingHomeHash');
-          }
-        } catch (e) {
-          sessionStorage.removeItem('pendingHomeHash');
-        }
-      });
-
-      document.addEventListener(
-        'click',
-        function (event) {
-          if (
-            event.defaultPrevented ||
-            event.button !== 0 ||
-            event.metaKey ||
-            event.ctrlKey ||
-            event.shiftKey ||
-            event.altKey
-          )
-            return;
-
-          var target = event.target;
-          var link = target && target.closest ? target.closest('a[href]') : null;
-          if (!link || !link.hasAttribute('data-astro-reload')) return;
-
-          try {
-            var url = new URL(link.href);
-            var homeNavigation = getHomeNavigation(url);
-            if (!homeNavigation.isHome) return;
-
-            event.preventDefault();
-            if (homeNavigation.hash) {
-              sessionStorage.setItem('pendingHomeHash', homeNavigation.hash);
-            } else {
-              sessionStorage.removeItem('pendingHomeHash');
-            }
-            document.documentElement.classList.add('is-page-leaving');
-            window.setTimeout(function () {
-              window.location.href = url.href;
-            }, 220);
-          } catch (e) {
-            return;
-          }
-        },
-        true,
-      );
-
-      document.addEventListener('astro:before-swap', function (e) {
-        var isMainPage = e.newDocument.getElementById('search-widget');
-        if (!isMainPage) return;
-
-        var hash = sessionStorage.getItem('pendingHomeHash') || '';
-        if (hash) {
-          e.newDocument.documentElement.classList.add('has-pending-home-anchor');
-          runHomeAnchorScroll(e.newDocument);
-          return;
-        }
-
-        if (
-          e.newDocument.querySelector('.tv-search-form.tv-moduleid-192367')
-        ) {
-          e.swap = function () {
-            var b = document.body.dataset.base || '/';
-            sessionStorage.removeItem('pendingHomeHash');
-            window.location.href = window.location.origin + b;
-          };
-        }
-      });
-
-      document.addEventListener('astro:after-swap', function () {
-        if (!document.getElementById('search-widget')) return;
-
-        if (applyJournalAfterBlogExit()) return;
-
-        var hash =
-          window.location.hash || sessionStorage.getItem('pendingHomeHash') || '';
-        if (!hash) return;
-
-        document.documentElement.classList.add('has-pending-home-anchor');
-        runHomeAnchorScroll();
-
-        requestAnimationFrame(function () {
-          runHomeAnchorScroll();
-          revealHomeAfterAnchor();
-        });
-      });
-
-      window.addEventListener('pageshow', function (e) {
-        if (e.persisted && document.querySelector('#search-widget')) {
-          window.location.reload();
-        }
-      });
-
-      /* Блог: «Назад» в браузере → главная #journal (как кнопка favicon «ANRO trip») */
-      function normalizePath(path) {
-        var p = path.replace(/\/$/, '');
-        return p || '/';
-      }
-
-      function getBasePath() {
-        var base = document.body.dataset.base || '/';
-        return normalizePath(new URL(base, window.location.origin).pathname);
-      }
-
-      function getBlogPrefix() {
-        var basePath = getBasePath();
-        return basePath === '/' ? '/blog' : basePath + '/blog';
-      }
-
-      function isBlogPath(pathname) {
-        var p = normalizePath(pathname);
-        var prefix = getBlogPrefix();
-        return p === prefix || p.indexOf(prefix + '/') === 0;
-      }
-
-      function isBlogIndexPath(pathname) {
-        var p = normalizePath(pathname);
-        var prefix = getBlogPrefix();
-        if (p === prefix) return true;
-        return new RegExp(
-          '^' + prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/\\d+$',
-        ).test(p);
-      }
-
-      function getHomeJournalHref() {
-        var base = document.body.dataset.base || '/';
-        var url = new URL(base, window.location.origin);
-        url.hash = 'journal';
-        return url.href;
-      }
-
-      function applyJournalAfterBlogExit() {
-        try {
-          if (sessionStorage.getItem('blogExitToJournal') !== '1') return false;
-        } catch (e) {
-          return false;
-        }
-
-        if (!getHomeNavigation(new URL(window.location.href)).isHome) {
-          return false;
-        }
-
-        try {
-          sessionStorage.removeItem('blogExitToJournal');
-          sessionStorage.setItem('pendingHomeHash', '#journal');
-        } catch (e) {}
-
-        document.documentElement.classList.add('has-pending-home-anchor');
-
-        if (window.location.hash !== '#journal') {
-          var journalUrl = new URL(getHomeJournalHref());
-          history.replaceState(
-            null,
-            '',
-            journalUrl.pathname + journalUrl.search + journalUrl.hash,
-          );
-        }
-
-        runHomeAnchorScroll();
-        revealHomeAfterAnchor();
-        return true;
-      }
-
-      function goHomeJournalFromBlog() {
-        try {
-          sessionStorage.setItem('pendingHomeHash', '#journal');
-          sessionStorage.removeItem('blogExitToJournal');
-        } catch (e) {}
-        document.documentElement.classList.add('has-pending-home-anchor');
-        window.location.replace(getHomeJournalHref());
-      }
-
-      function updateBlogExitFlag() {
-        if (!isBlogPath(window.location.pathname)) {
-          try {
-            sessionStorage.removeItem('blogInternalNav');
-          } catch (e) {}
-          return;
-        }
-
-        if (isBlogIndexPath(window.location.pathname)) {
-          try {
-            if (sessionStorage.getItem('blogInternalNav') === '1') {
-              sessionStorage.removeItem('blogInternalNav');
-              sessionStorage.removeItem('blogExitToJournal');
-            } else {
-              sessionStorage.setItem('blogExitToJournal', '1');
-            }
-          } catch (e) {}
-          return;
-        }
-
-        try {
-          if (sessionStorage.getItem('blogInternalNav') === '1') {
-            sessionStorage.removeItem('blogInternalNav');
-            sessionStorage.removeItem('blogExitToJournal');
-          } else {
-            sessionStorage.setItem('blogExitToJournal', '1');
-          }
-        } catch (e) {}
-      }
-
-      function initBlogBackNavigation() {
-        updateBlogExitFlag();
-
-        if (!isBlogPath(window.location.pathname)) {
-          applyJournalAfterBlogExit();
-        }
-      }
-
-      if (!window.__blogBackNavigationInit) {
-        window.__blogBackNavigationInit = true;
-
-        document.addEventListener(
-          'click',
-          function (event) {
-            if (!isBlogPath(window.location.pathname)) return;
-            var link =
-              event.target &&
-              event.target.closest &&
-              event.target.closest('a[href]');
-            if (!link) return;
-            try {
-              var url = new URL(link.href, window.location.origin);
-              if (
-                url.origin === window.location.origin &&
-                isBlogPath(url.pathname)
-              ) {
-                sessionStorage.setItem('blogInternalNav', '1');
-              }
-            } catch (e) {}
-          },
-          true,
-        );
-
-        window.addEventListener('popstate', function () {
-          requestAnimationFrame(function () {
-            if (applyJournalAfterBlogExit()) return;
-
-            try {
-              if (
-                isBlogPath(window.location.pathname) &&
-                sessionStorage.getItem('blogExitToJournal') === '1'
-              ) {
-                goHomeJournalFromBlog();
-              }
-            } catch (e) {}
-          });
-        });
-      }
-
-      initBlogBackNavigation();
-      document.addEventListener('astro:page-load', initBlogBackNavigation);
-    </script>
-    <!-- Scroll reveal + scroll lock (модалки) -->
-    <script is:inline>
-      window.initScrollReveal = () => {
-        if (window.__revealObserver) {
-          window.__revealObserver.disconnect();
-        }
-
-        const prefersReduced = window.matchMedia(
-          '(prefers-reduced-motion: reduce)',
-        ).matches;
-
-        const observer = new IntersectionObserver(
-          (entries, obs) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('reveal-visible');
-                obs.unobserve(entry.target);
-              }
-            });
-          },
-          {
-            root: null,
-            rootMargin: '0px 0px -4% 0px',
-            threshold: 0.01,
-          },
-        );
-
-        window.__revealObserver = observer;
-
-        const viewportH =
-          window.innerHeight || document.documentElement.clientHeight;
-
-        document.querySelectorAll('.reveal-hidden').forEach((el) => {
-          if (prefersReduced) {
-            el.classList.add('reveal-visible');
-            return;
-          }
-
-          const rect = el.getBoundingClientRect();
-          const inView = rect.top < viewportH * 0.96 && rect.bottom > 0;
-
-          if (inView) {
-            el.classList.add('reveal-visible');
-            return;
-          }
-
-          el.classList.remove('reveal-visible');
-          observer.observe(el);
-        });
-      };
-
-      window.initScrollReveal();
-
-      document.addEventListener('astro:before-swap', () => {
-        document.documentElement.classList.add('is-route-swapping');
-      });
-
-      document.addEventListener('astro:page-load', () => {
-        document.documentElement.classList.remove('is-route-swapping');
-        requestAnimationFrame(() => {
-          window.initScrollReveal?.();
-          window.initSearchWidget?.();
-          window.initNemoWidget?.();
-        });
-      });
-
-      function getScrollbarWidth() {
-        return window.innerWidth - document.documentElement.clientWidth;
-      }
-
-      window.lockScroll = () => {
-        const scrollbarWidth = getScrollbarWidth();
-
-        if (scrollbarWidth <= 0) {
-          document.body.style.overflow = 'hidden';
-          return;
-        }
-
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-
-        const header = document.querySelector('header');
-        if (header) {
-          header.style.paddingRight = `${scrollbarWidth}px`;
-        }
-
-        document.body.style.overflow = 'hidden';
-      };
-
-      window.unlockScroll = () => {
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-
-        const header = document.querySelector('header');
-        if (header) {
-          header.style.paddingRight = '';
-        }
-      };
-    </script>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="only light" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#00abb3" />
+		<meta name="geo.region" content="RU-SVE" />
+
+		{
+			import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION && (
+				<meta
+					name="google-site-verification"
+					content={import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION}
+				/>
+			)
+		}
+		{
+			import.meta.env.PUBLIC_YANDEX_VERIFICATION && (
+				<meta
+					name="yandex-verification"
+					content={import.meta.env.PUBLIC_YANDEX_VERIFICATION}
+				/>
+			)
+		}
+
+		<!-- Favicon (из assets — оптимизируется при сборке) -->
+		<link rel="icon" type="image/png" href={favicon.src} />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+
+		<meta name="robots" content={robots} />
+
+		<link rel="canonical" href={canonical} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="ANRO TRIP" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:image:secure_url" content={ogImageUrl} />
+		<meta property="og:image:type" content={ogImageType} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="ANRO TRIP" />
+		<meta property="og:locale" content="ru_RU" />
+
+		<!-- Twitter / X Card (превью при шеринге; дублирует OG для совместимости с X и краулерами) -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
+		<meta name="twitter:image:alt" content="ANRO TRIP" />
+
+		<!-- Schema.org JSON-LD -->
+		{
+			showSchema && (
+				<script
+					is:inline
+					type="application/ld+json"
+					set:html={JSON.stringify(schemaOrgGraph)}
+				/>
+			)
+		}
+
+		<script define:vars={{ basePath }}>
+			import { initPendingHomeAnchor } from '../lib/client/pending-home-anchor.ts';
+
+			initPendingHomeAnchor(basePath);
+		</script>
+
+		<ClientRouter />
+
+		<title>{title}</title>
+		<slot name="head" />
+	</head>
+	<body
+		class="bg-white text-gray-900 font-inter antialiased overflow-x-hidden selection:bg-primary/20 selection:text-primary-dark"
+		data-base={base}
+	>
+		{
+			/* Плавный скролл, scroll reveal и блокировка скролла — src/lib/client/*.ts */
+		}
+		<script>
+			import { createFocusTrap } from '../lib/client/focus-trap.ts';
+			import { lockScroll, unlockScroll } from '../lib/client/scroll-lock.ts';
+			import { initScrollReveal } from '../lib/client/scroll-reveal.ts';
+			import {
+				initAnchorSmoothScroll,
+				smoothScrollIntoView,
+				smoothScrollTo,
+			} from '../lib/client/smooth-scroll.ts';
+
+			window.createFocusTrap = createFocusTrap;
+			window.lockScroll = lockScroll;
+			window.unlockScroll = unlockScroll;
+			window.smoothScrollTo = smoothScrollTo;
+			window.smoothScrollIntoView = smoothScrollIntoView;
+			window.initScrollReveal = initScrollReveal;
+
+			initAnchorSmoothScroll();
+			initScrollReveal();
+
+			document.addEventListener('astro:before-swap', () => {
+				document.documentElement.classList.add('is-route-swapping');
+			});
+
+			document.addEventListener('astro:page-load', () => {
+				document.documentElement.classList.remove('is-route-swapping');
+				requestAnimationFrame(() => {
+					window.initScrollReveal?.();
+					window.initSearchWidget?.();
+					window.initNemoWidget?.();
+				});
+			});
+		</script>
+		{/* Skip Link: виден при фокусе (Tab), для клавиатуры и скринридеров */}
+		<a
+			href="#content"
+			class="fixed left-4 top-0 z-overlay-top -translate-y-full rounded-b-md bg-primary px-4 py-2.5 text-sm font-semibold text-white focus:shadow-lg transition-transform duration-fast focus:translate-y-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+		>
+			Перейти к содержимому
+		</a>
+		{showScrollProgress && <ScrollProgress />}
+		<slot />
+		{showScrollToTop && <ScrollToTop variant={scrollToTopVariant} />}
+		{showFavorites && <FavoritesWidget />}
+		{showOfficeWidget && <OfficeWidget variant={officeWidgetVariant} />}
+		<CookieBanner />
+		<GiftModal />
+		<CallbackModal />
+		{
+			/* Tourvisor не поддерживает View Transition → полная перезагрузка при переходе на главную; при «Назад» из bfcache тоже перезагружаем */
+		}
+		<script>
+			import { initLayoutNavigation } from '../lib/client/layout-navigation.ts';
+
+			initLayoutNavigation();
+		</script>
+	</body>
 </html>

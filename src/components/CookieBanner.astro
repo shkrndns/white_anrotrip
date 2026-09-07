@@ -4,101 +4,113 @@ import { sitePrivacy } from '../lib/site-urls';
 ---
 
 <div
-  id="cookie-banner"
-  class="fixed bottom-4 z-2147483640 max-w-[360px] rounded-2xl overflow-hidden bg-white/85 backdrop-blur-md border border-white/60 shadow-xl transition-all duration-slow translate-y-full opacity-0 pointer-events-none max-md:left-1/2 max-md:right-auto max-md:w-[min(360px,calc(100vw-2rem))] max-md:-translate-x-1/2 md:right-4 md:w-full md:translate-x-0"
-  role="dialog"
-  aria-labelledby="cookie-banner-title"
-  aria-describedby="cookie-banner-desc"
+	id="cookie-banner"
+	class="fixed bottom-4 z-2147483640 max-w-[360px] rounded-2xl overflow-hidden bg-white/85 backdrop-blur-md border border-white/60 shadow-xl transition-all duration-slow translate-y-full opacity-0 pointer-events-none max-md:left-1/2 max-md:right-auto max-md:w-[min(360px,calc(100vw-2rem))] max-md:-translate-x-1/2 md:right-4 md:w-full md:translate-x-0"
+	role="dialog"
+	aria-labelledby="cookie-banner-title"
+	aria-describedby="cookie-banner-desc"
 >
-  <div class="relative px-5 pt-5 pb-5">
-    <button
-      type="button"
-      id="close-cookie-banner"
-      aria-label="Отклонить cookie и закрыть"
-      class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100/80 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-    >
-      <XMarkIcon iconClass="w-4 h-4" strokeWidth={2.5} />
-    </button>
+	<div class="relative px-5 pt-5 pb-5">
+		<button
+			type="button"
+			id="close-cookie-banner"
+			aria-label="Отклонить cookie и закрыть"
+			class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100/80 transition-[color,background-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+		>
+			<XMarkIcon iconClass="w-4 h-4" strokeWidth={2.5} />
+		</button>
 
-    <h2
-      id="cookie-banner-title"
-      class="font-montserrat font-bold text-gray-900 text-sm pr-8 mb-2"
-    >
-      Мы используем cookie
-    </h2>
-    <p
-      id="cookie-banner-desc"
-      class="text-gray-600 text-xs leading-relaxed font-inter mb-4"
-    >
-      Чтобы сайт работал корректно. Мы сохраняем ваш выбор в браузере; при использовании
-      поиска туров и авиабилетов могут применяться cookie партнёрских виджетов. Продолжая,
-      вы соглашаетесь с
-      <a
-        href={sitePrivacy()}
-        class="text-primary hover:underline font-medium cursor-pointer"
-        >Политикой конфиденциальности</a
-      >.
-    </p>
-    <div class="flex flex-col gap-2">
-      <button
-        type="button"
-        id="accept-cookies"
-        class="w-full py-3 rounded-xl bg-primary text-white font-montserrat font-bold text-xs uppercase tracking-wider border-2 border-primary hover:bg-white hover:text-primary transition-[color,background-color,border-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      >
-        Принять
-      </button>
-      <button
-        type="button"
-        id="reject-cookies"
-        class="w-full py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-montserrat font-bold text-xs uppercase tracking-wider hover:bg-gray-50 hover:border-gray-300 transition-[color,background-color,border-color] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      >
-        Отклонить
-      </button>
-    </div>
-  </div>
+		<h2
+			id="cookie-banner-title"
+			class="font-montserrat font-bold text-gray-900 text-sm pr-8 mb-2"
+		>
+			Мы используем cookie
+		</h2>
+		<p
+			id="cookie-banner-desc"
+			class="text-gray-600 text-xs leading-relaxed font-inter mb-4"
+		>
+			Чтобы сайт работал корректно. Мы сохраняем ваш выбор в браузере; при
+			использовании поиска туров и авиабилетов могут применяться cookie
+			партнёрских виджетов. Продолжая, вы соглашаетесь с
+			<a
+				href={sitePrivacy()}
+				class="text-primary hover:underline font-medium cursor-pointer"
+				>Политикой конфиденциальности</a
+			>.
+		</p>
+		<div class="flex flex-col gap-2">
+			<button
+				type="button"
+				id="accept-cookies"
+				class="w-full py-3 rounded-xl bg-primary text-white font-montserrat font-bold text-xs uppercase tracking-wider border-2 border-primary hover:bg-white hover:text-primary transition-[color,background-color,border-color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+			>
+				Принять
+			</button>
+			<button
+				type="button"
+				id="reject-cookies"
+				class="w-full py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-montserrat font-bold text-xs uppercase tracking-wider hover:bg-gray-50 hover:border-gray-300 transition-[color,background-color,border-color] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+			>
+				Отклонить
+			</button>
+		</div>
+	</div>
 </div>
 
 <script>
-  const banner = document.getElementById('cookie-banner');
-  const acceptBtn = document.getElementById('accept-cookies');
-  const rejectBtn = document.getElementById('reject-cookies');
-  const closeBtn = document.getElementById('close-cookie-banner');
-  const STORAGE_KEY = 'anro_cookies_accepted';
+	import {
+		createFocusTrap,
+		type FocusTrapController,
+	} from '../lib/client/focus-trap.ts';
 
-  /** accepted: согласие / отказ или закрытие без согласия */
-  const hideCookieBanner = (accepted: boolean) => {
-    localStorage.setItem(STORAGE_KEY, accepted ? 'true' : 'false');
+	const banner = document.getElementById('cookie-banner');
+	const acceptBtn = document.getElementById('accept-cookies');
+	const rejectBtn = document.getElementById('reject-cookies');
+	const closeBtn = document.getElementById('close-cookie-banner');
+	const STORAGE_KEY = 'anro_cookies_accepted';
+	let cookieFocusTrap: FocusTrapController | null = null;
 
-    if (banner) {
-      banner.classList.add(
-        'translate-y-full',
-        'opacity-0',
-        'pointer-events-none',
-      );
-    }
+	/** accepted: согласие / отказ или закрытие без согласия */
+	const hideCookieBanner = (accepted: boolean) => {
+		cookieFocusTrap?.deactivate();
+		cookieFocusTrap = null;
+		localStorage.setItem(STORAGE_KEY, accepted ? 'true' : 'false');
 
-    setTimeout(() => {
-      banner?.remove();
-    }, 300);
-  };
+		if (banner) {
+			banner.classList.add(
+				'translate-y-full',
+				'opacity-0',
+				'pointer-events-none',
+			);
+		}
 
-  const consent = localStorage.getItem(STORAGE_KEY);
-  if (consent !== 'true' && consent !== 'false') {
-    setTimeout(() => {
-      if (banner) {
-        banner.classList.remove(
-          'translate-y-full',
-          'opacity-0',
-          'pointer-events-none',
-        );
-        banner.classList.add('opacity-100');
-      }
-    }, 1000); // 1s до показа (UX)
-  } else {
-    banner?.remove();
-  }
+		setTimeout(() => {
+			banner?.remove();
+		}, 300);
+	};
 
-  acceptBtn?.addEventListener('click', () => hideCookieBanner(true));
-  rejectBtn?.addEventListener('click', () => hideCookieBanner(false));
-  closeBtn?.addEventListener('click', () => hideCookieBanner(false));
+	const consent = localStorage.getItem(STORAGE_KEY);
+	if (consent !== 'true' && consent !== 'false') {
+		setTimeout(() => {
+			if (banner) {
+				banner.classList.remove(
+					'translate-y-full',
+					'opacity-0',
+					'pointer-events-none',
+				);
+				banner.classList.add('opacity-100');
+				if (banner instanceof HTMLElement) {
+					cookieFocusTrap = createFocusTrap(banner);
+					cookieFocusTrap.activate(acceptBtn as HTMLElement | null);
+				}
+			}
+		}, 1000); // 1s до показа (UX)
+	} else {
+		banner?.remove();
+	}
+
+	acceptBtn?.addEventListener('click', () => hideCookieBanner(true));
+	rejectBtn?.addEventListener('click', () => hideCookieBanner(false));
+	closeBtn?.addEventListener('click', () => hideCookieBanner(false));
 </script>

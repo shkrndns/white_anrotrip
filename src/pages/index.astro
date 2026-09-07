@@ -23,165 +23,88 @@ const heroPreload = await getImage({ src: heroBg, width: 1920, quality: 90 });
 ---
 
 <Layout
-  title="ANRO TRIP — Будь на высоте!"
-  description="Туристическое агентство ANRO TRIP в Екатеринбурге: подбор туров, авиабилетов, отелей и виз по всему миру. 19 лет опыта, персональный менеджер 24/7."
+	title="ANRO TRIP — Будь на высоте!"
+	description="Туристическое агентство ANRO TRIP в Екатеринбурге: подбор туров, авиабилетов, отелей и виз по всему миру. 19 лет опыта, персональный менеджер 24/7."
 >
-  <Fragment slot="head">
-    <link
-      rel="preload"
-      as="image"
-      href={heroPreload.src}
-      fetchpriority="high"
-    />
-    <!-- Tourvisor: preconnect для быстрой загрузки виджета при переключении вкладки -->
-    <link rel="preconnect" href="https://tourvisor.ru" />
-    <link rel="dns-prefetch" href="https://tourvisor.ru" />
-    <!-- Nemo: preconnect — ассеты подгружаются lazy через IntersectionObserver (NemoSearch.astro) -->
-    <link rel="preconnect" href="https://cdn.nemo.travel" />
-    <link rel="dns-prefetch" href="https://cdn.nemo.travel" />
-  </Fragment>
-  <Header homeQuickContacts />
+	<Fragment slot="head">
+		<link
+			rel="preload"
+			as="image"
+			href={heroPreload.src}
+			fetchpriority="high"
+		/>
+		<!-- Tourvisor: preconnect для быстрой загрузки виджета при переключении вкладки -->
+		<link rel="preconnect" href="https://tourvisor.ru" />
+		<link rel="dns-prefetch" href="https://tourvisor.ru" />
+		<!-- Nemo: preconnect — ассеты подгружаются lazy через IntersectionObserver (NemoSearch.astro) -->
+		<link rel="preconnect" href="https://cdn.nemo.travel" />
+		<link rel="dns-prefetch" href="https://cdn.nemo.travel" />
+	</Fragment>
+	<Header homeQuickContacts />
 
-  <main>
-    <!--
+	<main>
+		<!--
       Первый экран: Картинка, Заголовок, Кнопка, Стрелка.
       Занимает 100vh.
     -->
-    <Hero />
+		<Hero />
 
-    <!--
+		<!--
       Блок контента.
       mt-[20vh] сдвигает его вниз, открывая картинку Hero.
       bg-white — белый фон
       shadow — тень сверху
     -->
-    <div
-      id="content"
-      class="relative z-10 mt-[20vh] bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(15,76,129,0.12)] transition-colors duration-slow ease-in-out"
-    >
-      <!-- Якорь для кнопки "Поиск туров" (невидимый). scroll-margin — подсказка браузеру; точная коррекция — скрипт ниже (как Hero + Header). -->
-      <div
-        id="search"
-        class="absolute -top-32 w-full h-1 scroll-mt-19.5 max-md:scroll-mt-14"
-        aria-hidden="true"
-      >
-      </div>
+		<div
+			id="content"
+			class="relative z-10 mt-[20vh] bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(15,76,129,0.12)] transition-colors duration-slow ease-in-out"
+		>
+			<!-- Якорь для кнопки "Поиск туров" (невидимый). scroll-margin — подсказка браузеру; точная коррекция — скрипт ниже (как Hero + Header). -->
+			<div
+				id="search"
+				class="absolute -top-32 w-full h-1 scroll-mt-19.5 max-md:scroll-mt-14"
+				aria-hidden="true"
+			>
+			</div>
 
-      <!--
+			<!--
          Виджет поиска.
          -translate-y-24 поднимает его ВВЕРХ на границу Hero.
          glass-panel — класс из global.css.
       -->
-      <div class="relative z-20 -translate-y-24 px-4 sm:px-6 max-w-5xl 2xl:max-w-7xl mx-auto">
-        <SearchWidget />
-      </div>
+			<div
+				class="relative z-20 -translate-y-24 px-4 sm:px-6 max-w-5xl 2xl:max-w-7xl mx-auto"
+			>
+				<SearchWidget />
+			</div>
 
-      <div class="space-y-0">
-        <!-- Якорь для стрелочки "Популярные туры" -->
-        <!-- Отрицательный margin подтягивает блок к форме поиска, не меняя внутренние отступы PopularTours -->
-        <div id="popular-tours" class="scroll-mt-26 -mt-26">
-          <PopularTours />
-        </div>
+			<div class="space-y-0">
+				<!-- Якорь для стрелочки "Популярные туры" -->
+				<!-- Отрицательный margin подтягивает блок к форме поиска, не меняя внутренние отступы PopularTours -->
+				<div id="popular-tours" class="scroll-mt-26 -mt-26">
+					<PopularTours />
+				</div>
 
-        <JournalSection />
+				<JournalSection />
 
-        <About />
-        <Partners />
-        <Reviews />
-        <OurPartners />
-        <Awards />
-        <GiftSection />
-        <FAQ />
-        <Team />
-        <Contacts />
-      </div>
-    </div>
-  </main>
-  <Footer />
+				<About />
+				<Partners />
+				<Reviews />
+				<OurPartners />
+				<Awards />
+				<GiftSection />
+				<FAQ />
+				<Team />
+				<Contacts />
+			</div>
+		</div>
+	</main>
+	<Footer />
 
-  <!-- Стабильный вход на главную по якорям из внутренних страниц: сначала выставляем позицию, потом показываем страницу -->
-  <script is:inline>
-    (function () {
-      function getAnchorOffset(id) {
-        var headerEl = document.getElementById('site-header');
-        var headerHeight = headerEl ? headerEl.offsetHeight : 64;
-        var isMobile = window.matchMedia('(max-width: 767px)').matches;
+	<!-- Стабильный вход на главную по якорям из внутренних страниц -->
+	<script>
+		import { initHomePageAnchor } from '../lib/client/home-page-anchor.ts';
 
-        if (id === 'search') return isMobile ? headerHeight - 16 : 78;
-
-        var scrollOffset = parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            '--scroll-offset',
-          ),
-        );
-
-        return headerHeight + (Number.isFinite(scrollOffset) ? scrollOffset : 24);
-      }
-
-      function revealPageAfterAnchor() {
-        document.documentElement.classList.add('is-home-anchor-ready');
-        window.setTimeout(function () {
-          document.documentElement.classList.remove(
-            'has-pending-home-anchor',
-            'is-home-anchor-ready',
-          );
-        }, 350);
-      }
-
-      function scrollToCurrentHash() {
-        var hash = window.location.hash;
-        if (!hash || hash.length < 2) return false;
-
-        var id = decodeURIComponent(hash.slice(1));
-        var anchor = document.getElementById(id);
-        if (!anchor) return;
-
-        var headerEl = document.getElementById('site-header');
-        var headerHeight = headerEl ? headerEl.offsetHeight : 64;
-
-        if (id !== 'search' && id !== 'content') {
-          var badge = anchor.querySelector(
-            '.section-badge, .inline-flex.rounded-full',
-          );
-          if (badge) {
-            var layoutTop = 0;
-            var node = badge;
-            while (node) {
-              layoutTop += node.offsetTop;
-              node = node.offsetParent;
-            }
-            var extraGap = id === 'directions' ? 20 : 0;
-            window.scrollTo({
-              top: layoutTop - headerHeight - 26 - extraGap,
-              behavior: 'auto',
-            });
-            return true;
-          }
-        }
-
-        var offset = getAnchorOffset(id);
-        var top = anchor.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top: top, behavior: 'auto' });
-        return true;
-      }
-
-      function runAfterLayout() {
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            if (scrollToCurrentHash()) {
-              revealPageAfterAnchor();
-            } else {
-              document.documentElement.classList.remove(
-                'has-pending-home-anchor',
-                'is-home-anchor-ready',
-              );
-            }
-          });
-        });
-      }
-
-      runAfterLayout();
-      document.addEventListener('astro:page-load', runAfterLayout);
-    })();
-  </script>
+		initHomePageAnchor();
+	</script>
 </Layout>

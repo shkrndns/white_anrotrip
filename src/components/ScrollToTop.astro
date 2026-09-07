@@ -2,125 +2,52 @@
 // src/components/ScrollToTop.astro
 /** default — над виджетом офиса; blog — 6px от низа и справа (страницы статей) */
 export interface Props {
-  variant?: 'default' | 'blog';
+	variant?: 'default' | 'blog';
 }
 
 const { variant = 'default' } = Astro.props;
 
 const positionClass =
-  variant === 'blog'
-    ? 'bottom-[16px] right-[16px]'
-    : 'bottom-32 right-6 sm:bottom-32 sm:right-6 lg:bottom-[70px] lg:right-5';
+	variant === 'blog'
+		? 'bottom-[16px] right-[16px]'
+		: 'bottom-32 right-6 sm:bottom-32 sm:right-6 lg:bottom-[70px] lg:right-5';
 ---
 
 <!-- Кнопка "Наверх" - изначально скрыта. Без backdrop-blur и filter — остаётся чёткой при scale -->
 <button
-  id="scroll-to-top"
-  aria-label="Вернуться наверх"
-  class:list={[
-    'scroll-to-top-btn fixed z-10 pointer-events-none opacity-0 translate-y-20 rounded-full bg-gray-900/95 p-3 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 cursor-pointer',
-    positionClass,
-  ]}
+	id="scroll-to-top"
+	aria-label="Вернуться наверх"
+	class:list={[
+		'scroll-to-top-btn fixed z-10 pointer-events-none opacity-0 translate-y-20 rounded-full bg-gray-900/95 p-3 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 cursor-pointer',
+		positionClass,
+	]}
 >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-6 w-6"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2.5"
-      d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-  </svg>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		class="h-6 w-6"
+		fill="none"
+		viewBox="0 0 24 24"
+		stroke="currentColor"
+		aria-hidden="true"
+	>
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2.5"
+			d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+	</svg>
 </button>
 
-<script is:inline>
-  (function () {
-    let scrollHandler = null;
-    let clickHandler = null;
+<script>
+	import { initScrollToTop } from '../lib/client/scroll-to-top.ts';
 
-    function initScrollToTop() {
-      const scrollBtn = document.getElementById('scroll-to-top');
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initScrollToTop);
+	} else {
+		initScrollToTop();
+	}
 
-      if (!scrollBtn) {
-        return;
-      }
-
-      // Удаляем старые обработчики при повторной инициализации (astro:page-load)
-      if (scrollHandler) {
-        window.removeEventListener('scroll', scrollHandler, { passive: true });
-      }
-      if (clickHandler) {
-        scrollBtn.removeEventListener('click', clickHandler);
-      }
-
-      let ticking = false;
-
-      function updateButtonVisibility() {
-        const docHeight = document.documentElement.scrollHeight;
-        const scrollPos = window.scrollY + window.innerHeight;
-
-        if (docHeight - scrollPos < 50) {
-          scrollBtn.classList.remove(
-            'opacity-0',
-            'translate-y-20',
-            'pointer-events-none',
-          );
-          scrollBtn.classList.add(
-            'opacity-100',
-            'translate-y-0',
-            'pointer-events-auto',
-          );
-        } else {
-          scrollBtn.classList.remove(
-            'opacity-100',
-            'translate-y-0',
-            'pointer-events-auto',
-          );
-          scrollBtn.classList.add(
-            'opacity-0',
-            'translate-y-20',
-            'pointer-events-none',
-          );
-        }
-
-        ticking = false;
-      }
-
-      scrollHandler = function onScroll() {
-        if (!ticking) {
-          window.requestAnimationFrame(updateButtonVisibility);
-          ticking = true;
-        }
-      };
-
-      clickHandler = function onClick() {
-        if (navigator.vibrate) {
-          navigator.vibrate(10);
-        }
-
-        // Единый детерминированный скролл (reduced-motion обрабатывается внутри)
-        window.smoothScrollTo(0);
-      };
-
-      window.addEventListener('scroll', scrollHandler, { passive: true });
-      scrollBtn.addEventListener('click', clickHandler);
-
-      updateButtonVisibility();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initScrollToTop);
-    } else {
-      initScrollToTop();
-    }
-
-    document.addEventListener('astro:page-load', () => {
-      requestAnimationFrame(initScrollToTop);
-    });
-  })();
+	document.addEventListener('astro:page-load', () => {
+		requestAnimationFrame(initScrollToTop);
+	});
 </script>

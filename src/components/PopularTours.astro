@@ -1,230 +1,197 @@
 ---
 import { getImage, Image } from 'astro:assets';
+import { tours } from '../data/tours';
 import FaIcon from './icons/FaIcon.astro';
-import antalyaImg  from '../assets/tours/antalya.webp';
-import thailandImg from '../assets/tours/thailand.webp';
-import egyptImg    from '../assets/tours/egypt.webp';
-import vietnamImg  from '../assets/tours/vietnam.webp';
+import SectionHeading from './ui/SectionHeading.astro';
 
-export interface Props { class?: string; }
+export interface Props {
+	class?: string;
+}
 const { class: classes = '' } = Astro.props;
-
-const tours = [
-  {
-    title: 'Турция, Анталья',
-    price: 'от 85 000 ₽',
-    image: antalyaImg,
-    size: 'tall',
-    badge: 'Хит продаж',
-    badgeClass: 'bg-red text-white',
-    tvCountry: 'Турция',
-  },
-  {
-    title: 'Таиланд, Пхукет',
-    price: 'от 115 000 ₽',
-    image: thailandImg,
-    size: 'wide',
-    badge: 'Расслабление',
-    badgeClass: 'bg-primary text-white',
-    tvCountry: 'Таиланд',
-  },
-  {
-    title: 'Египет, Шарм',
-    price: 'от 105 000 ₽',
-    image: egyptImg,
-    size: 'normal',
-    badge: 'Всё включено',
-    badgeClass: 'bg-gray-400 text-white',
-    tvCountry: 'Египет',
-  },
-  {
-    title: 'Вьетнам, Нячанг',
-    price: 'от 125 000 ₽',
-    image: vietnamImg,
-    size: 'normal',
-    badge: 'Пляжный отдых',
-    badgeClass: 'bg-white text-gray-900 border border-white/70',
-    tvCountry: 'Вьетнам',
-  },
-];
 
 // Tiny placeholders (20px) для blur-up — мгновенное отображение до загрузки полного изображения
 const tinyPlaceholders = await Promise.all(
-  tours.map((t) => getImage({ src: t.image, width: 20, quality: 20 }))
+	tours.map((t) => getImage({ src: t.image, width: 20, quality: 20 })),
 );
 ---
 
 <section id="tours" class={`py-[50px] bg-white overflow-hidden ${classes}`}>
-  <div class="@container container mx-auto px-4 sm:px-6 max-w-7xl">
+	<div class="@container container mx-auto px-4 sm:px-6 max-w-7xl">
+		<!-- Асимметричный заголовок -->
+		<div class="mt-5 mb-3.5 md:mb-5.5 reveal-hidden">
+			<div
+				class="flex flex-col @md:flex-row @md:items-end justify-between gap-4"
+			>
+				<div>
+					<SectionHeading badge="Туры">
+						Актуальные<br /><span class="text-primary">предложения</span>
+					</SectionHeading>
+				</div>
+				<p class="section-caption">
+					Актуальные предложения и направления,<br />
+					которые рекомендуют менеджеры ANRO TRIP<br />
+					<span class="text-gray-700"
+						>Нажмите на карточку, чтобы просмотреть подборку туров</span
+					>
+				</p>
+			</div>
+		</div>
 
-    <!-- Асимметричный заголовок -->
-    <div class="mt-5 mb-3.5 md:mb-5.5 reveal-hidden">
-      <div class="flex flex-col @md:flex-row @md:items-end justify-between gap-4">
-        <div>
-          <div class="section-badge mb-4">
-            <span class="section-badge__dot" aria-hidden="true"></span>
-            <span class="section-badge__label">Туры</span>
-          </div>
-          <h2 class="section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-tight">
-            Актуальные<br /><span class="text-primary">предложения</span>
-          </h2>
-        </div>
-        <p class="section-caption">
-          Актуальные предложения и направления,<br />
-          которые рекомендуют менеджеры ANRO TRIP<br />
-          <span class="text-gray-700">Нажмите на карточку, чтобы просмотреть подборку туров</span>
-        </p>
-      </div>
-    </div>
+		<!-- Сетка карточек -->
+		<div
+			class="grid grid-cols-1 @md:grid-cols-3 gap-3 md:gap-4 auto-rows-[240px] @lg:auto-rows-[270px]"
+			data-reveal-stagger
+		>
+			{
+				tours.map((tour, i) => (
+					<button
+						type="button"
+						data-tour-title={tour.title}
+						data-tv-country={tour.tvCountry}
+						aria-label={`Подобрать тур: ${tour.title} — переход к форме поиска`}
+						class:list={[
+							'@container group relative min-w-0 overflow-hidden rounded-3xl cursor-pointer transition-[opacity,transform,box-shadow] duration-slow shadow-[0_4px_24px_rgba(0,171,179,0.15)] hover:shadow-[0_8px_32px_rgba(0,171,179,0.25)] border border-white/10 reveal-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [content-visibility:auto]',
+							tour.size === 'large' ? '@md:col-span-2 @md:row-span-2' : '',
+							tour.size === 'tall' ? '@md:col-span-1 @md:row-span-2' : '',
+							tour.size === 'wide' ? '@md:col-span-2 @md:row-span-1' : '',
+							tour.size === 'normal' ? '@md:col-span-1 @md:row-span-1' : '',
+						]}
+					>
+						<div class="absolute inset-0">
+							<div
+								class="absolute inset-0 tour-card-breathe bg-cover bg-center bg-no-repeat"
+								style={`background-image: url('${tinyPlaceholders[i].src}');`}
+							>
+								<div class="absolute inset-0 transition-transform duration-slow ease-out group-hover:scale-[1.04]">
+									<Image
+										src={tour.image}
+										alt={tour.title}
+										width={1200}
+										height={800}
+										quality={92}
+										sizes={
+											tour.size === 'wide'
+												? '(max-width: 767px) 100vw, (min-width: 768px) 66vw'
+												: '(max-width: 767px) 100vw, (min-width: 768px) 33vw'
+										}
+										loading="lazy"
+										fetchpriority="low"
+										class="tour-card-image h-full w-full object-cover opacity-0 transition-opacity duration-500 ease-out image-sharp"
+									/>
+								</div>
+							</div>
+							<div class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/85%)_0%,rgb(0_0_0/25%)_50%,transparent_100%)] opacity-90 md:group-hover:opacity-70 md:transition-opacity md:duration-normal" />
+							<div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(0_0_0/20%)_0%,transparent_40%)]" />
+						</div>
 
-    <!-- Сетка карточек -->
-    <div class="grid grid-cols-1 @md:grid-cols-3 gap-3 md:gap-4 auto-rows-[240px] @lg:auto-rows-[270px]" data-reveal-stagger>
-      {tours.map((tour, i) => (
-        <button
-          type="button"
-          data-tour-title={tour.title}
-          data-tv-country={tour.tvCountry}
-          aria-label={`Подобрать тур: ${tour.title} — переход к форме поиска`}
-          class:list={[
-            '@container group relative min-w-0 overflow-hidden rounded-3xl cursor-pointer transition-[opacity,transform,box-shadow] duration-slow shadow-[0_4px_24px_rgba(0,171,179,0.15)] hover:shadow-[0_8px_32px_rgba(0,171,179,0.25)] border border-white/10 reveal-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [content-visibility:auto]',
-            tour.size === 'large'  ? '@md:col-span-2 @md:row-span-2' : '',
-            tour.size === 'tall'   ? '@md:col-span-1 @md:row-span-2' : '',
-            tour.size === 'wide'   ? '@md:col-span-2 @md:row-span-1' : '',
-            tour.size === 'normal' ? '@md:col-span-1 @md:row-span-1' : '',
-          ]}
-        >
-          <!-- Фото: blur-up (tiny placeholder) + fade-in при загрузке -->
-          <div class="absolute inset-0">
-            <div
-              class="absolute inset-0 tour-card-breathe bg-cover bg-center bg-no-repeat"
-              style={`background-image: url('${tinyPlaceholders[i].src}');`}
-            >
-              <!-- Wrapper для плавного scale — без конфликта с image-sharp -->
-              <div class="absolute inset-0 transition-transform duration-slow ease-out group-hover:scale-[1.04]">
-                <Image
-                  src={tour.image}
-                  alt={tour.title}
-                  width={1200}
-                  height={800}
-                  quality={92}
-                  sizes={tour.size === 'wide' ? '(max-width: 767px) 100vw, (min-width: 768px) 66vw' : '(max-width: 767px) 100vw, (min-width: 768px) 33vw'}
-                  loading="lazy"
-                  fetchpriority="low"
-                  class="tour-card-image h-full w-full object-cover opacity-0 transition-opacity duration-500 ease-out image-sharp"
-                />
-              </div>
-            </div>
-            <!-- Градиент снизу -->
-            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/85%)_0%,rgb(0_0_0/25%)_50%,transparent_100%)] opacity-90 md:group-hover:opacity-70 md:transition-opacity md:duration-normal"></div>
-            <!-- Легкий оверлей сверху -->
-            <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(0_0_0/20%)_0%,transparent_40%)]"></div>
-          </div>
+						<div class="absolute inset-0 p-5 sm:p-6 flex flex-col justify-between">
+							<div class="flex justify-between items-start">
+								<span
+									class:list={[
+										'inline-block rounded-full px-3 py-1 text-[0.625rem] font-black uppercase tracking-wider',
+										tour.badgeClass,
+									]}
+								>
+									{tour.badge}
+								</span>
+								<span class="hidden sm:flex w-8 h-8 rounded-full bg-white/15 items-center justify-center opacity-0 md:group-hover:opacity-100 md:transition-opacity md:duration-normal -translate-y-1 md:group-hover:translate-y-0">
+									<FaIcon
+										name="fa6-solid:arrow-right"
+										iconClass="text-sm leading-none text-white md:transition-transform md:duration-normal md:group-hover:translate-x-0.5"
+									/>
+								</span>
+							</div>
 
-          <!-- Контент -->
-          <div class="absolute inset-0 p-5 sm:p-6 flex flex-col justify-between">
-            <!-- Бейдж -->
-            <div class="flex justify-between items-start">
-              <span class:list={[
-                'inline-block rounded-full px-3 py-1 text-[0.625rem] font-black uppercase tracking-wider',
-                tour.badgeClass,
-              ]}>
-                {tour.badge}
-              </span>
-              <!-- Иконка-стрелка появляется при hover (только десктоп) -->
-              <span class="hidden sm:flex w-8 h-8 rounded-full bg-white/15 items-center justify-center opacity-0 md:group-hover:opacity-100 md:transition-opacity md:duration-normal -translate-y-1 md:group-hover:translate-y-0">
-                <FaIcon
-                  name="fa6-solid:arrow-right"
-                  iconClass="text-sm leading-none text-white md:transition-transform md:duration-normal md:group-hover:translate-x-0.5"
-                />
-              </span>
-            </div>
+							<div class="transform translate-y-1.5 md:group-hover:translate-y-0 md:transition-transform md:duration-normal">
+								<h3 class="font-montserrat font-extrabold text-white leading-tight mb-1 text-[clamp(1rem,0.7rem+3.2cqw,1.65rem)] md:group-hover:text-[color-mix(in_srgb,var(--color-primary)_33%,white)] md:transition-colors md:duration-normal">
+									{tour.title}
+								</h3>
+								<div class="flex items-center gap-2">
+									<p class="text-white/75 font-semibold text-sm">
+										{tour.price}
+									</p>
+									<span class="text-white/70 text-xs">· под ключ</span>
+								</div>
+							</div>
+						</div>
+					</button>
+				))
+			}
+		</div>
 
-            <!-- Название и цена -->
-            <div class="transform translate-y-1.5 md:group-hover:translate-y-0 md:transition-transform md:duration-normal">
-              <h3 class="font-montserrat font-extrabold text-white leading-tight mb-1 text-[clamp(1rem,0.7rem+3.2cqw,1.65rem)] md:group-hover:text-[color-mix(in_srgb,var(--color-primary)_33%,white)] md:transition-colors md:duration-normal">
-                {tour.title}
-              </h3>
-              <div class="flex items-center gap-2">
-                <p class="text-white/75 font-semibold text-sm">{tour.price}</p>
-                <span class="text-white/70 text-xs">· под ключ</span>
-              </div>
-            </div>
-          </div>
-        </button>
-      ))}
-    </div>
-
-    <!-- CTA под сеткой -->
-    <div class="text-center mt-8 reveal-hidden">
-      <a
-        id="popular-tours-all-btn"
-        href="#search"
-        class="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition-[color,transform] duration-fast group cursor-pointer"
-      >
-        Смотреть все направления
-        <FaIcon
-          name="fa6-solid:arrow-right"
-          iconClass="text-sm leading-none shrink-0 group-hover:translate-x-1 transition-transform duration-fast"
-        />
-      </a>
-    </div>
-  </div>
+		<!-- CTA под сеткой -->
+		<div class="text-center mt-8 reveal-hidden">
+			<a
+				id="popular-tours-all-btn"
+				href="#search"
+				class="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition-[color,transform] duration-fast group cursor-pointer"
+			>
+				Смотреть все направления
+				<FaIcon
+					name="fa6-solid:arrow-right"
+					iconClass="text-sm leading-none shrink-0 group-hover:translate-x-1 transition-transform duration-fast"
+				/>
+			</a>
+		</div>
+	</div>
 </section>
 
 <script>
-  const scrollToSearch = () => {
-    const anchor = document.getElementById('search');
-    if (anchor) {
-      const top = anchor.getBoundingClientRect().top + window.scrollY - 104;
-      window.smoothScrollTo(top);
-    }
-  };
+	const scrollToSearch = () => {
+		const anchor = document.getElementById('search');
+		if (anchor) {
+			const top = anchor.getBoundingClientRect().top + window.scrollY - 104;
+			window.smoothScrollTo(top);
+		}
+	};
 
-  document.querySelectorAll('button[data-tour-title]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const country = (btn as HTMLElement).dataset.tvCountry || '';
-      // 1. Переключаем вкладку «Туры и Отели» и инициируем предвыбор страны
-      window.switchSearchTab?.('tourvisor');
-      if (country) window.tvSelectCountry?.(country);
-      // 2. Скролл к виджету
-      scrollToSearch();
-    });
-  });
+	document.querySelectorAll('button[data-tour-title]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const country = (btn as HTMLElement).dataset.tvCountry || '';
+			// 1. Переключаем вкладку «Туры и Отели» и инициируем предвыбор страны
+			window.switchSearchTab?.('tourvisor');
+			if (country) window.tvSelectCountry?.(country);
+			// 2. Скролл к виджету
+			scrollToSearch();
+		});
+	});
 
-  document.getElementById('popular-tours-all-btn')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.switchSearchTab?.('tourvisor');
-    scrollToSearch();
-  });
+	document
+		.getElementById('popular-tours-all-btn')
+		?.addEventListener('click', (e) => {
+			e.preventDefault();
+			window.switchSearchTab?.('tourvisor');
+			scrollToSearch();
+		});
 
-  function initToursBreathePause() {
-    const toursSection = document.getElementById('tours');
-    if (!toursSection || toursSection.dataset.breatheObserved) return;
-    toursSection.dataset.breatheObserved = '1';
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          e.target.classList.toggle('tours-out-of-view', !e.isIntersecting);
-        });
-      },
-      { threshold: 0 }
-    );
-    observer.observe(toursSection);
-  }
-  initToursBreathePause();
-  document.addEventListener('astro:page-load', initToursBreathePause);
+	function initToursBreathePause() {
+		const toursSection = document.getElementById('tours');
+		if (!toursSection || toursSection.dataset.breatheObserved) return;
+		toursSection.dataset.breatheObserved = '1';
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					e.target.classList.toggle('tours-out-of-view', !e.isIntersecting);
+				});
+			},
+			{ threshold: 0 },
+		);
+		observer.observe(toursSection);
+	}
+	initToursBreathePause();
+	document.addEventListener('astro:page-load', initToursBreathePause);
 
-  // Blur-up: показать изображение при загрузке
-  document.querySelectorAll('.tour-card-image').forEach((img) => {
-    const show = () => img.classList.add('!opacity-100');
-    if ((img as HTMLImageElement).complete) show();
-    else img.addEventListener('load', show);
-  });
-  document.addEventListener('astro:page-load', () => {
-    document.querySelectorAll('.tour-card-image').forEach((img) => {
-      const show = () => img.classList.add('!opacity-100');
-      if ((img as HTMLImageElement).complete) show();
-      else img.addEventListener('load', show);
-    });
-  });
+	// Blur-up: показать изображение при загрузке
+	document.querySelectorAll('.tour-card-image').forEach((img) => {
+		const show = () => img.classList.add('!opacity-100');
+		if ((img as HTMLImageElement).complete) show();
+		else img.addEventListener('load', show);
+	});
+	document.addEventListener('astro:page-load', () => {
+		document.querySelectorAll('.tour-card-image').forEach((img) => {
+			const show = () => img.classList.add('!opacity-100');
+			if ((img as HTMLImageElement).complete) show();
+			else img.addEventListener('load', show);
+		});
+	});
 </script>

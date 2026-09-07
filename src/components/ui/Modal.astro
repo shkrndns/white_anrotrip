@@ -3,112 +3,58 @@
 import XMarkIcon from '../icons/XMarkIcon.astro';
 
 interface Props {
-  id: string;
-  title: string;
+	id: string;
+	title: string;
 }
 
 const { id, title } = Astro.props;
 ---
 
 <dialog
-  id={id}
-  class="modal bg-transparent p-0 backdrop:bg-black/50 backdrop:backdrop-blur-sm backdrop:max-md:backdrop-blur-none"
+	id={id}
+	class="modal bg-transparent p-0 backdrop:bg-black/50 backdrop:backdrop-blur-sm backdrop:max-md:backdrop-blur-none"
 >
-  <div
-    class="modal-box relative bg-white rounded-2xl shadow-2xl max-md:shadow-lg p-8 max-w-md w-full mx-auto mt-20 max-h-[90dvh] overflow-y-auto transform contain-[layout_paint]
+	<div
+		class="modal-box relative bg-white rounded-2xl shadow-2xl max-md:shadow-lg p-8 max-w-md w-full mx-auto mt-20 max-h-[90dvh] overflow-y-auto transform contain-[layout_paint]
       scale-95 opacity-0 open:scale-100 open:opacity-100 transition-[opacity,transform] duration-fast
       max-md:scale-100 max-md:opacity-100 max-md:translate-y-8 max-md:transition-transform max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]
       max-md:[&.modal-open]:translate-y-0"
-  >
-    <!-- Кнопка закрытия -->
-    <button
-      type="button"
-      class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-[color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
-      aria-label="Закрыть окно"
-    >
-      <XMarkIcon iconClass="h-6 w-6" />
-    </button>
+	>
+		<!-- Кнопка закрытия -->
+		<button
+			type="button"
+			class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-[color,transform] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+			aria-label="Закрыть окно"
+		>
+			<XMarkIcon iconClass="h-6 w-6" />
+		</button>
 
-    <!-- Заголовок -->
-    <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
-      {title}
-    </h3>
+		<!-- Заголовок -->
+		<h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+			{title}
+		</h3>
 
-    <!-- Контент (форма вставляется сюда) -->
-    <div class="modal-content">
-      <slot />
-    </div>
-  </div>
+		<!-- Контент (форма вставляется сюда) -->
+		<div class="modal-content">
+			<slot />
+		</div>
+	</div>
 </dialog>
 
-<script is:inline define:vars={{ id }}>
-  const dialog = document.getElementById(id);
-  let previousActiveElement = null;
+<script define:vars={{ id }}>
+	import { initModalDialog } from '../../lib/client/modal-dialog.ts';
 
-  function closeWithAnimation() {
-    if (!dialog) return;
-    const box = dialog.querySelector('.modal-box');
-    if (box) {
-      box.style.willChange = 'opacity, transform';
-      box.classList.remove('modal-open');
-      box.classList.add('scale-95', 'opacity-0');
-      const onCloseEnd = () => {
-        box.style.willChange = '';
-        dialog.close();
-      };
-      box.addEventListener('transitionend', onCloseEnd, { once: true });
-    } else {
-      dialog.close();
-    }
-  }
-
-  document.addEventListener(`open-modal-${id}`, () => {
-    if (!dialog) return;
-    previousActiveElement = document.activeElement;
-    dialog.showModal();
-    const box = dialog.querySelector('.modal-box');
-    if (box) {
-      box.style.willChange = 'opacity, transform';
-      box.classList.remove('scale-95', 'opacity-0');
-      box.classList.add('modal-open');
-      const onOpenEnd = () => {
-        box.style.willChange = '';
-      };
-      box.addEventListener('transitionend', onOpenEnd, { once: true });
-    }
-    const firstFocusable = dialog.querySelector('.close-modal');
-    firstFocusable?.focus();
-  });
-
-  dialog?.addEventListener('close', () => {
-    previousActiveElement?.focus();
-    previousActiveElement = null;
-  });
-
-  dialog?.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      closeWithAnimation();
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    const t = e.target;
-    const d = document.getElementById(id);
-    if (!d) return;
-    if (t.closest(`#${id} .close-modal`)) closeWithAnimation();
-    if (t === d) closeWithAnimation();
-  });
+	initModalDialog(id);
 </script>
 
 <style>
-  /* Анимация диалога — единый ритм (duration-fast = 200ms) */
-  dialog {
-    transition:
-      display var(--motion-duration-fast) allow-discrete,
-      overlay var(--motion-duration-fast) allow-discrete;
-  }
-  dialog::backdrop {
-    transition: background-color var(--motion-duration-fast);
-  }
+	/* Анимация диалога — единый ритм (duration-fast = 200ms) */
+	dialog {
+		transition:
+			display var(--motion-duration-fast) allow-discrete,
+			overlay var(--motion-duration-fast) allow-discrete;
+	}
+	dialog::backdrop {
+		transition: background-color var(--motion-duration-fast);
+	}
 </style>

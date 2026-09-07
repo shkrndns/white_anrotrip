@@ -5,306 +5,156 @@ import NemoSearch from './widgets/NemoSearch.astro';
 ---
 
 <section
-  id="search-widget"
-  class="search-widget-panel glass-panel max-md:backdrop-blur-none md:backdrop-blur-xl bg-white rounded-3xl border border-white/30 overflow-visible"
+	id="search-widget"
+	class="search-widget-panel glass-panel max-md:backdrop-blur-none md:backdrop-blur-xl bg-white rounded-3xl border border-white/30 overflow-visible"
 >
-  <!-- Переключатель вкладок -->
-  <div
-    class="flex p-2 gap-1.5 border-b border-gray-100"
-    role="tablist"
-    aria-label="Поиск: Авиабилеты или Туры и Отели"
-  >
-    <!-- Tab: Авиабилеты -->
-    <button
-      id="search-tab-nemo"
-      type="button"
-      role="tab"
-      aria-selected="true"
-      aria-controls="tab-nemo"
-      tabindex="0"
-      class="tab-btn flex-1 flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl font-bold text-sm text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] duration-fast relative active-tab cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      data-target="nemo"
-    >
-      <svg
-        class="w-4 h-4 shrink-0"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
-        ></path>
-      </svg>
-      <span class="relative z-10">Авиабилеты</span>
-      <span
-        class="active-indicator absolute inset-0 rounded-2xl bg-primary/8 scale-100 transition-transform duration-fast origin-center"
-      ></span>
-    </button>
+	<!-- Переключатель вкладок -->
+	<div
+		class="flex p-2 gap-1.5 border-b border-gray-100"
+		role="tablist"
+		aria-label="Поиск: Авиабилеты или Туры и Отели"
+	>
+		<!-- Tab: Авиабилеты -->
+		<button
+			id="search-tab-nemo"
+			type="button"
+			role="tab"
+			aria-selected="true"
+			aria-controls="tab-nemo"
+			tabindex="0"
+			class="tab-btn flex-1 flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl font-bold text-sm text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] duration-fast relative active-tab cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+			data-target="nemo"
+		>
+			<svg
+				class="w-4 h-4 shrink-0"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+				></path>
+			</svg>
+			<span class="relative z-10">Авиабилеты</span>
+			<span
+				class="active-indicator absolute inset-0 rounded-2xl bg-primary/8 scale-100 transition-transform duration-fast origin-center"
+			></span>
+		</button>
 
-    <!-- Tab: Туры и Отели -->
-    <button
-      id="search-tab-tourvisor"
-      type="button"
-      role="tab"
-      aria-selected="false"
-      aria-controls="tab-tourvisor"
-      tabindex="-1"
-      class="tab-btn flex-1 flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl font-bold text-sm text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] duration-fast relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      data-target="tourvisor"
-      data-tourvisor-tab
-    >
-      <svg
-        class="w-4 h-4 shrink-0"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        ></path>
-      </svg>
-      <span class="relative z-10">Туры и Отели</span>
-      <span
-        class="active-indicator absolute inset-0 rounded-2xl bg-primary/8 scale-0 transition-transform duration-fast origin-center"
-      ></span>
-    </button>
-  </div>
+		<!-- Tab: Туры и Отели -->
+		<button
+			id="search-tab-tourvisor"
+			type="button"
+			role="tab"
+			aria-selected="false"
+			aria-controls="tab-tourvisor"
+			tabindex="-1"
+			class="tab-btn flex-1 flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl font-bold text-sm text-gray-500 hover:text-gray-800 transition-[color,background-color,transform] duration-fast relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+			data-target="tourvisor"
+			data-tourvisor-tab
+		>
+			<svg
+				class="w-4 h-4 shrink-0"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+				></path>
+			</svg>
+			<span class="relative z-10">Туры и Отели</span>
+			<span
+				class="active-indicator absolute inset-0 rounded-2xl bg-primary/8 scale-0 transition-transform duration-fast origin-center"
+			></span>
+		</button>
+	</div>
 
-  <!-- Контент -->
-  <div class="p-4 sm:p-6 min-h-37.5 relative z-30">
-    <div
-      id="tab-nemo"
-      role="tabpanel"
-      aria-labelledby="search-tab-nemo"
-      class="tab-content block sw-fade-in"
-    >
-      <NemoSearch />
-    </div>
-    <div
-      id="tab-tourvisor"
-      role="tabpanel"
-      aria-labelledby="search-tab-tourvisor"
-      class="tab-content sw-fade-in hidden"
-      style="min-height: 400px; width: 100%;"
-    >
-      <!-- Подсказка о выбранной стране при клике на карточку тура -->
-      <div id="tv-country-hint" class="hidden mb-3" role="status" aria-live="polite">
-        <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <span id="tv-country-hint-text">Туры</span>
-          <span class="text-primary/60">— выберите страну в форме ниже</span>
-        </div>
-      </div>
-      <div class="tv-wrapper w-full bg-white rounded-xl min-h-112.5 relative">
-        <div
-          id="tourvisor-container"
-          class="tv-search-form tv-moduleid-192367 min-h-[400px]"
-        >
-        </div>
-        <div
-          id="tourvisor-loading"
-          class="absolute inset-0 flex items-center justify-center bg-white/90 rounded-xl transition-opacity duration-300 opacity-0 pointer-events-none"
-          aria-hidden="true"
-        >
-          <div class="flex flex-col items-center gap-3">
-            <div
-              class="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin"
-              role="status"
-              aria-label="Загрузка"
-            >
-            </div>
-            <span class="text-sm text-gray-500">Загрузка поиска туров…</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	<!-- Контент -->
+	<div class="p-4 sm:p-6 min-h-37.5 relative z-30">
+		<div
+			id="tab-nemo"
+			role="tabpanel"
+			aria-labelledby="search-tab-nemo"
+			class="tab-content block sw-fade-in"
+		>
+			<NemoSearch />
+		</div>
+		<div
+			id="tab-tourvisor"
+			role="tabpanel"
+			aria-labelledby="search-tab-tourvisor"
+			class="tab-content sw-fade-in hidden"
+			style="min-height: 400px; width: 100%;"
+		>
+			<!-- Подсказка о выбранной стране при клике на карточку тура -->
+			<div
+				id="tv-country-hint"
+				class="hidden mb-3"
+				role="status"
+				aria-live="polite"
+			>
+				<div
+					class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-medium"
+				>
+					<svg
+						class="w-4 h-4 shrink-0"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+						></path>
+					</svg>
+					<span id="tv-country-hint-text">Туры</span>
+					<span class="text-primary/60">— выберите страну в форме ниже</span>
+				</div>
+			</div>
+			<div class="tv-wrapper w-full bg-white rounded-xl min-h-112.5 relative">
+				<div
+					id="tourvisor-container"
+					class="tv-search-form tv-moduleid-192367 min-h-[400px]"
+				>
+				</div>
+				<div
+					id="tourvisor-loading"
+					class="absolute inset-0 flex items-center justify-center bg-white/90 rounded-xl transition-opacity duration-300 opacity-0 pointer-events-none"
+					aria-hidden="true"
+				>
+					<div class="flex flex-col items-center gap-3">
+						<div
+							class="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin"
+							role="status"
+							aria-label="Загрузка"
+						>
+						</div>
+						<span class="text-sm text-gray-500">Загрузка поиска туров…</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
-<script is:inline>
-  function initSearchWidget() {
-    const tabList = document.querySelector('#search-widget [role="tablist"]');
-    if (!tabList) return;
-    if (tabList.dataset.searchWidgetInit) return;
+<script>
+	import { initSearchWidget } from '../lib/client/search-widget.ts';
 
-    const tabs = Array.from(tabList.querySelectorAll('.tab-btn[role="tab"]'));
-    const contents = document.querySelectorAll('#search-widget .tab-content');
-    if (!tabs.length || !contents.length) return;
+	window.initSearchWidget = initSearchWidget;
 
-    tabList.dataset.searchWidgetInit = '1';
-
-    const switchTab = (targetId, focusActive = false) => {
-      contents.forEach((c) => {
-        c.classList.add('hidden');
-        c.style.display = 'none';
-      });
-
-      tabs.forEach((t) => {
-        t.classList.remove('text-primary', 'active-tab');
-        t.setAttribute('aria-selected', 'false');
-        t.setAttribute('tabindex', '-1');
-        const ind = t.querySelector('.active-indicator');
-        if (ind) ind.classList.replace('scale-100', 'scale-0');
-      });
-
-      const activeBtn = tabList.querySelector(
-        '.tab-btn[data-target="' + targetId + '"]',
-      );
-      if (activeBtn) {
-        activeBtn.classList.add('text-primary', 'active-tab');
-        activeBtn.setAttribute('aria-selected', 'true');
-        activeBtn.setAttribute('tabindex', '0');
-        if (focusActive) activeBtn.focus();
-        const ind = activeBtn.querySelector('.active-indicator');
-        if (ind) ind.classList.replace('scale-0', 'scale-100');
-      }
-
-      const targetContent = document.getElementById('tab-' + targetId);
-      if (targetContent) {
-        targetContent.classList.remove('hidden');
-        targetContent.style.display = 'block';
-        if (targetId === 'tourvisor') {
-          loadTourvisor(true);
-        }
-      }
-    };
-
-    function loadTourvisor(showLoading) {
-      var loadingEl = document.getElementById('tourvisor-loading');
-      var container = document.getElementById('tourvisor-container');
-      if (window.__tourvisorScriptAdded) {
-        if (container && !container.children.length) {
-          window.__tourvisorReady = false;
-        }
-        if (showLoading && loadingEl && !window.__tourvisorReady) {
-          loadingEl.classList.remove('opacity-0', 'pointer-events-none');
-          loadingEl.setAttribute('aria-hidden', 'false');
-        }
-        if (container && !container.children.length) {
-          window.dispatchEvent(new Event('resize'));
-        }
-        return;
-      }
-      window.__tourvisorScriptAdded = true;
-      if (showLoading && loadingEl) {
-        loadingEl.classList.remove('opacity-0', 'pointer-events-none');
-        loadingEl.setAttribute('aria-hidden', 'false');
-      }
-      var s = document.createElement('script');
-      s.src = 'https://tourvisor.ru/module/init.js';
-      s.async = true;
-      s.onload = function () {
-        window.__tourvisorReady = true;
-        if (loadingEl) {
-          loadingEl.classList.add('opacity-0', 'pointer-events-none');
-          loadingEl.setAttribute('aria-hidden', 'true');
-        }
-        setTimeout(function () {
-          window.dispatchEvent(new Event('resize'));
-        }, 150);
-      };
-      document.body.appendChild(s);
-    }
-
-    function prefetchTourvisorOnHover() {
-      var tab = document.querySelector('[data-tourvisor-tab]');
-      if (!tab) return;
-      tab.addEventListener(
-        'mouseenter',
-        function () {
-          loadTourvisor(false);
-        },
-        { once: true },
-      );
-      tab.addEventListener(
-        'touchstart',
-        function () {
-          loadTourvisor(false);
-        },
-        { once: true, passive: true },
-      );
-    }
-    prefetchTourvisorOnHover();
-
-    window.loadTourvisor = loadTourvisor;
-
-    // Глобальный переключатель вкладок — используется из PopularTours и других мест
-    window.switchSearchTab = (targetId, focus) => switchTab(targetId, !!focus);
-
-    // ── Визуальная подсказка страны (Tourvisor не поддерживает программный выбор) ──
-    // Tourvisor проверяет event.isTrusted и блокирует любые синтетические клики.
-    // Показываем баннер над виджетом с названием страны, к которой интересовался пользователь.
-    var _hintTimer = null;
-
-    window.tvSelectCountry = function (countryName) {
-      if (!countryName) return;
-      var hint = document.getElementById('tv-country-hint');
-      var hintText = document.getElementById('tv-country-hint-text');
-      if (!hint || !hintText) return;
-
-      hintText.textContent = countryName;
-      hint.classList.remove('hidden');
-
-      if (_hintTimer) clearTimeout(_hintTimer);
-      _hintTimer = setTimeout(function () {
-        hint.classList.add('hidden');
-        _hintTimer = null;
-      }, 5000);
-    };
-    // ─────────────────────────────────────────────────────────────────────────
-
-    tabList.addEventListener('keydown', (e) => {
-      const currentIndex = tabs.findIndex(
-        (t) => t.getAttribute('tabindex') === '0',
-      );
-      if (currentIndex === -1) return;
-      let nextIndex = currentIndex;
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        nextIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
-      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        nextIndex = currentIndex === tabs.length - 1 ? 0 : currentIndex + 1;
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        nextIndex = 0;
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        nextIndex = tabs.length - 1;
-      } else return;
-      const target = tabs[nextIndex]?.getAttribute('data-target');
-      if (target) switchTab(target, true);
-    });
-
-    const firstBtn = tabList.querySelector('.tab-btn.active-tab');
-    if (firstBtn) {
-      const ind = firstBtn.querySelector('.active-indicator');
-      if (ind) ind.classList.replace('scale-0', 'scale-100');
-      firstBtn.classList.add('text-primary');
-    }
-
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        const target = tab.getAttribute('data-target');
-        if (target) switchTab(target);
-      });
-    });
-  }
-
-  window.initSearchWidget = initSearchWidget;
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSearchWidget);
-  } else {
-    initSearchWidget();
-  }
-  document.addEventListener('astro:page-load', initSearchWidget);
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initSearchWidget);
+	} else {
+		initSearchWidget();
+	}
+	document.addEventListener('astro:page-load', initSearchWidget);
 </script>

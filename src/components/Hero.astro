@@ -3,456 +3,414 @@
 import { getImage, Image } from 'astro:assets';
 import heroBg from '../assets/hero/world.webp';
 import {
-  maxIconPath,
-  socialLogoTransform0,
-  socialLogoTransform80,
-  telegramIconPath,
-  vkIconPath,
+	maxIconPath,
+	socialLogoTransform0,
+	socialLogoTransform80,
+	telegramIconPath,
+	vkIconPath,
 } from '../lib/social-icons';
 import PhoneSolidIcon from './PhoneSolidIcon.astro';
+import { company, companyPhoneHref } from '../data/company';
+import { heroServiceLabels, heroStatPills } from '../data/hero-stats';
+
+const { phones, social } = company;
 
 // Tiny placeholder (20px) — как Tilda: размытый превью до загрузки полного изображения
 const tinyHero = await getImage({ src: heroBg, width: 20, quality: 20 });
-
-/** Пилюли под героем: якоря на главной */
-interface HeroStatPill {
-  val: string;
-  label: string;
-  href: string;
-  ariaLabel: string;
-  footnote?: boolean;
-  /** Пустая пилюля-заглушка (пока без текста) */
-  placeholder?: boolean;
-}
-
-const heroStatPills: HeroStatPill[] = [
-  {
-    val: '19 ЛЕТ',
-    label: 'ОПЫТА',
-    href: '#partners',
-    ariaLabel: 'Перейти к разделу «Нам доверяют»',
-  },
-  {
-    val: 'ЛИЧНЫЙ',
-    label: 'АССИСТЕНТ',
-    href: '#business',
-    ariaLabel: 'Перейти к разделу «Наши услуги»',
-  },
-  {
-    val: '24/7',
-    label: 'ПОДДЕРЖКА',
-    href: '#about',
-    ariaLabel: 'Перейти к разделу «О нас»',
-  },
-];
-
-/** Услуги в бейдже под хедером Hero */
-const heroServiceLabels = [
-  'Авиабилеты',
-  'Туры',
-  'Отели',
-  'Визовая поддержка',
-  'Трансферы',
-  'Страхование',
-];
 ---
 
 <!-- pt: под хедер; pb: зона стрелки. overflow-hidden — Ken Burns и запрет внутреннего скролла секции (overflow-x:hidden + y:visible даёт в браузере y:auto и «плашка крутится отдельно»). -->
 <section
-  id="hero"
-  class="sticky top-0 z-0 min-h-svh md:min-h-dvh w-full flex items-center justify-center overflow-hidden pt-[calc(var(--site-header-h,5rem)+0.75rem)] max-[720px]:pt-[calc(var(--site-header-h,5rem)+1rem)] pb-[clamp(2.75rem,7vh,4.75rem)]"
+	id="hero"
+	class="sticky top-0 z-0 min-h-svh md:min-h-dvh w-full flex items-center justify-center overflow-hidden pt-[calc(var(--site-header-h,5rem)+0.75rem)] max-[720px]:pt-[calc(var(--site-header-h,5rem)+1rem)] pb-[clamp(2.75rem,7vh,4.75rem)]"
 >
-  <!-- Фоновое изображение: tiny blur placeholder (как Tilda) + fade-in при загрузке -->
-  <div
-    class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-    style={`background-image: url('${tinyHero.src}'); background-color: #0c4a6e`}
-  >
-    <!-- Ken Burns: hero-kenburns scale-100 md:scale-105 — раскомментировать вместе с блоком в global.css -->
-    <Image
-      src={heroBg}
-      alt="Путешествия по всему миру"
-      width={1920}
-      height={1080}
-      sizes="100vw"
-      class="hero-bg-image h-full w-full object-cover opacity-0 transition-opacity duration-500 ease-out"
-      quality={90}
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-    />
-    <!-- ВРЕМЕННО ОТКЛЮЧЕНО: динамический градиент (время суток) — раскомментировать при необходимости
+	<!-- Фоновое изображение: tiny blur placeholder (как Tilda) + fade-in при загрузке -->
+	<div
+		class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+		style={`background-image: url('${tinyHero.src}'); background-color: #0c4a6e`}
+	>
+		<!-- Ken Burns: hero-kenburns scale-100 md:scale-105 — раскомментировать вместе с блоком в global.css -->
+		<Image
+			src={heroBg}
+			alt="Путешествия по всему миру"
+			width={1920}
+			height={1080}
+			sizes="100vw"
+			class="hero-bg-image h-full w-full object-cover opacity-0 transition-opacity duration-500 ease-out"
+			quality={90}
+			loading="eager"
+			fetchpriority="high"
+			decoding="async"
+		/>
+		<!-- ВРЕМЕННО ОТКЛЮЧЕНО: динамический градиент (время суток) — раскомментировать при необходимости
     <div
       id="hero-gradient"
       class="absolute inset-0 bg-linear-to-b transition-colors duration-[3s] ease-in-out"
     >
     </div>
     -->
-    <!-- Постоянный нижний затемняющий слой -->
-    <div
-      class="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent pointer-events-none"
-    >
-    </div>
-  </div>
+		<!-- Постоянный нижний затемняющий слой -->
+		<div
+			class="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent pointer-events-none"
+		>
+		</div>
+	</div>
 
-  <!-- Контент: 3 группы вместо 5 — меньше одновременных анимаций -->
-  <div
-    id="hero-content"
-    class="relative z-10 container mx-auto px-6 text-white"
-  >
-    <!-- Группа 1: бейдж + заголовок -->
-    <div class="">
-      <div
-        class="flex justify-center mb-8 px-1 [@media(max-height:820px)]:mb-4 [@media(max-height:680px)]:mb-3"
-      >
-        <a
-          id="hero-services-badge"
-          href="#services"
-          class="reveal-hidden inline-block max-w-[min(100%,calc(100vw-2rem))] px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] text-gray-800 text-[9px] sm:text-[11px] font-bold uppercase tracking-widest text-center transition-all duration-fast hover:bg-white hover:border-white hover:shadow-[0_8px_25px_rgba(0,171,179,0.15)] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-          aria-label="Перейти к разделу «Наши услуги»"
-        >
-          {
-            heroServiceLabels.map((label, i) => (
-              <>
-                {i > 0 && (
-                  <span
-                    class="inline-block w-1 h-1 rounded-full bg-primary align-middle mx-1.5 sm:mx-2"
-                    aria-hidden="true"
-                  />
-                )}
-                {label}
-              </>
-            ))
-          }
-        </a>
-      </div>
-      <h1
-        class="mx-auto max-w-4xl font-montserrat font-extrabold uppercase text-center leading-tight tracking-tight text-black text-[clamp(1.2rem,1rem+1.5vw,2.25rem)]"
-      >
-        Туристическая компания
-        <br />
-        <span class="hero-gradient-text text-[clamp(2.5rem,2rem+5vw,7.5rem)] leading-[0.9] mt-2 block drop-shadow-sm">ANRO TRIP</span>
-      </h1>
-    </div>
+	<!-- Контент: 3 группы вместо 5 — меньше одновременных анимаций -->
+	<div
+		id="hero-content"
+		class="relative z-10 container mx-auto px-6 text-white"
+	>
+		<!-- Группа 1: бейдж + заголовок -->
+		<div class="">
+			<div
+				class="flex justify-center mb-8 px-1 [@media(max-height:820px)]:mb-4 [@media(max-height:680px)]:mb-3"
+			>
+				<a
+					id="hero-services-badge"
+					href="#services"
+					class="reveal-hidden inline-block max-w-[min(100%,calc(100vw-2rem))] px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] text-gray-800 text-[9px] sm:text-[11px] font-bold uppercase tracking-widest text-center transition-all duration-fast hover:bg-white hover:border-white hover:shadow-[0_8px_25px_rgba(0,171,179,0.15)] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+					aria-label="Перейти к разделу «Наши услуги»"
+				>
+					{
+						heroServiceLabels.map((label, i) => (
+							<>
+								{i > 0 && (
+									<span
+										class="inline-block w-1 h-1 rounded-full bg-primary align-middle mx-1.5 sm:mx-2"
+										aria-hidden="true"
+									/>
+								)}
+								{label}
+							</>
+						))
+					}
+				</a>
+			</div>
+			<h1
+				class="mx-auto max-w-4xl font-montserrat font-extrabold uppercase text-center leading-tight tracking-tight text-black text-[clamp(1.2rem,1rem+1.5vw,2.25rem)]"
+			>
+				Туристическая компания
+				<br />
+				<span
+					class="hero-gradient-text text-[clamp(2.5rem,2rem+5vw,7.5rem)] leading-[0.9] mt-2 block drop-shadow-sm"
+					>ANRO TRIP</span
+				>
+			</h1>
+		</div>
 
-    <!-- Группа 2: подзаголовок + CTA -->
-    <div class="reveal-hidden delay-150">
-      <p
-        class="mx-auto mt-3 max-w-[95vw] sm:mt-4 sm:max-w-2xl text-center text-black font-bold uppercase tracking-wide leading-relaxed text-[clamp(0.75rem,0.65rem+0.8vw,1.1rem)]"
-      >
-        Создаем высочайший сервис,<br class="hidden sm:block" /> доступный
-        каждому!
-      </p>
-      <div
-        class="mt-8 flex flex-col items-center justify-center gap-6 [@media(max-height:820px)]:mt-6 [@media(max-height:680px)]:mt-5"
-      >
-        <a
-          id="hero-search-btn"
-          href="#search"
-          class="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-red px-[34px] py-[18px] font-black text-white shadow-[0_4px_14px_4px_color-mix(in_srgb,var(--color-red)_30%,transparent)] hover:bg-red-hover hover:shadow-[0_6px_18px_4px_color-mix(in_srgb,var(--color-red)_40%,transparent)] transition-[background-color,box-shadow] duration-normal btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-[clamp(0.9rem,0.75rem+0.8vw,1.1rem)] [@media(max-height:680px)]:px-[26px] [@media(max-height:680px)]:py-3.5 [@media(max-height:680px)]:text-[clamp(0.82rem,0.72rem+0.6vw,1rem)]"
-        >
-          <!-- Shine sweep -->
-          <span
-            class="absolute inset-0 w-[200%] bg-linear-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-slow ease-out pointer-events-none"
-          ></span>
-          <span class="relative z-10 uppercase tracking-wider">Забронировать авиабилет</span>
-        </a>
+		<!-- Группа 2: подзаголовок + CTA -->
+		<div class="reveal-hidden delay-150">
+			<p
+				class="mx-auto mt-3 max-w-[95vw] sm:mt-4 sm:max-w-2xl text-center text-black font-bold uppercase tracking-wide leading-relaxed text-[clamp(0.75rem,0.65rem+0.8vw,1.1rem)]"
+			>
+				Создаем высочайший сервис,<br class="hidden sm:block" /> доступный каждому!
+			</p>
+			<div
+				class="mt-8 flex flex-col items-center justify-center gap-6 [@media(max-height:820px)]:mt-6 [@media(max-height:680px)]:mt-5"
+			>
+				<a
+					id="hero-search-btn"
+					href="#search"
+					class="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-red px-[34px] py-[18px] font-black text-white shadow-[0_4px_14px_4px_color-mix(in_srgb,var(--color-red)_30%,transparent)] hover:bg-red-hover hover:shadow-[0_6px_18px_4px_color-mix(in_srgb,var(--color-red)_40%,transparent)] transition-[background-color,box-shadow] duration-normal btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-[clamp(0.9rem,0.75rem+0.8vw,1.1rem)] [@media(max-height:680px)]:px-[26px] [@media(max-height:680px)]:py-3.5 [@media(max-height:680px)]:text-[clamp(0.82rem,0.72rem+0.6vw,1rem)]"
+				>
+					<!-- Shine sweep -->
+					<span
+						class="absolute inset-0 w-[200%] bg-linear-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-slow ease-out pointer-events-none"
+					></span>
+					<span class="relative z-10 uppercase tracking-wider"
+						>Забронировать авиабилет</span
+					>
+				</a>
 
-        <div
-          class="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
-        >
-          <a
-            href="tel:88002224473"
-            aria-label="Позвонить 8 800 222 44 73"
-            class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            <PhoneSolidIcon iconClass="w-5.5 h-5.5" colorClass="text-current" />
-          </a>
-          <a
-            href="https://t.me/anrotrip"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="ANRO TRIP в Telegram"
-            class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            <svg
-              class="h-8 w-8 shrink-0 overflow-visible text-current"
-              viewBox="0 0 80 80"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <g transform={socialLogoTransform0}>
-                <path
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d={telegramIconPath}></path>
-              </g>
-            </svg>
-          </a>
-          <a
-            href="https://max.ru/id6658540239_biz"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="ANRO TRIP в MAX"
-            class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            <svg
-              class="h-6 w-6 shrink-0 overflow-visible text-current"
-              viewBox="80 80 80 80"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <g transform={socialLogoTransform80}>
-                <path
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d={maxIconPath}></path>
-              </g>
-            </svg>
-          </a>
-          <a
-            href="https://vk.com/anrotrip"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="ANRO TRIP в ВКонтакте"
-            class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            <svg
-              class="h-7.5 w-7.5 shrink-0 overflow-visible text-current"
-              viewBox="0 0 80 80"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <g transform={socialLogoTransform0}>
-                <path fill="currentColor" d={vkIconPath}></path>
-              </g>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
+				<div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+					<a
+						href={companyPhoneHref('tollFree')}
+						aria-label={`Позвонить ${phones.tollFree.display}`}
+						class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					>
+						<PhoneSolidIcon iconClass="w-5.5 h-5.5" colorClass="text-current" />
+					</a>
+					<a
+						href={social.telegram}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="ANRO TRIP в Telegram"
+						class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					>
+						<svg
+							class="h-8 w-8 shrink-0 overflow-visible text-current"
+							viewBox="0 0 80 80"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							aria-hidden="true"
+						>
+							<g transform={socialLogoTransform0}>
+								<path
+									fill="currentColor"
+									fill-rule="evenodd"
+									clip-rule="evenodd"
+									d={telegramIconPath}></path>
+							</g>
+						</svg>
+					</a>
+					<a
+						href={social.maxBiz}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="ANRO TRIP в MAX"
+						class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					>
+						<svg
+							class="h-6 w-6 shrink-0 overflow-visible text-current"
+							viewBox="80 80 80 80"
+							xmlns="http://www.w3.org/2000/svg"
+							aria-hidden="true"
+						>
+							<g transform={socialLogoTransform80}>
+								<path
+									fill="currentColor"
+									fill-rule="evenodd"
+									clip-rule="evenodd"
+									d={maxIconPath}></path>
+							</g>
+						</svg>
+					</a>
+					<a
+						href={social.vk}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="ANRO TRIP в ВКонтакте"
+						class="group inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white/90 text-primary border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-normal hover:bg-primary hover:text-white hover:border-transparent hover:shadow-[0_8px_25px_rgba(0,171,179,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+					>
+						<svg
+							class="h-7.5 w-7.5 shrink-0 overflow-visible text-current"
+							viewBox="0 0 80 80"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							aria-hidden="true"
+						>
+							<g transform={socialLogoTransform0}>
+								<path fill="currentColor" d={vkIconPath}></path>
+							</g>
+						</svg>
+					</a>
+				</div>
+			</div>
+		</div>
 
-    <!-- Быстрые стат-пилюли (клик — якорь; на мобайле скролл как в Header.astro initAnchorScroll) -->
-    <div
-      class="reveal-hidden mt-12 flex flex-wrap items-center justify-center gap-3 [@media(max-height:820px)]:mt-6 [@media(max-height:680px)]:mt-5 [@media(max-height:680px)]:gap-2"
-    >
-      {
-        heroStatPills.map((pill) =>
-          pill.placeholder ? (
-            <div
-              class="min-h-12 min-w-28 shrink-0 rounded-[1.25rem] border border-gray-200/60 bg-white/80 backdrop-blur-md px-6 py-2.5 sm:min-w-32 shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
-              aria-hidden="true"
-            />
-          ) : (
-            <a
-              href={pill.href}
-              class="hero-stat-pill flex flex-col items-center justify-center px-6 py-2.5 rounded-[1.25rem] bg-white/80 backdrop-blur-md border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:bg-white transition-[background-color,box-shadow] hover:shadow-[0_8px_25px_rgba(0,171,179,0.15)] duration-fast cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-              aria-label={pill.ariaLabel}
-            >
-              <span class="font-montserrat font-black text-primary text-[13px] uppercase leading-tight">
-                {pill.val}
-              </span>
-              <span class="text-gray-600 font-bold text-[11px] uppercase leading-tight">
-                {pill.label}
-                {pill.footnote ? (
-                  <sup
-                    class="text-[0.65em] font-normal ml-px align-super"
-                    aria-hidden="true"
-                  >
-                    *
-                  </sup>
-                ) : null}
-              </span>
-            </a>
-          ),
-        )
-      }
-    </div>
-  </div>
+		<!-- Быстрые стат-пилюли (клик — якорь; на мобайле скролл как в Header.astro initAnchorScroll) -->
+		<div
+			class="reveal-hidden mt-12 flex flex-wrap items-center justify-center gap-3 [@media(max-height:820px)]:mt-6 [@media(max-height:680px)]:mt-5 [@media(max-height:680px)]:gap-2"
+		>
+			{
+				heroStatPills.map((pill) =>
+					pill.placeholder ? (
+						<div
+							class="min-h-12 min-w-28 shrink-0 rounded-[1.25rem] border border-gray-200/60 bg-white/80 backdrop-blur-md px-6 py-2.5 sm:min-w-32 shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+							aria-hidden="true"
+						/>
+					) : (
+						<a
+							href={pill.href}
+							class="hero-stat-pill flex flex-col items-center justify-center px-6 py-2.5 rounded-[1.25rem] bg-white/80 backdrop-blur-md border border-gray-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:bg-white transition-[background-color,box-shadow] hover:shadow-[0_8px_25px_rgba(0,171,179,0.15)] duration-fast cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+							aria-label={pill.ariaLabel}
+						>
+							<span class="font-montserrat font-black text-primary-dark text-[13px] uppercase leading-tight">
+								{pill.val}
+							</span>
+							<span class="text-gray-600 font-bold text-[11px] uppercase leading-tight">
+								{pill.label}
+								{pill.footnote ? (
+									<sup
+										class="text-[0.65em] font-normal ml-px align-super"
+										aria-hidden="true"
+									>
+										*
+									</sup>
+								) : null}
+							</span>
+						</a>
+					),
+				)
+			}
+		</div>
+	</div>
 
-  <!-- Скролл-стрелка: без reveal-hidden (иначе opacity:0), bounce только на ссылке -->
-  <div
-    class="absolute bottom-[clamp(0.75rem,2vh,1.5rem)] left-1/2 -translate-x-1/2 z-20 [@media(max-height:720px)]:hidden"
-  >
-    <a
-      id="scroll-arrow"
-      href="#search"
-      aria-label="Перейти к форме поиска"
-      class="animate-hero-scroll block text-white/80 hover:text-white transition-colors cursor-pointer outline-none [-webkit-tap-highlight-color:transparent] focus-visible:text-white"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-10 w-10"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        aria-hidden="true"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M6 9l6 6 6-6"></path>
-      </svg>
-    </a>
-  </div>
+	<!-- Скролл-стрелка: без reveal-hidden (иначе opacity:0), bounce только на ссылке -->
+	<div
+		class="absolute bottom-[clamp(0.75rem,2vh,1.5rem)] left-1/2 -translate-x-1/2 z-20 [@media(max-height:720px)]:hidden"
+	>
+		<a
+			id="scroll-arrow"
+			href="#search"
+			aria-label="Перейти к форме поиска"
+			class="animate-hero-scroll block text-white/80 hover:text-white transition-colors cursor-pointer outline-none [-webkit-tap-highlight-color:transparent] focus-visible:text-white"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-10 w-10"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				aria-hidden="true"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 9l6 6 6-6"></path>
+			</svg>
+		</a>
+	</div>
 </section>
 
 <script>
-  const searchBtn = document.getElementById('hero-search-btn');
-  const arrowBtn = document.getElementById(
-    'scroll-arrow',
-  ) as HTMLAnchorElement | null;
-  const heroContent = document.getElementById('hero-content');
-  const hero = document.getElementById('hero');
+	const searchBtn = document.getElementById('hero-search-btn');
+	const arrowBtn = document.getElementById(
+		'scroll-arrow',
+	) as HTMLAnchorElement | null;
+	const heroContent = document.getElementById('hero-content');
+	const hero = document.getElementById('hero');
 
-  // Hero content — плавно уплывает вверх и исчезает при прокрутке (только десктоп — на мобайле jank)
-  const isDesktop = window.matchMedia(
-    '(hover: hover) and (min-width: 768px)',
-  ).matches;
-  if (heroContent && hero && isDesktop) {
-    const heroH = (hero as HTMLElement).offsetHeight;
+	// Hero content — плавно уплывает вверх и исчезает при прокрутке (только десктоп — на мобайле jank)
+	const isDesktop = window.matchMedia(
+		'(hover: hover) and (min-width: 768px)',
+	).matches;
+	if (heroContent && hero && isDesktop) {
+		const heroH = (hero as HTMLElement).offsetHeight;
 
-    function update() {
-      const scrollY = window.scrollY;
-      const progress = Math.min(1, scrollY / (heroH * 0.96)); // исчезает за 35% высоты Hero
-      const moveUp = progress * 120;
-      (heroContent as HTMLElement).style.transform = `translateY(${-moveUp}px)`;
-      (heroContent as HTMLElement).style.opacity = `${1 - progress}`;
-    }
+		function update() {
+			const scrollY = window.scrollY;
+			const progress = Math.min(1, scrollY / (heroH * 0.96)); // исчезает за 35% высоты Hero
+			const moveUp = progress * 120;
+			(heroContent as HTMLElement).style.transform = `translateY(${-moveUp}px)`;
+			(heroContent as HTMLElement).style.opacity = `${1 - progress}`;
+		}
 
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-  }
+		window.addEventListener('scroll', update, { passive: true });
+		update();
+	}
 
-  // Пилюли статистики: на мобайле — та же логика отступа, что header a[href^="#"] (GAP_PX = -28, см. Header.astro)
-  let heroStatPillsAbort: AbortController | null = null;
-  const initHeroStatPills = () => {
-    heroStatPillsAbort?.abort();
-    heroStatPillsAbort = new AbortController();
-    const { signal } = heroStatPillsAbort;
-    const mobileQuery = window.matchMedia('(max-width: 767px)');
-    /** Синхронно с `initAnchorScroll` для якорей awards/gift и прочих пунктов меню (не search/content/business) */
-    const MOBILE_ANCHOR_GAP = -28;
+	// Пилюли статистики: на мобайле — та же логика отступа, что header a[href^="#"] (GAP_PX = -28, см. Header.astro)
+	let heroStatPillsAbort: AbortController | null = null;
+	const initHeroStatPills = () => {
+		heroStatPillsAbort?.abort();
+		heroStatPillsAbort = new AbortController();
+		const { signal } = heroStatPillsAbort;
+		const mobileQuery = window.matchMedia('(max-width: 767px)');
+		/** Синхронно с `initAnchorScroll` для якорей awards/gift и прочих пунктов меню (не search/content/business) */
+		const MOBILE_ANCHOR_GAP = -28;
 
-    /** Зазор ~100px от низа хедера до заголовка «Наши услуги» (см. макет с линейкой) */
-    const SERVICES_ANCHOR_GAP = 55;
+		/** Зазор ~100px от низа хедера до заголовка «Наши услуги» (см. макет с линейкой) */
+		const SERVICES_ANCHOR_GAP = 55;
 
-    const scrollToAnchor = (
-      anchor: HTMLElement,
-      offset: number,
-    ) => {
-      const top =
-        anchor.getBoundingClientRect().top + window.scrollY - offset;
-      window.smoothScrollTo(top);
-    };
+		const scrollToAnchor = (anchor: HTMLElement, offset: number) => {
+			const top = anchor.getBoundingClientRect().top + window.scrollY - offset;
+			window.smoothScrollTo(top);
+		};
 
-    document
-      .getElementById('hero-services-badge')
-      ?.addEventListener(
-        'click',
-        (e) => {
-          e.preventDefault();
-          const anchor = document.getElementById('services');
-          if (!anchor) return;
-          const headerEl = document.getElementById('site-header');
-          const headerHeight = headerEl ? headerEl.offsetHeight : 64;
-          scrollToAnchor(anchor, headerHeight + SERVICES_ANCHOR_GAP);
-        },
-        { signal },
-      );
+		document.getElementById('hero-services-badge')?.addEventListener(
+			'click',
+			(e) => {
+				e.preventDefault();
+				const anchor = document.getElementById('services');
+				if (!anchor) return;
+				const headerEl = document.getElementById('site-header');
+				const headerHeight = headerEl ? headerEl.offsetHeight : 64;
+				scrollToAnchor(anchor, headerHeight + SERVICES_ANCHOR_GAP);
+			},
+			{ signal },
+		);
 
-    document
-      .querySelectorAll<HTMLAnchorElement>('a.hero-stat-pill[href^="#"]')
-      .forEach((link) => {
-        link.addEventListener(
-          'click',
-          (e) => {
-            if (!mobileQuery.matches) return;
-            e.preventDefault();
-            const raw = link.getAttribute('href') || '';
-            const id = raw.startsWith('#') ? raw.slice(1) : '';
-            if (!id) return;
-            const anchor = document.getElementById(id);
-            if (!anchor) return;
-            const headerEl = document.getElementById('site-header');
-            const headerHeight = headerEl ? headerEl.offsetHeight : 64;
-            scrollToAnchor(anchor, headerHeight + MOBILE_ANCHOR_GAP);
-          },
-          { signal },
-        );
-      });
-  };
-  initHeroStatPills();
-  document.addEventListener('astro:page-load', initHeroStatPills);
+		document
+			.querySelectorAll<HTMLAnchorElement>('a.hero-stat-pill[href^="#"]')
+			.forEach((link) => {
+				link.addEventListener(
+					'click',
+					(e) => {
+						if (!mobileQuery.matches) return;
+						e.preventDefault();
+						const raw = link.getAttribute('href') || '';
+						const id = raw.startsWith('#') ? raw.slice(1) : '';
+						if (!id) return;
+						const anchor = document.getElementById(id);
+						if (!anchor) return;
+						const headerEl = document.getElementById('site-header');
+						const headerHeight = headerEl ? headerEl.offsetHeight : 64;
+						scrollToAnchor(anchor, headerHeight + MOBILE_ANCHOR_GAP);
+					},
+					{ signal },
+				);
+			});
+	};
+	initHeroStatPills();
+	document.addEventListener('astro:page-load', initHeroStatPills);
 
-  // Scroll to search: mobile — headerHeight - 16; desktop — 78 (как в меню и index.astro)
-  const scrollToSearch = (e: Event) => {
-    e.preventDefault();
-    // На случай гонки с Layout.astro (has-pending-home-anchor прячет body)
-    document.documentElement.classList.remove(
-      'has-pending-home-anchor',
-      'is-home-anchor-ready',
-    );
-    try {
-      sessionStorage.removeItem('pendingHomeHash');
-    } catch {
-      /* ignore */
-    }
-    const anchor = document.getElementById('search');
-    if (!anchor) return;
-    const headerEl = document.getElementById('site-header');
-    const headerHeight = headerEl ? headerEl.offsetHeight : 64;
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
-    const offset = isMobile ? headerHeight - 16 : 78;
-    const top = anchor.getBoundingClientRect().top + window.scrollY - offset;
-    window.smoothScrollTo(top);
-    (e.currentTarget as HTMLElement | null)?.blur();
-  };
+	// Scroll to search: mobile — headerHeight - 16; desktop — 78 (как в меню и index.astro)
+	const scrollToSearch = (e: Event) => {
+		e.preventDefault();
+		// На случай гонки с Layout.astro (has-pending-home-anchor прячет body)
+		document.documentElement.classList.remove(
+			'has-pending-home-anchor',
+			'is-home-anchor-ready',
+		);
+		try {
+			sessionStorage.removeItem('pendingHomeHash');
+		} catch {
+			/* ignore */
+		}
+		const anchor = document.getElementById('search');
+		if (!anchor) return;
+		const headerEl = document.getElementById('site-header');
+		const headerHeight = headerEl ? headerEl.offsetHeight : 64;
+		const isMobile = window.matchMedia('(max-width: 767px)').matches;
+		const offset = isMobile ? headerHeight - 16 : 78;
+		const top = anchor.getBoundingClientRect().top + window.scrollY - offset;
+		window.smoothScrollTo(top);
+		(e.currentTarget as HTMLElement | null)?.blur();
+	};
 
-  searchBtn?.addEventListener('click', scrollToSearch);
-  arrowBtn?.addEventListener('click', scrollToSearch);
+	searchBtn?.addEventListener('click', scrollToSearch);
+	arrowBtn?.addEventListener('click', scrollToSearch);
 
-  // Blur-up: показать изображение при загрузке
-  const heroImg = hero?.querySelector(
-    '.hero-bg-image',
-  ) as HTMLImageElement | null;
-  if (heroImg) {
-    const show = () => heroImg.classList.add('!opacity-100');
-    if (heroImg.complete) show();
-    else heroImg.addEventListener('load', show);
-  }
+	// Blur-up: показать изображение при загрузке
+	const heroImg = hero?.querySelector(
+		'.hero-bg-image',
+	) as HTMLImageElement | null;
+	if (heroImg) {
+		const show = () => heroImg.classList.add('!opacity-100');
+		if (heroImg.complete) show();
+		else heroImg.addEventListener('load', show);
+	}
 
-  // ВРЕМЕННО ОТКЛЮЧЕНО: динамический градиент по времени суток — раскомментировать вместе с #hero-gradient в разметке
-  // const heroGradient = document.getElementById('hero-gradient');
-  // const h = new Date().getHours();
-  // if (heroGradient) {
-  //   if (h >= 6 && h < 12)
-  //     heroGradient.classList.add(
-  //       'from-orange-400/25',
-  //       'via-primary/8',
-  //       'to-blue-900/40',
-  //     );
-  //   else if (h >= 12 && h < 18)
-  //     heroGradient.classList.add(
-  //       'from-blue-400/20',
-  //       'via-sky-200/8',
-  //       'to-blue-900/35',
-  //     );
-  //   else if (h >= 18 && h < 22)
-  //     heroGradient.classList.add(
-  //       'from-purple-700/40',
-  //       'via-pink-400/12',
-  //       'to-black/65',
-  //     );
-  //   else
-  //     heroGradient.classList.add(
-  //       'from-indigo-900/45',
-  //       'via-black/15',
-  //       'to-black/75',
-  //     );
-  // }
+	// ВРЕМЕННО ОТКЛЮЧЕНО: динамический градиент по времени суток — раскомментировать вместе с #hero-gradient в разметке
+	// const heroGradient = document.getElementById('hero-gradient');
+	// const h = new Date().getHours();
+	// if (heroGradient) {
+	//   if (h >= 6 && h < 12)
+	//     heroGradient.classList.add(
+	//       'from-orange-400/25',
+	//       'via-primary/8',
+	//       'to-blue-900/40',
+	//     );
+	//   else if (h >= 12 && h < 18)
+	//     heroGradient.classList.add(
+	//       'from-blue-400/20',
+	//       'via-sky-200/8',
+	//       'to-blue-900/35',
+	//     );
+	//   else if (h >= 18 && h < 22)
+	//     heroGradient.classList.add(
+	//       'from-purple-700/40',
+	//       'via-pink-400/12',
+	//       'to-black/65',
+	//     );
+	//   else
+	//     heroGradient.classList.add(
+	//       'from-indigo-900/45',
+	//       'via-black/15',
+	//       'to-black/75',
+	//     );
+	// }
 </script>

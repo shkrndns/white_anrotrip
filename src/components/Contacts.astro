@@ -2,232 +2,250 @@
 // src/components/Contacts.astro
 import FaIcon from './icons/FaIcon.astro';
 import PhoneOutlineIcon from './PhoneOutlineIcon.astro';
+import SectionHeading from './ui/SectionHeading.astro';
+import { company, companyMailto, companyPhoneHref } from '../data/company';
+
+const { phones, emails, social, offices, representativeCities } = company;
+const chelyabinsk = offices.chelyabinsk;
 ---
 
-<section
-  id="contacts"
-  class="relative pt-[50px] bg-white overflow-hidden"
->
-  <!-- Шар primary: overflow-hidden на секции (без overflow-x-only — иначе браузер даёт лишний скролл). Низ смягчён mask, чтобы не было «рваного» края у футера -->
-  <div
-    class="absolute -bottom-8 md:-bottom-12 right-0 z-0 size-96 max-md:size-80 bg-primary/4 rounded-full blur-none md:blur-3xl pointer-events-none translate-x-1/3 mask-[linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]"
-    aria-hidden="true"
-  >
-  </div>
+<section id="contacts" class="relative pt-[50px] bg-white overflow-hidden">
+	<!-- Шар primary: overflow-hidden на секции (без overflow-x-only — иначе браузер даёт лишний скролл). Низ смягчён mask, чтобы не было «рваного» края у футера -->
+	<div
+		class="absolute -bottom-8 md:-bottom-12 right-0 z-0 size-96 max-md:size-80 bg-primary/4 rounded-full blur-none md:blur-3xl pointer-events-none translate-x-1/3 mask-[linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]"
+		aria-hidden="true"
+	>
+	</div>
 
-  <div class="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10 pb-[50px]">
-    <!-- Заголовок -->
-    <div class="text-center mb-6 md:mb-8 reveal-hidden">
-      <div class="section-badge mb-4">
-        <span class="section-badge__dot" aria-hidden="true"></span>
-        <span class="section-badge__label">Контакты</span>
-      </div>
-      <h2
-        class="section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-wide"
-      >
-        Контакты
-      </h2>
-    </div>
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10 pb-[50px]">
+		<!-- Заголовок -->
+		<div class="text-center mb-6 md:mb-8 reveal-hidden">
+			<SectionHeading
+				badge="Контакты"
+				headingClass="section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-wide"
+			>
+				Контакты
+			</SectionHeading>
+		</div>
 
-    <!-- Три карточки контактов -->
-    <div
-      class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-10 reveal-hidden"
-      data-reveal-stagger
-    >
-      <!-- 1. Связь 24/7 -->
-      <div
-        class="contacts-card group relative overflow-hidden rounded-3xl bg-gray-900 p-6 sm:p-8 flex flex-col reveal-hidden"
-      >
-        <div
-          class="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-2xl pointer-events-none translate-x-1/3 -translate-y-1/3"
-        >
-        </div>
-        <div class="relative z-10 flex flex-col h-full">
-          <div
-            class="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center mb-5 group-hover:bg-primary/25 transition-colors shrink-0"
-          >
-            <FaIcon
-              name="fa6-solid:mobile-screen-button"
-              iconClass="text-xl leading-none text-primary"
-            />
-          </div>
-          <h3 class="font-montserrat font-bold text-lg text-white mb-4 leading-tight">
-            Для связи 24/7
-          </h3>
-          <div class="space-y-3 text-sm leading-relaxed">
-            <a
-              href="tel:88002224473"
-              class="block font-medium text-white/80 hover:text-primary-light transition-colors"
-            >
-              8 (800) 222-44-73
-            </a>
-            <div>
-              <a
-                href="tel:+79220267059"
-                class="block font-medium text-white/80 hover:text-primary-light transition-colors"
-              >
-                +7 (922) 026-70-59
-              </a>
-              <p class="mt-1 text-[0.6875rem] font-medium uppercase tracking-wider text-primary-light">
-                <a
-                  href="https://t.me/anrotrip"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:text-white transition-colors"
-                >
-                  Telegram
-                </a>
-                {' • '}
-                <a
-                  href="https://max.ru/id6658540239_biz"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:text-white transition-colors"
-                >
-                  MAX
-                </a>
-              </p>
-            </div>
-            <a
-              href="mailto:anro@anrotrip.ru"
-              class="block font-semibold text-white hover:text-primary transition-colors cursor-pointer"
-            >
-              anro@anrotrip.ru
-            </a>
-            <div>
-              <p class="font-medium text-white/80">@anrotrip</p>
-              <p class="mt-1 text-[0.6875rem] font-medium uppercase tracking-wider text-primary-light">
-                <a
-                  href="https://vk.ru/anrotrip"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:text-white transition-colors"
-                >
-                  VK
-                </a>
-                {' • '}
-                <a
-                  href="https://t.me/anro_trip"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:text-white transition-colors"
-                >
-                  Telegram
-                </a>
-                {' • '}
-                <a
-                  href="https://max.ru/u/f9LHodD0cOKNXrTMtvUZWd2zLeGEpz34bQ0i1a-Ur_6EKrIw9H11bR6uhLM"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:text-white transition-colors"
-                >
-                  MAX
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+		<!-- Три карточки контактов -->
+		<div
+			class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-10 reveal-hidden"
+			data-reveal-stagger
+		>
+			<!-- 1. Связь 24/7 -->
+			<div
+				class="contacts-card group relative overflow-hidden rounded-3xl bg-gray-900 p-6 sm:p-8 flex flex-col reveal-hidden"
+			>
+				<div
+					class="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-2xl pointer-events-none translate-x-1/3 -translate-y-1/3"
+				>
+				</div>
+				<div class="relative z-10 flex flex-col h-full">
+					<div
+						class="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center mb-5 group-hover:bg-primary/25 transition-colors shrink-0"
+					>
+						<FaIcon
+							name="fa6-solid:mobile-screen-button"
+							iconClass="text-xl leading-none text-primary"
+						/>
+					</div>
+					<h3
+						class="font-montserrat font-bold text-lg text-white mb-4 leading-tight"
+					>
+						Для связи 24/7
+					</h3>
+					<div class="space-y-3 text-sm leading-relaxed">
+						<a
+							href={companyPhoneHref('tollFree')}
+							class="block font-medium text-white/80 hover:text-primary-light transition-colors"
+						>
+							{phones.tollFree.display}
+						</a>
+						<div>
+							<a
+								href={companyPhoneHref('mobile')}
+								class="block font-medium text-white/80 hover:text-primary-light transition-colors"
+							>
+								{phones.mobile.display}
+							</a>
+							<p
+								class="mt-1 text-[0.6875rem] font-medium uppercase tracking-wider text-primary-light"
+							>
+								<a
+									href={social.telegram}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="hover:text-white transition-colors"
+								>
+									Telegram
+								</a>
+								{' • '}
+								<a
+									href={social.maxBiz}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="hover:text-white transition-colors"
+								>
+									MAX
+								</a>
+							</p>
+						</div>
+						<a
+							href={companyMailto('public')}
+							class="block font-semibold text-white hover:text-primary transition-colors cursor-pointer"
+						>
+							{emails.public}
+						</a>
+						<div>
+							<p class="font-medium text-white/80">@anrotrip</p>
+							<p
+								class="mt-1 text-[0.6875rem] font-medium uppercase tracking-wider text-primary-light"
+							>
+								<a
+									href={social.vkRu}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="hover:text-white transition-colors"
+								>
+									VK
+								</a>
+								{' • '}
+								<a
+									href={social.telegramChannel}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="hover:text-white transition-colors"
+								>
+									Telegram
+								</a>
+								{' • '}
+								<a
+									href={social.maxChannel}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="hover:text-white transition-colors"
+								>
+									MAX
+								</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <!-- 2. Офис в Челябинске -->
-      <div
-        class="contacts-card group relative overflow-hidden rounded-3xl bg-linear-to-br from-primary to-secondary p-6 sm:p-8 flex flex-col reveal-hidden"
-      >
-        <div
-          class="absolute -right-8 -bottom-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none"
-        >
-        </div>
-        <div
-          class="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full pointer-events-none"
-        >
-        </div>
-        <div class="relative z-10 flex flex-col h-full">
-          <div
-            class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-5 shrink-0"
-          >
-            <FaIcon
-              name="fa6-solid:location-dot"
-              iconClass="text-xl leading-none text-white"
-            />
-          </div>
-          <h3 class="font-montserrat font-bold text-lg text-white mb-4 leading-tight">
-            Офис в Челябинске
-          </h3>
-          <div class="space-y-3 text-sm leading-relaxed">
-            <a
-              href="https://yandex.com/maps/org/anro_trip/186447146474/?ll=61.287497%2C55.172378&z=16"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block font-medium text-white/95 hover:text-white transition-colors"
-            >
-              г. Челябинск,<br />
-              ул. 250-летия Челябинска, д. 29
-            </a>
-            <div class="space-y-1">
-              <p class="text-xs font-semibold uppercase tracking-wide text-white/90">
-                ПН–ПТ: 9:00–18:00
-              </p>
-              <p class="text-xs text-white/70">
-                СБ–ВС по предварительной договорённости
-              </p>
-            </div>
-            <a
-              href="tel:83512252991"
-              class="block font-medium text-white/90 hover:text-white transition-colors"
-            >
-              8 (351) 225-29-91 <span class="text-white/60">(офис)</span>
-            </a>
-            <p class="text-xs text-white/70 leading-relaxed">
-              Работаем <strong class="font-bold text-white/90">онлайн без выходных</strong>.<br />
-              Свяжитесь с нами любым удобным способом —<br />
-              по телефону, через мессенджер или соцсети.
-            </p>
-          </div>
-        </div>
-      </div>
+			<!-- 2. Офис в Челябинске -->
+			<div
+				class="contacts-card group relative overflow-hidden rounded-3xl bg-linear-to-br from-primary to-secondary p-6 sm:p-8 flex flex-col reveal-hidden"
+			>
+				<div
+					class="absolute -right-8 -bottom-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none"
+				>
+				</div>
+				<div
+					class="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full pointer-events-none"
+				>
+				</div>
+				<div class="relative z-10 flex flex-col h-full">
+					<div
+						class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-5 shrink-0"
+					>
+						<FaIcon
+							name="fa6-solid:location-dot"
+							iconClass="text-xl leading-none text-white"
+						/>
+					</div>
+					<h3
+						class="font-montserrat font-bold text-lg text-white mb-4 leading-tight"
+					>
+						Офис в Челябинске
+					</h3>
+					<div class="space-y-3 text-sm leading-relaxed">
+						<a
+							href={chelyabinsk.mapUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="block font-medium text-white/95 hover:text-white transition-colors"
+						>
+							г. {chelyabinsk.address.locality},<br />
+							{chelyabinsk.address.streetShort}
+						</a>
+						<div class="space-y-1">
+							<p
+								class="text-xs font-semibold uppercase tracking-wide text-white/90"
+							>
+								{chelyabinsk.openingHours.weekdaysLabel}
+							</p>
+							<p class="text-xs text-white/70">
+								{chelyabinsk.openingHours.weekendNote}
+							</p>
+						</div>
+						<a
+							href={companyPhoneHref('chelyabinskOffice')}
+							class="block font-medium text-white/90 hover:text-white transition-colors"
+						>
+							{phones.chelyabinskOffice.display}
+							<span class="text-white/60">(офис)</span>
+						</a>
+						<p class="text-xs text-white/70 leading-relaxed">
+							Работаем <strong class="font-bold text-white/90"
+								>онлайн без выходных</strong
+							>.<br />
+							Свяжитесь с нами любым удобным способом —<br />
+							по телефону, через мессенджер или соцсети.
+						</p>
+					</div>
+				</div>
+			</div>
 
-      <!-- 3. Представительства -->
-      <div
-        class="contacts-card group relative overflow-hidden rounded-3xl bg-gray-50 border border-gray-100 p-6 sm:p-8 flex flex-col reveal-hidden"
-      >
-        <div
-          class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors shrink-0"
-        >
-          <FaIcon
-            name="fa6-solid:globe"
-            iconClass="text-xl leading-none text-primary"
-          />
-        </div>
-        <h3 class="font-montserrat font-bold text-lg text-gray-900 mb-4 leading-tight">
-          Представительства
-        </h3>
-        <div class="space-y-3 text-sm leading-relaxed">
-          {
-            ['Москва', 'Екатеринбург'].map((city) => (
-              <div class="flex items-center gap-3">
-                <div class="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></div>
-                <p class="font-semibold text-gray-900">г. {city}</p>
-              </div>
-            ))
-          }
-          <p class="text-xs text-gray-500 leading-relaxed pt-1">
-            Личная встреча возможна по предварительной <wbr />договорённости.<br />
-            Свяжитесь с нами любым удобным способом —<br />
-            по телефону, через мессенджер или соцсети.
-          </p>
-        </div>
-      </div>
-    </div>
+			<!-- 3. Представительства -->
+			<div
+				class="contacts-card group relative overflow-hidden rounded-3xl bg-gray-50 border border-gray-100 p-6 sm:p-8 flex flex-col reveal-hidden"
+			>
+				<div
+					class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors shrink-0"
+				>
+					<FaIcon
+						name="fa6-solid:globe"
+						iconClass="text-xl leading-none text-primary"
+					/>
+				</div>
+				<h3
+					class="font-montserrat font-bold text-lg text-gray-900 mb-4 leading-tight"
+				>
+					Представительства
+				</h3>
+				<div class="space-y-3 text-sm leading-relaxed">
+					{
+						representativeCities.map((city) => (
+							<div class="flex items-center gap-3">
+								<div
+									class="h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+									aria-hidden="true"
+								/>
+								<p class="font-semibold text-gray-900">г. {city}</p>
+							</div>
+						))
+					}
+					<p class="text-xs text-gray-500 leading-relaxed pt-1">
+						Личная встреча возможна по предварительной <wbr />договорённости.<br
+						/>
+						Свяжитесь с нами любым удобным способом —<br />
+						по телефону, через мессенджер или соцсети.
+					</p>
+				</div>
+			</div>
+		</div>
 
-    <!-- CTA кнопка -->
-    <div class="text-center reveal-hidden">
-      <button
-        onclick="openCallbackModal()"
-        class="contacts-cta-btn inline-flex items-center gap-3 px-8 py-4 mt-3 rounded-full bg-gray-900 text-white font-bold text-sm uppercase tracking-wider hover:bg-gray-800 btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      >
-        <PhoneOutlineIcon iconClass="text-xl" colorClass="text-primary" />
-        Заказать обратный звонок
-      </button>
-    </div>
-  </div>
+		<!-- CTA кнопка -->
+		<div class="text-center reveal-hidden">
+			<button
+				onclick="openCallbackModal()"
+				class="contacts-cta-btn inline-flex items-center gap-3 px-8 py-4 mt-3 rounded-full bg-gray-900 text-white font-bold text-sm uppercase tracking-wider hover:bg-gray-800 btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+			>
+				<PhoneOutlineIcon iconClass="text-xl" colorClass="text-primary" />
+				Заказать обратный звонок
+			</button>
+		</div>
+	</div>
 </section>

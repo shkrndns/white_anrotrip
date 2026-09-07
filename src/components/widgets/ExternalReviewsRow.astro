@@ -6,441 +6,539 @@
  * Иконка площадки — через prop `platform` (карточка площадки и модальное окно).
  */
 import { Image } from 'astro:assets';
-import { getInitials, avatarColors, pluralizeRu, type ExternalReview } from '../../lib/external-reviews';
+import {
+	getInitials,
+	avatarColors,
+	pluralizeRu,
+	type ExternalReview,
+} from '../../lib/external-reviews';
 import FaIcon from '../icons/FaIcon.astro';
 
 export interface Props {
-  theme: 'light' | 'dark';
-  platform: 'yandex' | '2gis';
-  score: string;
-  ratingsCount: number;
-  reviewsCount: number;
-  link: string;
-  platformLabel: string;
-  sourceLabel: string;
-  reviews: ExternalReview[];
-  /** 2ГИС в исходном виде использует капс для ссылки «читать полностью». */
-  readMoreCaps?: boolean;
-  scrollerId: string;
+	theme: 'light' | 'dark';
+	platform: 'yandex' | '2gis';
+	score: string;
+	ratingsCount: number;
+	reviewsCount: number;
+	link: string;
+	platformLabel: string;
+	sourceLabel: string;
+	reviews: ExternalReview[];
+	/** 2ГИС в исходном виде использует капс для ссылки «читать полностью». */
+	readMoreCaps?: boolean;
+	scrollerId: string;
 }
 
 const {
-  theme,
-  platform,
-  score,
-  ratingsCount,
-  reviewsCount,
-  link,
-  platformLabel,
-  sourceLabel,
-  reviews,
-  readMoreCaps = false,
-  scrollerId,
+	theme,
+	platform,
+	score,
+	ratingsCount,
+	reviewsCount,
+	link,
+	platformLabel,
+	sourceLabel,
+	reviews,
+	readMoreCaps = false,
+	scrollerId,
 } = Astro.props;
 
 const isDark = theme === 'dark';
 
 const cardBaseClass = isDark
-  ? 'bg-white/[0.04] border border-white/10'
-  : 'bg-white border border-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.05)]';
+	? 'bg-white/[0.04] border border-white/10'
+	: 'bg-white border border-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.05)]';
 
 const logoCardClass = isDark
-  ? `${cardBaseClass} hover:bg-white/[0.07]`
-  : `${cardBaseClass} hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]`;
+	? `${cardBaseClass} hover:bg-white/[0.07]`
+	: `${cardBaseClass} hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]`;
 
 const reviewCardClass = isDark
-  ? `${cardBaseClass} hover:bg-white/[0.07]`
-  : `${cardBaseClass} hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]`;
+	? `${cardBaseClass} hover:bg-white/[0.07]`
+	: `${cardBaseClass} hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]`;
 
 const textPrimaryClass = isDark ? 'text-white' : 'text-gray-900';
-const textMutedClass = isDark ? 'text-white/40' : 'text-gray-400';
+const textMutedClass = isDark ? 'text-white/70' : 'text-gray-500';
 
 const nameClass = isDark ? 'text-white' : 'text-gray-900';
-const dateClass = isDark ? 'text-white/35' : 'text-gray-400';
+const dateClass = isDark ? 'text-white/55' : 'text-gray-500';
 const textClass = isDark ? 'text-white/65' : 'text-gray-600';
-const captionClass = isDark ? 'text-white/30' : 'text-gray-400';
+const captionClass = isDark ? 'text-white/50' : 'text-gray-500';
 const readMoreClass = readMoreCaps
-  ? 'text-[11px] font-bold uppercase tracking-wide text-primary hover:text-primary-light'
-  : 'text-xs font-semibold text-primary hover:text-primary-light';
+	? 'text-[11px] font-bold uppercase tracking-wide text-primary-dark hover:text-primary'
+	: 'text-xs font-semibold text-primary-dark hover:text-primary';
 
 const cardWidthClass = 'w-[250px] sm:w-[270px]';
 
 const scrollBtnClass =
-  'ext-reviews-arrow hidden md:flex absolute top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-900/70 border border-white/30 text-white text-sm items-center justify-center opacity-0 pointer-events-none transition-[opacity,border-color,background-color] duration-fast cursor-pointer hover:bg-gray-900/90 hover:border-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950';
+	'ext-reviews-arrow hidden md:flex absolute top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-900/70 border border-white/30 text-white text-sm items-center justify-center opacity-0 pointer-events-none transition-[opacity,border-color,background-color] duration-fast cursor-pointer hover:bg-gray-900/90 hover:border-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950';
 
 const platformIconClass =
-  'flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white';
+	'flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white';
 ---
 
 <div data-ext-reviews-row class="-mx-4 sm:-mx-6 md:mx-0">
-  <div class="relative reveal-hidden">
-    <div
-      data-scroll-shadow-left
-      class="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-linear-to-r from-gray-950 to-transparent opacity-0 transition-opacity duration-500 ease-out"
-      aria-hidden="true"
-    ></div>
-    <div
-      data-scroll-shadow-right
-      class="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-linear-to-l from-gray-950 to-transparent opacity-0 transition-opacity duration-500 ease-out"
-      aria-hidden="true"
-    ></div>
+	<div class="relative reveal-hidden">
+		<div
+			data-scroll-shadow-left
+			class="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-linear-to-r from-gray-950 to-transparent opacity-0 transition-opacity duration-500 ease-out"
+			aria-hidden="true"
+		>
+		</div>
+		<div
+			data-scroll-shadow-right
+			class="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-linear-to-l from-gray-950 to-transparent opacity-0 transition-opacity duration-500 ease-out"
+			aria-hidden="true"
+		>
+		</div>
 
-    <button
-      type="button"
-      data-scroll-prev
-      aria-label="Прокрутить отзывы влево"
-      class={`${scrollBtnClass} left-0 sm:-left-1`}
-    >
-      <FaIcon name="fa6-solid:chevron-left" />
-    </button>
-    <button
-      type="button"
-      data-scroll-next
-      aria-label="Прокрутить отзывы вправо"
-      class={`${scrollBtnClass} right-0 sm:-right-1`}
-    >
-      <FaIcon name="fa6-solid:chevron-right" />
-    </button>
+		<button
+			type="button"
+			data-scroll-prev
+			aria-label="Прокрутить отзывы влево"
+			class={`${scrollBtnClass} left-0 sm:-left-1`}
+		>
+			<FaIcon name="fa6-solid:chevron-left" />
+		</button>
+		<button
+			type="button"
+			data-scroll-next
+			aria-label="Прокрутить отзывы вправо"
+			class={`${scrollBtnClass} right-0 sm:-right-1`}
+		>
+			<FaIcon name="fa6-solid:chevron-right" />
+		</button>
 
-    <div
-      id={scrollerId}
-      data-scroller
-      class="flex overflow-x-auto gap-4 pb-2 snap-x snap-mandatory scrollbar-hide px-6 md:px-0 overscroll-x-contain [touch-action:pan-x_pan-y]"
-    >
-      <!-- Карточка площадки: ведёт на внешний список отзывов -->
-      <a
-        href={link}
-        target="_blank"
-        rel="noopener noreferrer nofollow"
-        class={`snap-start shrink-0 ${cardWidthClass} rounded-2xl p-4 flex flex-col justify-center gap-2.5 transition-[background-color,box-shadow] duration-fast ${logoCardClass}`}
-      >
-      <div class="flex items-center gap-2">
-        {platform === 'yandex' ? (
-          <span
-            class:list={[platformIconClass, 'bg-[#FC3F1D] text-[11px] font-black font-montserrat leading-none']}
-            aria-hidden="true"
-          >
-            Я
-          </span>
-        ) : (
-          <span class:list={[platformIconClass, 'bg-[#2BA84A]']} aria-hidden="true">
-            <FaIcon name="fa6-solid:location-dot" iconClass="text-[10px]" />
-          </span>
-        )}
-        <span class={`text-base font-bold font-montserrat ${textPrimaryClass}`}>{platformLabel}</span>
-      </div>
-      <div class="flex items-baseline gap-2">
-        <span class={`font-montserrat font-extrabold text-3xl leading-none ${textPrimaryClass}`}>{score}</span>
-        <div class="flex gap-0.5 text-primary text-sm" aria-hidden="true">
-          {[...Array(5)].map(() => <FaIcon name="fa6-solid:star" />)}
-        </div>
-      </div>
-      <span class={`text-[11px] leading-snug ${textMutedClass}`}>
-        {ratingsCount} {pluralizeRu(ratingsCount, ['оценка', 'оценки', 'оценок'])} · {reviewsCount}{' '}
-        {pluralizeRu(reviewsCount, ['отзыв', 'отзыва', 'отзывов'])}
-      </span>
-      </a>
+		<div
+			id={scrollerId}
+			data-scroller
+			class="flex overflow-x-auto gap-4 pb-2 snap-x snap-mandatory scrollbar-hide px-6 md:px-0 overscroll-x-contain [touch-action:pan-x_pan-y]"
+		>
+			<!-- Карточка площадки: ведёт на внешний список отзывов -->
+			<a
+				href={link}
+				target="_blank"
+				rel="noopener noreferrer nofollow"
+				class={`snap-start shrink-0 ${cardWidthClass} rounded-2xl p-4 flex flex-col justify-center gap-2.5 transition-[background-color,box-shadow] duration-fast ${logoCardClass}`}
+			>
+				<div class="flex items-center gap-2">
+					{
+						platform === 'yandex' ? (
+							<span
+								class:list={[
+									platformIconClass,
+									'bg-[#FC3F1D] text-[11px] font-black font-montserrat leading-none',
+								]}
+								aria-hidden="true"
+							>
+								Я
+							</span>
+						) : (
+							<span
+								class:list={[platformIconClass, 'bg-[#2BA84A]']}
+								aria-hidden="true"
+							>
+								<FaIcon name="fa6-solid:location-dot" iconClass="text-[10px]" />
+							</span>
+						)
+					}
+					<span
+						class={`text-base font-bold font-montserrat ${textPrimaryClass}`}
+						>{platformLabel}</span
+					>
+				</div>
+				<div class="flex items-baseline gap-2">
+					<span
+						class={`font-montserrat font-extrabold text-3xl leading-none ${textPrimaryClass}`}
+						>{score}</span
+					>
+					<div class="flex gap-0.5 text-primary text-sm" aria-hidden="true">
+						{[...Array(5)].map(() => <FaIcon name="fa6-solid:star" />)}
+					</div>
+				</div>
+				<span class={`text-[11px] leading-snug ${textMutedClass}`}>
+					{ratingsCount}
+					{pluralizeRu(ratingsCount, ['оценка', 'оценки', 'оценок'])} · {
+						reviewsCount
+					}{' '}
+					{pluralizeRu(reviewsCount, ['отзыв', 'отзыва', 'отзывов'])}
+				</span>
+			</a>
 
-      <!-- Карточки отзывов -->
-      {reviews.map((review, index) => (
-        <button
-          type="button"
-          data-review-card
-          data-review-name={review.name}
-          data-review-date={review.date}
-          data-review-rating={review.rating}
-          data-review-text={review.text}
-          data-review-source={sourceLabel}
-          data-review-has-avatar={review.avatar ? '1' : '0'}
-          data-review-avatar={review.avatar?.src}
-          data-review-initials={getInitials(review.name)}
-          data-review-avatar-color={avatarColors[index % avatarColors.length]}
-          class={`snap-start shrink-0 ${cardWidthClass} rounded-2xl p-4 flex flex-col gap-2 text-left transition-[background-color,box-shadow] duration-fast cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 ${reviewCardClass}`}
-        >
-          <div class="flex items-center gap-2.5">
-            {review.avatar ? (
-              <Image
-                src={review.avatar}
-                alt=""
-                width={72}
-                height={72}
-                loading="lazy"
-                class="w-9 h-9 shrink-0 rounded-full object-cover"
-              />
-            ) : (
-              <div class={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-white text-xs font-bold font-montserrat ${avatarColors[index % avatarColors.length]}`}>
-                {getInitials(review.name)}
-              </div>
-            )}
-            <div class="min-w-0">
-              <p class={`text-sm font-bold truncate ${nameClass}`}>{review.name}</p>
-              <p class={`text-[11px] ${dateClass}`}>{review.date}</p>
-            </div>
-          </div>
-          <div class="flex gap-0.5 text-primary text-[10px]" aria-hidden="true">
-            {[...Array(review.rating)].map(() => <FaIcon name="fa6-solid:star" />)}
-          </div>
-          <p class={`text-[13px] leading-snug line-clamp-3 ${textClass}`}>{review.text}</p>
-          <span class={`${readMoreClass} w-fit`}>
-            Читать полностью
-          </span>
-          <span class={`text-[11px] mt-0.5 ${captionClass}`}>{sourceLabel}</span>
-        </button>
-      ))}
-    </div>
-  </div>
+			<!-- Карточки отзывов -->
+			{
+				reviews.map((review, index) => (
+					<button
+						type="button"
+						data-review-card
+						data-review-name={review.name}
+						data-review-date={review.date}
+						data-review-rating={review.rating}
+						data-review-text={review.text}
+						data-review-source={sourceLabel}
+						data-review-has-avatar={review.avatar ? '1' : '0'}
+						data-review-avatar={review.avatar?.src}
+						data-review-initials={getInitials(review.name)}
+						data-review-avatar-color={avatarColors[index % avatarColors.length]}
+						class={`snap-start shrink-0 ${cardWidthClass} rounded-2xl p-4 flex flex-col gap-2 text-left transition-[background-color,box-shadow] duration-fast cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 ${reviewCardClass}`}
+					>
+						<div class="flex items-center gap-2.5">
+							{review.avatar ? (
+								<Image
+									src={review.avatar}
+									alt=""
+									width={72}
+									height={72}
+									loading="lazy"
+									class="w-9 h-9 shrink-0 rounded-full object-cover"
+								/>
+							) : (
+								<div
+									class={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-white text-xs font-bold font-montserrat ${avatarColors[index % avatarColors.length]}`}
+								>
+									{getInitials(review.name)}
+								</div>
+							)}
+							<div class="min-w-0">
+								<p class={`text-sm font-bold truncate ${nameClass}`}>
+									{review.name}
+								</p>
+								<p class={`text-[11px] ${dateClass}`}>{review.date}</p>
+							</div>
+						</div>
+						<div
+							class="flex gap-0.5 text-primary text-[10px]"
+							aria-hidden="true"
+						>
+							{[...Array(review.rating)].map(() => (
+								<FaIcon name="fa6-solid:star" />
+							))}
+						</div>
+						<p class={`text-[13px] leading-snug line-clamp-3 ${textClass}`}>
+							{review.text}
+						</p>
+						<span class={`${readMoreClass} w-fit`}>Читать полностью</span>
+						<span class={`text-[11px] mt-0.5 ${captionClass}`}>
+							{sourceLabel}
+						</span>
+					</button>
+				))
+			}
+		</div>
+	</div>
 
-  <div
-    data-review-modal
-    class="fixed inset-0 z-modal hidden items-center justify-center bg-black/60 px-4 opacity-0 backdrop-blur-sm max-md:backdrop-blur-none transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]"
-  >
-    <div
-      data-review-modal-content
-      class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto scrollbar-hide contain-[layout_paint]
+	<div
+		data-review-modal
+		class="fixed inset-0 z-modal hidden items-center justify-center bg-black/60 px-4 opacity-0 backdrop-blur-sm max-md:backdrop-blur-none transition-opacity duration-slow max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]"
+	>
+		<div
+			data-review-modal-content
+			class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto scrollbar-hide contain-[layout_paint]
         translate-y-20 max-md:translate-y-8
         rounded-3xl bg-white p-6 shadow-2xl shadow-black/20 max-md:shadow-lg
         transition-transform duration-slow ease-out max-md:duration-300 max-md:ease-[cubic-bezier(0.33,1,0.68,1)]
         [&.modal-open]:translate-y-0"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={`${scrollerId}-modal-title`}
-    >
-      <button
-        type="button"
-        data-review-modal-close
-        aria-label="Закрыть отзыв"
-        class="absolute right-4 top-4 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      >
-        <FaIcon name="fa6-solid:xmark" iconClass="text-sm" />
-      </button>
-      <div class="pr-10">
-        <div class="mb-3 flex items-center gap-2">
-          {platform === 'yandex' ? (
-            <span
-              class:list={[platformIconClass, 'bg-[#FC3F1D] text-[11px] font-black font-montserrat leading-none']}
-              aria-hidden="true"
-            >
-              Я
-            </span>
-          ) : (
-            <span class:list={[platformIconClass, 'bg-[#2BA84A]']} aria-hidden="true">
-              <FaIcon name="fa6-solid:location-dot" iconClass="text-[10px]" />
-            </span>
-          )}
-          <p data-review-modal-source class="text-xs font-semibold uppercase tracking-widest text-primary"></p>
-        </div>
-        <div class="flex items-center gap-3">
-          <img
-            data-review-modal-avatar
-            class="hidden h-11 w-11 shrink-0 rounded-full object-cover"
-            alt=""
-            width="44"
-            height="44"
-            decoding="async"
-          />
-          <div
-            data-review-modal-initials
-            class="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold font-montserrat text-white"
-            aria-hidden="true"
-          ></div>
-          <div class="min-w-0">
-            <h3 id={`${scrollerId}-modal-title`} data-review-modal-name class="font-montserrat text-xl font-extrabold text-gray-900"></h3>
-            <p data-review-modal-date class="mt-0.5 text-sm text-gray-400"></p>
-          </div>
-        </div>
-      </div>
-      <div data-review-modal-rating class="mt-4 flex gap-0.5 text-primary text-sm" aria-label="Оценка 5 из 5"></div>
-      <p data-review-modal-text class="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-700"></p>
-    </div>
-  </div>
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby={`${scrollerId}-modal-title`}
+		>
+			<button
+				type="button"
+				data-review-modal-close
+				aria-label="Закрыть отзыв"
+				class="absolute right-4 top-4 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+			>
+				<FaIcon name="fa6-solid:xmark" iconClass="text-sm" />
+			</button>
+			<div class="pr-10">
+				<div class="mb-3 flex items-center gap-2">
+					{
+						platform === 'yandex' ? (
+							<span
+								class:list={[
+									platformIconClass,
+									'bg-[#FC3F1D] text-[11px] font-black font-montserrat leading-none',
+								]}
+								aria-hidden="true"
+							>
+								Я
+							</span>
+						) : (
+							<span
+								class:list={[platformIconClass, 'bg-[#2BA84A]']}
+								aria-hidden="true"
+							>
+								<FaIcon name="fa6-solid:location-dot" iconClass="text-[10px]" />
+							</span>
+						)
+					}
+					<p
+						data-review-modal-source
+						class="text-xs font-semibold uppercase tracking-widest text-primary"
+					>
+					</p>
+				</div>
+				<div class="flex items-center gap-3">
+					<img
+						data-review-modal-avatar
+						class="hidden h-11 w-11 shrink-0 rounded-full object-cover"
+						alt=""
+						width="44"
+						height="44"
+						decoding="async"
+					/>
+					<div
+						data-review-modal-initials
+						class="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold font-montserrat text-white"
+						aria-hidden="true"
+					>
+					</div>
+					<div class="min-w-0">
+						<h3
+							id={`${scrollerId}-modal-title`}
+							data-review-modal-name
+							class="font-montserrat text-xl font-extrabold text-gray-900"
+						>
+							<span class="sr-only">Имя автора отзыва</span>
+						</h3>
+						<p data-review-modal-date class="mt-0.5 text-sm text-gray-400"></p>
+					</div>
+				</div>
+			</div>
+			<div
+				data-review-modal-rating
+				class="mt-4 flex gap-0.5 text-primary text-sm"
+				aria-label="Оценка 5 из 5"
+			>
+			</div>
+			<p
+				data-review-modal-text
+				class="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-700"
+			>
+			</p>
+		</div>
+	</div>
 
-  <template id="ext-review-star-template">
-    <FaIcon name="fa6-solid:star" />
-  </template>
+	<template id="ext-review-star-template">
+		<FaIcon name="fa6-solid:star" />
+	</template>
 </div>
 
 <script>
-  function initExtReviewsRow(row: Element) {
-    if (row instanceof HTMLElement && row.dataset.extReviewsReady === 'true') return;
-    if (row instanceof HTMLElement) row.dataset.extReviewsReady = 'true';
+	function initExtReviewsRow(row: Element) {
+		if (row instanceof HTMLElement && row.dataset.extReviewsReady === 'true')
+			return;
+		if (row instanceof HTMLElement) row.dataset.extReviewsReady = 'true';
 
-    const scroller = row.querySelector<HTMLElement>('[data-scroller]');
-    const prevBtn = row.querySelector<HTMLButtonElement>('[data-scroll-prev]');
-    const nextBtn = row.querySelector<HTMLButtonElement>('[data-scroll-next]');
-    const leftShadow = row.querySelector<HTMLElement>('[data-scroll-shadow-left]');
-    const rightShadow = row.querySelector<HTMLElement>('[data-scroll-shadow-right]');
-    const modal = row.querySelector<HTMLElement>('[data-review-modal]');
-    const modalContent = row.querySelector<HTMLElement>('[data-review-modal-content]');
-    const closeBtn = row.querySelector<HTMLButtonElement>('[data-review-modal-close]');
-    const modalName = row.querySelector<HTMLElement>('[data-review-modal-name]');
-    const modalDate = row.querySelector<HTMLElement>('[data-review-modal-date]');
-    const modalSource = row.querySelector<HTMLElement>('[data-review-modal-source]');
-    const modalRating = row.querySelector<HTMLElement>('[data-review-modal-rating]');
-    const modalText = row.querySelector<HTMLElement>('[data-review-modal-text]');
-    if (!scroller || !prevBtn || !nextBtn || !modal || !modalContent) return;
+		const scroller = row.querySelector<HTMLElement>('[data-scroller]');
+		const prevBtn = row.querySelector<HTMLButtonElement>('[data-scroll-prev]');
+		const nextBtn = row.querySelector<HTMLButtonElement>('[data-scroll-next]');
+		const leftShadow = row.querySelector<HTMLElement>(
+			'[data-scroll-shadow-left]',
+		);
+		const rightShadow = row.querySelector<HTMLElement>(
+			'[data-scroll-shadow-right]',
+		);
+		const modal = row.querySelector<HTMLElement>('[data-review-modal]');
+		const modalContent = row.querySelector<HTMLElement>(
+			'[data-review-modal-content]',
+		);
+		const closeBtn = row.querySelector<HTMLButtonElement>(
+			'[data-review-modal-close]',
+		);
+		const modalName = row.querySelector<HTMLElement>(
+			'[data-review-modal-name]',
+		);
+		const modalDate = row.querySelector<HTMLElement>(
+			'[data-review-modal-date]',
+		);
+		const modalSource = row.querySelector<HTMLElement>(
+			'[data-review-modal-source]',
+		);
+		const modalRating = row.querySelector<HTMLElement>(
+			'[data-review-modal-rating]',
+		);
+		const modalText = row.querySelector<HTMLElement>(
+			'[data-review-modal-text]',
+		);
+		if (!scroller || !prevBtn || !nextBtn || !modal || !modalContent) return;
 
-    if (modal.parentElement !== document.body) {
-      document.body.appendChild(modal);
-    }
+		if (modal.parentElement !== document.body) {
+			document.body.appendChild(modal);
+		}
 
-    const modalAvatar = modal.querySelector<HTMLImageElement>('[data-review-modal-avatar]');
-    const modalInitials = modal.querySelector<HTMLElement>('[data-review-modal-initials]');
+		const modalAvatar = modal.querySelector<HTMLImageElement>(
+			'[data-review-modal-avatar]',
+		);
+		const modalInitials = modal.querySelector<HTMLElement>(
+			'[data-review-modal-initials]',
+		);
 
-    const setBtnVisible = (btn: HTMLButtonElement, visible: boolean) => {
-      btn.classList.toggle('opacity-0', !visible);
-      btn.classList.toggle('pointer-events-none', !visible);
-    };
+		const setBtnVisible = (btn: HTMLButtonElement, visible: boolean) => {
+			btn.classList.toggle('opacity-0', !visible);
+			btn.classList.toggle('pointer-events-none', !visible);
+		};
 
-    const setShadowVisible = (shadow: HTMLElement | null, visible: boolean) => {
-      shadow?.classList.toggle('opacity-0', !visible);
-      shadow?.classList.toggle('opacity-100', visible);
-    };
+		const setShadowVisible = (shadow: HTMLElement | null, visible: boolean) => {
+			shadow?.classList.toggle('opacity-0', !visible);
+			shadow?.classList.toggle('opacity-100', visible);
+		};
 
-    const updateArrows = () => {
-      const maxScroll = scroller.scrollWidth - scroller.clientWidth;
-      const canScrollLeft = scroller.scrollLeft > 8;
-      const canScrollRight = maxScroll > 8 && scroller.scrollLeft < maxScroll - 8;
+		const updateArrows = () => {
+			const maxScroll = scroller.scrollWidth - scroller.clientWidth;
+			const canScrollLeft = scroller.scrollLeft > 8;
+			const canScrollRight =
+				maxScroll > 8 && scroller.scrollLeft < maxScroll - 8;
 
-      setBtnVisible(prevBtn, canScrollLeft);
-      setBtnVisible(nextBtn, canScrollRight);
-      setShadowVisible(leftShadow, canScrollLeft);
-      setShadowVisible(rightShadow, canScrollRight);
-    };
+			setBtnVisible(prevBtn, canScrollLeft);
+			setBtnVisible(nextBtn, canScrollRight);
+			setShadowVisible(leftShadow, canScrollLeft);
+			setShadowVisible(rightShadow, canScrollRight);
+		};
 
-    const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+		const easeInOutQuad = (t: number) =>
+			t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
-    const smoothScrollBy = (delta: number, duration: number) => {
-      const start = scroller.scrollLeft;
-      const startTime = performance.now();
+		const smoothScrollBy = (delta: number, duration: number) => {
+			const start = scroller.scrollLeft;
+			const startTime = performance.now();
 
-      const step = (now: number) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        scroller.scrollLeft = start + delta * easeInOutQuad(progress);
-        if (progress < 1) requestAnimationFrame(step);
-      };
+			const step = (now: number) => {
+				const elapsed = now - startTime;
+				const progress = Math.min(elapsed / duration, 1);
+				scroller.scrollLeft = start + delta * easeInOutQuad(progress);
+				if (progress < 1) requestAnimationFrame(step);
+			};
 
-      requestAnimationFrame(step);
-    };
+			requestAnimationFrame(step);
+		};
 
-    const getCardStep = () => {
-      const firstCard = scroller.firstElementChild as HTMLElement | null;
-      if (!firstCard) return scroller.clientWidth;
-      const gap = parseFloat(getComputedStyle(scroller).columnGap || '0');
-      return firstCard.getBoundingClientRect().width + gap;
-    };
+		const getCardStep = () => {
+			const firstCard = scroller.firstElementChild as HTMLElement | null;
+			if (!firstCard) return scroller.clientWidth;
+			const gap = parseFloat(getComputedStyle(scroller).columnGap || '0');
+			return firstCard.getBoundingClientRect().width + gap;
+		};
 
-    const scrollByPage = (dir: 1 | -1) => {
-      smoothScrollBy(dir * getCardStep(), 500);
-    };
+		const scrollByPage = (dir: 1 | -1) => {
+			smoothScrollBy(dir * getCardStep(), 500);
+		};
 
-    prevBtn.addEventListener('click', () => scrollByPage(-1));
-    nextBtn.addEventListener('click', () => scrollByPage(1));
-    scroller.addEventListener('scroll', updateArrows, { passive: true });
-    window.addEventListener('resize', updateArrows);
+		prevBtn.addEventListener('click', () => scrollByPage(-1));
+		nextBtn.addEventListener('click', () => scrollByPage(1));
+		scroller.addEventListener('scroll', updateArrows, { passive: true });
+		window.addEventListener('resize', updateArrows);
 
-    const resetScrollStart = () => {
-      scroller.scrollLeft = 0;
-      requestAnimationFrame(() => {
-        scroller.scrollLeft = 0;
-        updateArrows();
-      });
-    };
+		const resetScrollStart = () => {
+			scroller.scrollLeft = 0;
+			requestAnimationFrame(() => {
+				scroller.scrollLeft = 0;
+				updateArrows();
+			});
+		};
 
-    resetScrollStart();
+		resetScrollStart();
 
-    let previousFocus: Element | null = null;
+		let previousFocus: Element | null = null;
 
-    const closeModal = () => {
-      if (modal.classList.contains('hidden')) return;
-      modalContent.style.willChange = 'transform';
-      modal.classList.add('opacity-0');
-      modalContent.classList.remove('modal-open');
+		const closeModal = () => {
+			if (modal.classList.contains('hidden')) return;
+			modalContent.style.willChange = 'transform';
+			modal.classList.add('opacity-0');
+			modalContent.classList.remove('modal-open');
 
-      const onCloseEnd = () => {
-        if (!modal.classList.contains('opacity-0')) return;
-        modalContent.style.willChange = '';
-        modal.classList.add('hidden');
-        modal.style.display = '';
-        if (window.unlockScroll) window.unlockScroll();
-        previousFocus instanceof HTMLElement && previousFocus.focus();
-        previousFocus = null;
-      };
+			const onCloseEnd = () => {
+				if (!modal.classList.contains('opacity-0')) return;
+				modalContent.style.willChange = '';
+				modal.classList.add('hidden');
+				modal.style.display = '';
+				if (window.unlockScroll) window.unlockScroll();
+				if (previousFocus instanceof HTMLElement) previousFocus.focus();
+				previousFocus = null;
+			};
 
-      modalContent.addEventListener('transitionend', onCloseEnd, { once: true });
-    };
+			modalContent.addEventListener('transitionend', onCloseEnd, {
+				once: true,
+			});
+		};
 
-    const openModal = (card: HTMLElement) => {
-      previousFocus = document.activeElement;
+		const openModal = (card: HTMLElement) => {
+			previousFocus = document.activeElement;
 
-      if (modalName) modalName.textContent = card.dataset.reviewName ?? '';
-      if (modalDate) modalDate.textContent = card.dataset.reviewDate ?? '';
-      if (modalSource) modalSource.textContent = card.dataset.reviewSource ?? '';
-      if (modalText) modalText.textContent = card.dataset.reviewText ?? '';
-      if (modalRating) {
-        const rating = Number(card.dataset.reviewRating ?? '5');
-        modalRating.innerHTML = '';
-        const starTemplate = document.getElementById('ext-review-star-template') as HTMLTemplateElement | null;
-        Array.from({ length: rating }).forEach(() => {
-          if (starTemplate?.content) {
-            modalRating.appendChild(starTemplate.content.cloneNode(true));
-          }
-        });
-      }
+			if (modalName) modalName.textContent = card.dataset.reviewName ?? '';
+			if (modalDate) modalDate.textContent = card.dataset.reviewDate ?? '';
+			if (modalSource)
+				modalSource.textContent = card.dataset.reviewSource ?? '';
+			if (modalText) modalText.textContent = card.dataset.reviewText ?? '';
+			if (modalRating) {
+				const rating = Number(card.dataset.reviewRating ?? '5');
+				modalRating.innerHTML = '';
+				const starTemplate = document.getElementById(
+					'ext-review-star-template',
+				) as HTMLTemplateElement | null;
+				Array.from({ length: rating }).forEach(() => {
+					if (starTemplate?.content) {
+						modalRating.appendChild(starTemplate.content.cloneNode(true));
+					}
+				});
+			}
 
-      const avatarSrc = card.dataset.reviewAvatar ?? '';
-      const hasAvatar =
-        card.dataset.reviewHasAvatar === '1' && avatarSrc.length > 0;
-      if (modalAvatar && modalInitials) {
-        if (hasAvatar) {
-          modalAvatar.src = avatarSrc;
-          modalAvatar.alt = card.dataset.reviewName ?? '';
-          modalAvatar.classList.remove('hidden');
-          modalInitials.classList.add('hidden');
-          modalInitials.textContent = '';
-        } else {
-          modalAvatar.removeAttribute('src');
-          modalAvatar.classList.add('hidden');
-          modalInitials.textContent = card.dataset.reviewInitials ?? '';
-          modalInitials.className = [
-            'flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold font-montserrat text-white',
-            card.dataset.reviewAvatarColor ?? 'bg-primary',
-          ].join(' ');
-          modalInitials.classList.remove('hidden');
-        }
-      }
+			const avatarSrc = card.dataset.reviewAvatar ?? '';
+			const hasAvatar =
+				card.dataset.reviewHasAvatar === '1' && avatarSrc.length > 0;
+			if (modalAvatar && modalInitials) {
+				if (hasAvatar) {
+					modalAvatar.src = avatarSrc;
+					modalAvatar.alt = card.dataset.reviewName ?? '';
+					modalAvatar.classList.remove('hidden');
+					modalInitials.classList.add('hidden');
+					modalInitials.textContent = '';
+				} else {
+					modalAvatar.removeAttribute('src');
+					modalAvatar.classList.add('hidden');
+					modalInitials.textContent = card.dataset.reviewInitials ?? '';
+					modalInitials.className = [
+						'flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold font-montserrat text-white',
+						card.dataset.reviewAvatarColor ?? 'bg-primary',
+					].join(' ');
+					modalInitials.classList.remove('hidden');
+				}
+			}
 
-      modal.classList.remove('hidden');
-      modal.style.display = 'flex';
-      if (window.lockScroll) window.lockScroll();
+			modal.classList.remove('hidden');
+			modal.style.display = 'flex';
+			if (window.lockScroll) window.lockScroll();
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          modalContent.style.willChange = 'transform';
-          modal.classList.remove('opacity-0');
-          modalContent.classList.add('modal-open');
-          closeBtn?.focus();
-        });
-      });
-    };
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					modalContent.style.willChange = 'transform';
+					modal.classList.remove('opacity-0');
+					modalContent.classList.add('modal-open');
+					closeBtn?.focus();
+				});
+			});
+		};
 
-    row.querySelectorAll<HTMLElement>('[data-review-card]').forEach((card) => {
-      card.addEventListener('click', () => openModal(card));
-    });
+		row.querySelectorAll<HTMLElement>('[data-review-card]').forEach((card) => {
+			card.addEventListener('click', () => openModal(card));
+		});
 
-    closeBtn?.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
-    });
-  }
+		closeBtn?.addEventListener('click', closeModal);
+		modal.addEventListener('click', (e) => {
+			if (e.target === modal) closeModal();
+		});
+		window.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !modal.classList.contains('hidden'))
+				closeModal();
+		});
+	}
 
-  function initAllExtReviewsRows() {
-    document.querySelectorAll('[data-ext-reviews-row]').forEach(initExtReviewsRow);
-  }
+	function initAllExtReviewsRows() {
+		document
+			.querySelectorAll('[data-ext-reviews-row]')
+			.forEach(initExtReviewsRow);
+	}
 
-  initAllExtReviewsRows();
-  document.addEventListener('astro:page-load', initAllExtReviewsRows);
+	initAllExtReviewsRows();
+	document.addEventListener('astro:page-load', initAllExtReviewsRows);
 </script>
