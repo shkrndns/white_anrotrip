@@ -1,0 +1,90 @@
+---
+import FaIcon from '../icons/FaIcon.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+
+const directions = [
+	{
+		num: '01',
+		title: 'Корпоративное обслуживание',
+		desc: 'ANRO TRIP полностью берёт на себя организацию командировок вашей компании. Заключаем договор на индивидуальных условиях. Предоставляем отчётные документы через ЭДО или любым удобным для вас способом.',
+		icon: 'fa6-solid:briefcase',
+		accent: 'bg-primary',
+	},
+	{
+		num: '02',
+		title: 'Персональное сопровождение перелётов и путешествий',
+		desc: 'За Вами закрепляется личный ассистент, который проконсультирует, подберёт комфортный маршрут, отель, тур, поможет с подготовкой визовых документов и будет на связи 24/7 — от обращения до возвращения домой.',
+		icon: 'fa6-solid:plane-departure',
+		accent: 'bg-secondary',
+	},
+	{
+		num: '03',
+		title: 'Агентское обслуживание',
+		desc: 'Сотрудничаем с туристическими агентствами по бронированию авиа и ж/д билетов. Предлагаем доступ к билетам всех российских и международных авиакомпаний и помощь на всех этапах бронирования. Сопровождаем заявки до завершения поездки ваших клиентов.',
+		icon: 'fa6-solid:handshake',
+		accent: 'bg-gray-400',
+	},
+];
+
+const directionIconHoverClass =
+	'transition-[background-color,box-shadow] duration-normal group-hover:bg-primary-dark group-hover:shadow-[0_8px_20px_-4px_rgb(0_171_179/0.35)]';
+---
+
+<div
+	id="directions"
+	class="relative pt-10 md:pt-12 pb-[50px] bg-white overflow-hidden md:overflow-visible scroll-mt-[calc(var(--site-header-h,5rem)-30px)]"
+>
+	<FaIcon
+		name="fa6-solid:plane"
+		iconClass="hidden md:block absolute -right-2 lg:-right-4 top-4 md:top-8 -translate-y-12 lg:-translate-y-14 leading-none text-primary/[0.04] -rotate-24 text-[15rem] lg:text-[18rem] pointer-events-none select-none"
+	/>
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl">
+		<div class="relative mb-4 md:mb-6 reveal-hidden">
+			<div class="relative z-10 max-w-2xl">
+				<SectionHeading badge="Направления">
+					Направления<br />
+					работы <span class="text-primary">ANRO TRIP</span>
+				</SectionHeading>
+			</div>
+		</div>
+
+		<div class="space-y-0">
+			{
+				directions.map((item) => (
+					<div
+						class:list={[
+							'reveal-hidden group flex items-start gap-8 md:gap-10 border-b border-gray-100 last:border-0 hover:border-b-primary/15 [&:has(+:hover)]:border-b-primary/15 hover:bg-primary/4 hover:px-6 hover:-mx-6 hover:rounded-2xl transition-all duration-normal py-5',
+						]}
+					>
+						<div class="shrink-0 w-14 md:w-17 font-montserrat font-black text-[2.5rem] md:text-[3.33rem] text-gray-100 group-hover:text-primary/20 transition-colors leading-none select-none pt-1 tabular-nums self-start whitespace-nowrap">
+							{item.num}
+						</div>
+						<div class="flex-1 flex flex-col md:flex-row md:items-start gap-4 md:gap-8 min-w-0 self-start">
+							<div
+								class:list={[
+									'shrink-0 w-11 h-11 rounded-xl flex items-center justify-center shadow-sm',
+									item.accent,
+									directionIconHoverClass,
+								]}
+							>
+								<FaIcon
+									name={item.icon}
+									iconClass="text-white text-xl sm:text-[1.33rem] leading-none"
+									baseline={false}
+								/>
+							</div>
+							<div class="flex-1">
+								<h3 class="font-montserrat font-bold text-xl text-gray-900 mb-2 group-hover:text-primary transition-colors">
+									{item.title}
+								</h3>
+								<p class="text-gray-500 leading-relaxed text-sm max-w-2xl">
+									{item.desc}
+								</p>
+							</div>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</div>

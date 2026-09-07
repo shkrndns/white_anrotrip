@@ -1,0 +1,89 @@
+---
+import {
+	maxIconPath,
+	socialLogoTransform0,
+	socialLogoTransform80,
+	telegramIconPath,
+} from '../../lib/social-icons';
+import SectionHeading from '../ui/SectionHeading.astro';
+---
+
+<div
+	id="business"
+	class="relative overflow-hidden bg-gray-900 py-[50px] scroll-mt-[calc(var(--site-header-h,5rem)+30px)]"
+>
+	<div
+		class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-none md:blur-3xl pointer-events-none -translate-y-1/2"
+	>
+	</div>
+	<div
+		class="absolute bottom-0 right-1/4 w-80 h-80 bg-secondary/10 rounded-full blur-none md:blur-3xl pointer-events-none translate-y-1/2"
+	>
+	</div>
+
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
+		<div class="flex flex-col lg:flex-row lg:items-center gap-6">
+			<div class="text-center lg:text-left lg:max-w-lg shrink-0">
+				<SectionHeading
+					badge="Начните прямо сейчас"
+					as="h3"
+					headingClass="font-montserrat font-extrabold text-white text-2xl md:text-3xl leading-tight"
+				>
+					Свяжитесь с нами<br />
+					<span class="text-primary">и оцените сервис ANRO TRIP</span>
+				</SectionHeading>
+			</div>
+
+			<div
+				class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto lg:shrink-0 lg:ml-[144px] xl:ml-[176px]"
+			>
+				<a
+					href="https://t.me/anrotrip"
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="ANRO TRIP в Telegram"
+					class="about-cta-btn inline-flex items-center justify-center gap-3 px-12 py-2.5 sm:w-[250px] rounded-full bg-primary text-white font-bold font-montserrat text-base uppercase tracking-wider shadow-[0_4px_24px_rgba(0,171,179,0.4)] hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/30 btn-ripple focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 cursor-pointer"
+				>
+					<svg
+						class="h-7 w-7 shrink-0 overflow-visible"
+						viewBox="0 0 80 80"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true"
+					>
+						<g transform={socialLogoTransform0}>
+							<path
+								fill="currentColor"
+								fill-rule="evenodd"
+								clip-rule="evenodd"
+								d={telegramIconPath}></path>
+						</g>
+					</svg>
+					Telegram
+				</a>
+				<a
+					href="https://max.ru/id6658540239_biz"
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="ANRO TRIP в MAX"
+					class="about-cta-btn inline-flex items-center justify-center gap-3 px-12 py-2.5 sm:w-[250px] rounded-full border border-primary/35 text-white font-semibold font-montserrat text-base uppercase tracking-wider shadow-[0_4px_24px_rgba(0,171,179,0.4)] hover:bg-primary/10 active:bg-primary/30 active:border-primary/50 transition-colors duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 btn-ripple cursor-pointer"
+				>
+					<svg
+						class="h-5 w-5 shrink-0 overflow-visible"
+						viewBox="80 80 80 80"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true"
+					>
+						<g transform={socialLogoTransform80}>
+							<path
+								fill="currentColor"
+								fill-rule="evenodd"
+								clip-rule="evenodd"
+								d={maxIconPath}></path>
+						</g>
+					</svg>
+					MAX
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

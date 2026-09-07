@@ -1,0 +1,107 @@
+---
+import TrustBadges from '../TrustBadges.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+---
+
+<div class="relative py-[50px] bg-white overflow-hidden">
+	<div
+		class="absolute right-0 top-[calc(50%-10px)] -translate-y-1/2 text-[16rem] md:text-[22rem] font-montserrat font-black text-primary/[0.04] leading-none select-none pointer-events-none -mr-16 hidden lg:block"
+	>
+		A
+	</div>
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl">
+		<div
+			class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center"
+		>
+			<div class="reveal-hidden">
+				<SectionHeading
+					badge="О нас"
+					headingClass="section-heading-plus font-montserrat font-extrabold text-gray-900 uppercase tracking-tight mb-3.5 md:mb-5.5"
+				>
+					Почему<br />
+					выбирают<br />
+					<span class="text-primary">ANRO TRIP?</span>
+				</SectionHeading>
+				<ul
+					class="mb-8 max-w-lg list-none space-y-1 text-base leading-tight text-gray-600"
+				>
+					<li class="flex gap-3">
+						<span
+							class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+							aria-hidden="true"></span>
+						<span>
+							Наш <strong class="font-bold text-gray-900"
+								>генеральный директор Анна&nbsp;Рожкова</strong
+							> работает в&nbsp;авиабизнесе и&nbsp;туризме с&nbsp;2007&nbsp;года.
+						</span>
+					</li>
+					<li class="flex gap-3">
+						<span
+							class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+							aria-hidden="true"></span>
+						<span>
+							Благодаря многолетнему опыту и&nbsp;надёжной репутации <strong
+								class="font-bold text-gray-900"
+								>в&nbsp;2019&nbsp;году была основана</strong
+							>
+							<span class="text-primary"
+								>туристическая компания ANRO&nbsp;TRIP</span
+							>, а&nbsp;в&nbsp;2020&nbsp;году зарегистрирован <strong
+								class="font-bold text-gray-900"
+								>собственный товарный знак <span class="text-primary"
+									>ANRO®</span
+								></strong
+							>.
+						</span>
+					</li>
+					<li class="flex gap-3">
+						<span
+							class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+							aria-hidden="true"></span>
+						<span>
+							С&nbsp;2020&nbsp;года ANRO&nbsp;TRIP имеет <strong
+								class="font-bold text-gray-900"
+								>аккредитацию туроператора по&nbsp;внутреннему туризму</strong
+							>.
+						</span>
+					</li>
+					<li class="flex gap-3">
+						<span
+							class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+							aria-hidden="true"></span>
+						<span>
+							С&nbsp;самого основания компания работает в&nbsp;собственном
+							офисе, а&nbsp;с&nbsp;2025&nbsp;года является плательщиком НДС.
+						</span>
+					</li>
+					<li class="flex gap-3">
+						<span
+							class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+							aria-hidden="true"></span>
+						<span>
+							Сегодня в&nbsp;команде ANRO&nbsp;TRIP работает <strong
+								class="font-bold text-gray-900">27&nbsp;профессионалов</strong
+							>, объединённых общей целью&nbsp;—
+							<span
+								class="mt-1 block font-bold uppercase tracking-wide text-primary"
+								>Создавать туристический сервис, доступный каждому!</span
+							>
+						</span>
+					</li>
+				</ul>
+				<div class="flex w-full max-w-lg gap-2">
+					{
+						['Экспертность', 'Надежность', 'Оперативность'].map((tag) => (
+							<span class="flex-1 rounded-full px-3 py-1 text-center text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-primary/10 hover:text-primary transition-colors cursor-default">
+								{tag}
+							</span>
+						))
+					}
+				</div>
+			</div>
+			<div class="lg:min-w-[640px] reveal-hidden flex flex-col gap-4">
+				<TrustBadges />
+			</div>
+		</div>
+	</div>
+</div>

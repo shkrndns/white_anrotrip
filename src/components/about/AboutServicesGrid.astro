@@ -1,0 +1,279 @@
+---
+import { cruiseShipIconPath, services } from '../../data/services';
+import FaIcon from '../icons/FaIcon.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+---
+
+<div
+	class="relative z-20 py-[50px] bg-primary/4 border-t border-primary/5 reveal-hidden"
+>
+	<div class="container mx-auto px-4 sm:px-6 max-w-7xl">
+		<div class="mb-5 md:mb-7 reveal-hidden">
+			<div
+				id="services"
+				class="scroll-mt-[calc(var(--site-header-h,5rem)+20px)]"
+			>
+				<SectionHeading badge="Наши услуги">
+					Наши <span class="text-primary">услуги</span>
+				</SectionHeading>
+			</div>
+		</div>
+
+		<p class="reveal-hidden mb-4 text-sm font-bold text-gray-500 md:hidden">
+			Нажмите на карточку, чтобы прочитать подробности
+		</p>
+
+		<div
+			class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-5"
+			data-reveal-stagger
+		>
+			{
+				services.map((item, i) => {
+					const isFirstMobile = i === 0;
+
+					return (
+						<button
+							type="button"
+							class:list={[
+								'service-card reveal-hidden group relative perspective-[1000px] cursor-pointer h-40 sm:h-48 w-full border-0 bg-transparent p-0 text-left',
+								isFirstMobile ? 'col-span-2 md:col-span-1' : '',
+							]}
+							data-title={item.title}
+							data-desc={item.desc}
+							data-icon-kind={item.customIcon ?? ''}
+							aria-label={`Подробнее об услуге: ${item.title}`}
+						>
+							<div class="relative w-full h-full transition-transform duration-700 preserve-3d md:group-hover:rotate-y-180">
+								<div class="absolute inset-0 backface-hidden bg-white border border-primary/20 rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center text-center shadow-[0_8px_24px_-4px_rgb(0_171_179/0.15)] group-hover:border-primary/35 group-hover:shadow-[0_12px_32px_-6px_rgb(0_171_179/0.28)] transition-[border-color,box-shadow] duration-normal">
+									<div class="service-card-icon w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-3 sm:mb-4">
+										{item.customIcon === 'cruise-ship' ? (
+											<svg
+												class="h-14 w-14 text-primary"
+												viewBox="0 0 128 128"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+												aria-hidden="true"
+											>
+												<path d={cruiseShipIconPath} fill="currentColor" />
+											</svg>
+										) : (
+											<FaIcon
+												name={item.icon}
+												iconClass="text-2xl sm:text-3xl text-primary"
+											/>
+										)}
+									</div>
+									<h3 class="font-montserrat font-bold text-xs sm:text-sm text-gray-900 leading-tight uppercase">
+										{item.title}
+									</h3>
+								</div>
+
+								<div class="absolute inset-0 backface-hidden rotate-y-180 bg-primary text-white rounded-3xl p-4 sm:p-5 flex flex-col justify-center text-center shadow-[0_10px_40px_rgba(0,171,179,0.25)] overflow-hidden">
+									<h4 class="font-montserrat font-bold mb-2 text-xs sm:text-sm uppercase tracking-wider opacity-90">
+										{item.title}
+									</h4>
+									<div class="overflow-y-auto custom-scrollbar pr-1 text-[0.7rem] sm:text-xs leading-relaxed opacity-95">
+										{item.desc}
+									</div>
+								</div>
+							</div>
+						</button>
+					);
+				})
+			}
+		</div>
+	</div>
+</div>
+
+<div
+	id="services-bottom-sheet"
+	class="fixed inset-0 z-modal hidden opacity-0 transition-opacity duration-300 md:hidden"
+>
+	<div
+		class="absolute inset-0 bg-gray-900/60 transition-opacity duration-300"
+		id="services-sheet-backdrop"
+	>
+	</div>
+	<div
+		class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300 shadow-2xl touch-none"
+		id="services-sheet-content"
+	>
+		<div
+			class="w-full pt-2 pb-4 -mt-4 flex justify-center"
+			id="services-sheet-handle"
+		>
+			<div class="w-12 h-1.5 bg-gray-200 rounded-full"></div>
+		</div>
+
+		<div class="flex items-center gap-4 mb-5">
+			<div
+				class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0"
+			>
+				<span
+					id="sheet-icon"
+					class="inline-flex items-center justify-center text-2xl text-primary"
+				></span>
+				<svg
+					id="sheet-cruise-icon"
+					class="hidden h-14 w-14 text-primary"
+					viewBox="0 0 128 128"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true"
+				>
+					<path d={cruiseShipIconPath} fill="currentColor"></path>
+				</svg>
+			</div>
+			<h3
+				id="sheet-title"
+				class="font-montserrat font-bold text-base text-gray-900 leading-tight uppercase"
+			>
+				<span class="sr-only">Название услуги</span>
+			</h3>
+		</div>
+		<p
+			id="sheet-desc"
+			class="text-gray-600 text-sm leading-relaxed max-h-[50vh] overflow-y-auto custom-scrollbar pr-2 pb-4"
+		>
+		</p>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('astro:page-load', () => {
+		const cards = document.querySelectorAll('.service-card');
+		const sheet = document.getElementById('services-bottom-sheet');
+		if (!sheet) return;
+
+		document.body.appendChild(sheet);
+
+		const sheetContent = document.getElementById('services-sheet-content');
+		const sheetBackdrop = document.getElementById('services-sheet-backdrop');
+		const sheetIcon = document.getElementById('sheet-icon');
+		const sheetCruiseIcon = document.getElementById('sheet-cruise-icon');
+		const sheetTitle = document.getElementById('sheet-title');
+		const sheetDesc = document.getElementById('sheet-desc');
+		const dragHandle = document.getElementById('services-sheet-handle');
+
+		if (
+			!sheetContent ||
+			!sheetBackdrop ||
+			!sheetIcon ||
+			!sheetCruiseIcon ||
+			!sheetTitle ||
+			!sheetDesc
+		)
+			return;
+
+		let isSheetOpen = false;
+
+		const openSheet = (card: HTMLElement) => {
+			if (window.innerWidth >= 768) return;
+
+			const title = card.dataset.title || '';
+			const desc = card.dataset.desc || '';
+			const iconKind = card.dataset.iconKind || '';
+
+			sheetTitle.textContent = title;
+			sheetDesc.textContent = desc;
+			sheetIcon.classList.toggle('hidden', iconKind === 'cruise-ship');
+			sheetCruiseIcon.classList.toggle('hidden', iconKind !== 'cruise-ship');
+
+			if (iconKind !== 'cruise-ship') {
+				const sourceSvg = card.querySelector('.service-card-icon svg');
+				sheetIcon.replaceChildren(
+					sourceSvg
+						? sourceSvg.cloneNode(true)
+						: document.createDocumentFragment(),
+				);
+			}
+
+			sheet.classList.remove('hidden');
+			void sheet.offsetWidth;
+
+			sheet.classList.remove('opacity-0');
+			sheetContent.classList.remove('translate-y-full');
+			document.body.style.overflow = 'hidden';
+			isSheetOpen = true;
+		};
+
+		const closeSheet = () => {
+			if (!isSheetOpen) return;
+			sheet.classList.add('opacity-0');
+			sheetContent.style.transform = '';
+			sheetContent.classList.add('translate-y-full');
+			document.body.style.overflow = '';
+			isSheetOpen = false;
+
+			setTimeout(() => {
+				if (!isSheetOpen) sheet.classList.add('hidden');
+			}, 300);
+		};
+
+		cards.forEach((card) => {
+			card.addEventListener('click', () => {
+				if (window.innerWidth < 768) {
+					openSheet(card as HTMLElement);
+				}
+			});
+		});
+
+		sheetBackdrop.addEventListener('click', closeSheet);
+
+		let startY = 0;
+		let currentY = 0;
+		let isDragging = false;
+
+		const onTouchStart = (e: TouchEvent) => {
+			const scrollable = sheetContent.querySelector('.overflow-y-auto');
+			const isHandle = dragHandle?.contains(e.target as Node);
+
+			if (
+				!isHandle &&
+				scrollable &&
+				scrollable.contains(e.target as Node) &&
+				scrollable.scrollTop > 0
+			) {
+				return;
+			}
+
+			startY = e.touches[0].clientY;
+			isDragging = true;
+			sheetContent.style.transition = 'none';
+		};
+
+		const onTouchMove = (e: TouchEvent) => {
+			if (!isDragging) return;
+			currentY = e.touches[0].clientY;
+			const deltaY = currentY - startY;
+
+			if (deltaY > 0) {
+				e.preventDefault();
+				sheetContent.style.transform = `translateY(${deltaY}px)`;
+			}
+		};
+
+		const onTouchEnd = () => {
+			if (!isDragging) return;
+			isDragging = false;
+			sheetContent.style.transition = '';
+
+			const deltaY = currentY - startY;
+			if (deltaY > 100) {
+				closeSheet();
+			} else {
+				sheetContent.style.transform = 'translateY(0)';
+				setTimeout(() => {
+					if (isSheetOpen) sheetContent.style.transform = '';
+				}, 300);
+			}
+			currentY = 0;
+		};
+
+		sheetContent.addEventListener('touchstart', onTouchStart, {
+			passive: false,
+		});
+		sheetContent.addEventListener('touchmove', onTouchMove, { passive: false });
+		sheetContent.addEventListener('touchend', onTouchEnd);
+	});
+</script>
