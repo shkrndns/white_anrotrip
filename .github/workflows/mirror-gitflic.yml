@@ -15,6 +15,8 @@ jobs:
           fetch-depth: 0
 
       - name: Push mirror to Gitflic
+        env:
+          GITFLIC_TOKEN: ${{ secrets.GITFLIC_TOKEN }}
         run: |
-          git push --mirror \
-            "https://shkrndns:${{ secrets.GITFLIC_TOKEN }}@gitflic.ru/project/shkrndns/white_anrotrip.git"
+          git config --global credential.helper '!f() { echo "username=shkrndns"; echo "password=${GITFLIC_TOKEN}"; }; f'
+          git push --mirror "https://gitflic.ru/project/shkrndns/white_anrotrip.git"

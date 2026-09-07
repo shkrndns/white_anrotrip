@@ -9,6 +9,9 @@ dist/
 .history/
 .pnpm-debug.log*
 .npm/
+test-results/
+playwright-report/
+.lighthouseci/
 
 # --- Секреты (пароли, ключи) ---
 .env

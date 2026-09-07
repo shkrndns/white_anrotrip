@@ -45,6 +45,9 @@ jobs:
       - name: Astro check
         run: pnpm check
 
+      - name: Lint
+        run: pnpm lint
+
   # ── Шаг 1: Сборка и push образа в GHCR ──────────────────────────────────
   # Запускается при каждом push в main.
   # VPS не нужен — образ всегда актуален в реестре.
@@ -98,6 +101,9 @@ jobs:
             set -e
             cd /home/deploy/anrotrip
 
+            PREVIOUS_TAG=$(docker compose images app --format '{{.Tag}}' 2>/dev/null | head -1 || echo "latest")
+            echo "Previous image tag: ${PREVIOUS_TAG:-latest}"
+
             IMAGE_TAG=sha-${{ github.sha }} \
             GITHUB_REPOSITORY=${{ github.repository }} \
               docker compose pull app
@@ -106,4 +112,19 @@ jobs:
             GITHUB_REPOSITORY=${{ github.repository }} \
               docker compose up -d
 
-            docker image prune -f
+            echo "Waiting for app health..."
+            for i in $(seq 1 30); do
+              STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$(docker compose ps -q app)" 2>/dev/null || echo "starting")
+              if [ "$STATUS" = "healthy" ]; then
+                echo "App is healthy"
+                docker image prune -f
+                exit 0
+              fi
+              sleep 2
+            done
+
+            echo "Health check failed — rolling back to ${PREVIOUS_TAG:-latest}"
+            IMAGE_TAG=${PREVIOUS_TAG:-latest} \
+            GITHUB_REPOSITORY=${{ github.repository }} \
+              docker compose up -d
+            exit 1

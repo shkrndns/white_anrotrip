@@ -1,0 +1,13 @@
+diff --git a/lib/utils.ts b/lib/utils.ts
+index 75f0f4081d8932ba586c33496c3c0adf5d352bcc..8cc1a6297f33dbded7e2dd8f4dd203bef22e3779 100644
+--- a/lib/utils.ts
++++ b/lib/utils.ts
+@@ -70,7 +70,7 @@ function optimizeSvg(
+       "removeDesc",
+       "removeDimensions",
+       "removeStyleElement",
+-      "removeScriptElement",
++      "removeScripts",
+     ],
+   }).data;
+ }

@@ -1,0 +1,10 @@
+pre-commit:
+  parallel: true
+  commands:
+    check:
+      glob: '*.{astro,ts,js,mjs}'
+      run: pnpm check
+    format:
+      glob: '*.{astro,ts,js,mjs,css,json,yaml,yml,md}'
+      stage_fixed: true
+      run: pnpm exec prettier --write {staged_files}

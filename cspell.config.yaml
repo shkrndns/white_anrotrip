@@ -1,14 +1,17 @@
 # Проверка: pnpm spellcheck  (или: pnpm exec cspell -c cspell.config.yaml "src/...")
 $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
 version: '0.2'
-language: en,ru
+language: ru,en
 import:
   - '@cspell/cspell-bundled-dicts/cspell-default.json'
+  - '@cspell/dict-ru_ru/cspell-ext.json'
 ignorePaths:
   - node_modules
   - dist
   - .astro
   - pnpm-lock.yaml
+  - src/pages/terms.astro
+  - src/pages/privacy.astro
 ignoreRegExpList:
   - /'\.\.\/assets\/team\/[^']+'/
 words:
@@ -69,3 +72,112 @@ words:
   - vafina
   - Nagovicyna
   - nagovicyna
+  - avia
+  - Azal
+  - bfcache
+  - certif
+  - Cвяжитесь
+  - Etihad
+  - Heroicons
+  - iconify
+  - Iconify
+  - jank
+  - kenburns
+  - lightbox
+  - Lightbox
+  - linkify
+  - localbusiness
+  - maxx
+  - MAXX
+  - moidokumenti
+  - Montemare
+  - nemo
+  - Nemo
+  - NEMO
+  - Remal
+  - scroller
+  - Scroller
+  - Srcs
+  - Tilda
+  - tourvisor
+  - Tourvisor
+  - twogis
+  - typograf
+  - xmark
+  - авиабизнесе
+  - авиабронирования
+  - авиакасса
+  - авиакассе
+  - авиаперелёт
+  - авиапродуктов
+  - аквапарками
+  - аквапарком
+  - аквапарку
+  - АНРО
+  - апргейд
+  - ассетов
+  - ассеты
+  - бейджа
+  - Бейджи
+  - блюром
+  - виджетом
+  - выпадашки
+  - Гуна
+  - десктопе
+  - Каппадокией
+  - Каппадокия
+  - капс
+  - Кемер
+  - Краби
+  - краулерами
+  - логируются
+  - лонгтейле
+  - Макади
+  - Мобилка
+  - модалку
+  - морфинг
+  - мототакси
+  - ОГРН
+  - орбов
+  - орбы
+  - Орбы
+  - Памуккале
+  - Панган
+  - Пересолнечение
+  - Праслин
+  - предвыбор
+  - проживани
+  - раскомментировать
+  - рендере
+  - рендерингом
+  - Самуи
+  - Сахль
+  - сваевого
+  - Свайп
+  - скринридеров
+  - скролл
+  - Скролл
+  - скролла
+  - скролле
+  - слайдшоу
+  - снорклинг
+  - Снорклинг
+  - снорклинга
+  - снэк
+  - солнцезащите
+  - соцкнопок
+  - спецтарифы
+  - спецуслуг
+  - тултип
+  - тултипа
+  - Фичи
+  - Фукуок
+  - Халонг
+  - Хашиш
+  - Хойан
+  - Хургады
+  - хэшем
+  - Чанг
+  - Чиангмай
+  - шеринге
+  - апгрейд
