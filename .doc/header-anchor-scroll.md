@@ -25,22 +25,22 @@ Header фиксированный (`fixed top-0`). При скролле к як
 
 ## Значения scroll-mt по секциям
 
-| Секция | ID | scroll-mt | Примечание |
-|---|---|---|---|
-| Поиск | `#search` | `scroll-mt-20` (80px) | Чуть ниже хедера |
-| Популярные туры | `#popular-tours` | `scroll-mt-24` (96px) | |
-| О нас | `#about` | `scroll-mt-24` | |
-| Наши услуги | `#services` | `scroll-mt-20` | |
-| Направления | `#directions` | `scroll-mt-20` | |
-| Для бизнеса | `#business` | `scroll-mt-20` | |
-| Партнёры | `#partners` | `scroll-mt-20` | |
-| Отзывы | `#reviews` | `scroll-mt-20` | |
-| Награды | `#awards` | `scroll-mt-24` | Повышенный |
-| Сертификат | `#gift` | `scroll-mt-24` | Повышенный |
-| Вопросы | `#faq` | `scroll-mt-20` | |
-| Команда | `#team` | `scroll-mt-20` | |
-| Контакты | `#contacts` | `scroll-mt-20` | |
-| Журнал | `#journal` | `scroll-mt-20` | |
+| Секция          | ID               | scroll-mt             | Примечание       |
+| --------------- | ---------------- | --------------------- | ---------------- |
+| Поиск           | `#search`        | `scroll-mt-20` (80px) | Чуть ниже хедера |
+| Популярные туры | `#popular-tours` | `scroll-mt-24` (96px) |                  |
+| О нас           | `#about`         | `scroll-mt-24`        |                  |
+| Наши услуги     | `#services`      | `scroll-mt-20`        |                  |
+| Направления     | `#directions`    | `scroll-mt-20`        |                  |
+| Для бизнеса     | `#business`      | `scroll-mt-20`        |                  |
+| Партнёры        | `#partners`      | `scroll-mt-20`        |                  |
+| Отзывы          | `#reviews`       | `scroll-mt-20`        |                  |
+| Награды         | `#awards`        | `scroll-mt-24`        | Повышенный       |
+| Сертификат      | `#gift`          | `scroll-mt-24`        | Повышенный       |
+| Вопросы         | `#faq`           | `scroll-mt-20`        |                  |
+| Команда         | `#team`          | `scroll-mt-20`        |                  |
+| Контакты        | `#contacts`      | `scroll-mt-20`        |                  |
+| Журнал          | `#journal`       | `scroll-mt-20`        |                  |
 
 > ⚠️ Значения для `#awards` и `#gift` — **повышенные** (`scroll-mt-24`).  
 > Это критично: badge-заголовки этих секций должны быть полностью видны.
@@ -62,7 +62,7 @@ Header фиксированный (`fixed top-0`). При скролле к як
 
 ## Связанные документы
 
-| Документ | Содержание |
-|---|---|
+| Документ                               | Содержание              |
+| -------------------------------------- | ----------------------- |
 | [header-frozen.md](./header-frozen.md) | Полная структура хедера |
-| [mobile-menu.md](./mobile-menu.md) | Мобильный drawer |
+| [mobile-menu.md](./mobile-menu.md)     | Мобильный drawer        |

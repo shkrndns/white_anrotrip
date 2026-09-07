@@ -52,7 +52,7 @@ Drawer закрывается перед скроллом, чтобы не вл�
 
 ## Связанные документы
 
-| Документ | Содержание |
-|---|---|
-| [header-frozen.md](./header-frozen.md) | Полная документация хедера |
-| [header-anchor-scroll.md](./header-anchor-scroll.md) | Якоря, scroll-mt, отступы |
+| Документ                                             | Содержание                 |
+| ---------------------------------------------------- | -------------------------- |
+| [header-frozen.md](./header-frozen.md)               | Полная документация хедера |
+| [header-anchor-scroll.md](./header-anchor-scroll.md) | Якоря, scroll-mt, отступы  |

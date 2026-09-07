@@ -32,17 +32,17 @@
 
 Метрики масштаба проблем:
 
-| Метрика | Значение | Целевое |
-|---|---|---|
-| CSS в бандле | **363 KB** raw / 55 KB gzip | < 60 KB raw |
-| WOFF2 в `dist/` | **828 KB** (78 файлов) | ~150 KB |
-| `node_modules` в prod-образе | **401 MB** | ~5 MB |
-| Inline untyped JS на страницу | **~68 KB** (~800 строк) | < 20 KB |
-| Файлов > 300 строк | **15** (макс. 1233) | — |
-| Дублей form-submit | **4** | 1 |
-| Арбитражных `text-[Npx]` | **67** (14 размеров) | токены |
-| Мёртвого CSS | ~150–200 строк | 0 |
-| Эффективный rate-limit | **5 запросов / 10 мин на весь сайт** | 5 / IP |
+| Метрика                       | Значение                             | Целевое     |
+| ----------------------------- | ------------------------------------ | ----------- |
+| CSS в бандле                  | **363 KB** raw / 55 KB gzip          | < 60 KB raw |
+| WOFF2 в `dist/`               | **828 KB** (78 файлов)               | ~150 KB     |
+| `node_modules` в prod-образе  | **401 MB**                           | ~5 MB       |
+| Inline untyped JS на страницу | **~68 KB** (~800 строк)              | < 20 KB     |
+| Файлов > 300 строк            | **15** (макс. 1233)                  | —           |
+| Дублей form-submit            | **4**                                | 1           |
+| Арбитражных `text-[Npx]`      | **67** (14 размеров)                 | токены      |
+| Мёртвого CSS                  | ~150–200 строк                       | 0           |
+| Эффективный rate-limit        | **5 запросов / 10 мин на весь сайт** | 5 / IP      |
 
 ---
 
@@ -56,8 +56,11 @@ Astro 7 доверяет `X-Forwarded-For` только если Host прошё
 
 ```js
 // node_modules/astro/dist/core/app/node.js:46-48
-const hostValidated = validated.host !== undefined || validatedHostname !== undefined;
-const forwardedClientIp = hostValidated ? getFirstForwardedValue(req.headers['x-forwarded-for']) : undefined;
+const hostValidated =
+	validated.host !== undefined || validatedHostname !== undefined;
+const forwardedClientIp = hostValidated
+	? getFirstForwardedValue(req.headers['x-forwarded-for'])
+	: undefined;
 const clientIp = forwardedClientIp || req.socket?.remoteAddress;
 ```
 
@@ -83,14 +86,14 @@ function validateHost(host, protocol, allowedDomains) {
 
 ```js
 export default defineConfig({
-  site: 'https://anrotrip.ru',
-  security: {
-    allowedDomains: [
-      { hostname: 'anrotrip.ru', protocol: 'https' },
-      { hostname: 'www.anrotrip.ru', protocol: 'https' },
-    ],
-  },
-  // ...
+	site: 'https://anrotrip.ru',
+	security: {
+		allowedDomains: [
+			{ hostname: 'anrotrip.ru', protocol: 'https' },
+			{ hostname: 'www.anrotrip.ru', protocol: 'https' },
+		],
+	},
+	// ...
 });
 ```
 
@@ -179,7 +182,7 @@ RUN pnpm optimize:images && pnpm exec astro build
 const xfHost = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim();
 const xfProto = request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim();
 if (xfHost) {
-  return `${xfProto || 'https'}://${xfHost}`;
+	return `${xfProto || 'https'}://${xfHost}`;
 }
 ```
 
@@ -192,13 +195,20 @@ if (xfHost) {
 ```ts
 const ALLOWED_HOSTS = new Set(['anrotrip.ru', 'www.anrotrip.ru']);
 
-export function getPublicOrigin(request: Request, fallbackOrigin: string, siteOrigin?: string): string {
-  const xfHost = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim();
-  if (xfHost && ALLOWED_HOSTS.has(xfHost.split(':')[0])) {
-    const xfProto = request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim();
-    return `${xfProto === 'http' ? 'http' : 'https'}://${xfHost}`;
-  }
-  // ... тот же fallback, но с проверкой host по whitelist
+export function getPublicOrigin(
+	request: Request,
+	fallbackOrigin: string,
+	siteOrigin?: string,
+): string {
+	const xfHost = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim();
+	if (xfHost && ALLOWED_HOSTS.has(xfHost.split(':')[0])) {
+		const xfProto = request.headers
+			.get('x-forwarded-proto')
+			?.split(',')[0]
+			?.trim();
+		return `${xfProto === 'http' ? 'http' : 'https'}://${xfHost}`;
+	}
+	// ... тот же fallback, но с проверкой host по whitelist
 }
 ```
 
@@ -319,7 +329,7 @@ SSR-страницы отдаются без `Cache-Control`. Cloudflare и пр
 ```ts
 const ct = response.headers.get('content-type') ?? '';
 if (ct.includes('text/html') && !response.headers.has('Cache-Control')) {
-  response.headers.set('Cache-Control', 'no-store, must-revalidate');
+	response.headers.set('Cache-Control', 'no-store, must-revalidate');
 }
 ```
 
@@ -330,6 +340,7 @@ if (ct.includes('text/html') && !response.headers.has('Cache-Control')) {
 **Файл:** `src/lib/mailer.ts:90-122`
 
 Реализация корректная (есть cleanup, `unref()`), но:
+
 - перезапуск контейнера сбрасывает счётчики;
 - при масштабировании на 2+ реплики лимит делится на реплики;
 - лимит общий на все три формы (это скорее плюс).
@@ -367,56 +378,56 @@ if (!host) throw new Error('SMTP_HOST не задан');
 
 ### Dockerfile
 
-| Проблема | Файл | Исправление |
-|---|---|---|
-| `prebuild` не запускается | `Dockerfile:15` | P0-4 |
-| devDeps в runner (401 MB) | `Dockerfile:24` | P0-7 |
-| Нет init-процесса | `Dockerfile:37` | `dumb-init`/`tini` — иначе `SIGTERM` не доходит до Node, деплой ждёт 10 с таймаута на каждом рестарте |
-| Базовый образ не по digest | `Dockerfile:2,10,17` | `node:22.23-alpine@sha256:...` для воспроизводимости |
-| `.dockerignore` неполный | `.dockerignore` | добавить `.ai-factory`, `*.md`, `.vscode`, `*.code-workspace` |
-| Дублирующий `corepack enable` | `Dockerfile:4,6` | оставить один |
+| Проблема                      | Файл                 | Исправление                                                                                           |
+| ----------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `prebuild` не запускается     | `Dockerfile:15`      | P0-4                                                                                                  |
+| devDeps в runner (401 MB)     | `Dockerfile:24`      | P0-7                                                                                                  |
+| Нет init-процесса             | `Dockerfile:37`      | `dumb-init`/`tini` — иначе `SIGTERM` не доходит до Node, деплой ждёт 10 с таймаута на каждом рестарте |
+| Базовый образ не по digest    | `Dockerfile:2,10,17` | `node:22.23-alpine@sha256:...` для воспроизводимости                                                  |
+| `.dockerignore` неполный      | `.dockerignore`      | добавить `.ai-factory`, `*.md`, `.vscode`, `*.code-workspace`                                         |
+| Дублирующий `corepack enable` | `Dockerfile:4,6`     | оставить один                                                                                         |
 
 `HEALTHCHECK` через `wget` корректен — BusyBox wget есть в Alpine. ✅ Non-root пользователь есть. ✅
 
 ### compose.yml
 
-| Проблема | Исправление |
-|---|---|
-| Нет `deploy.resources.limits` | `mem_limit`/`cpus` — иначе утечка в Node положит весь VPS |
-| Нет ротации логов | `logging: { driver: json-file, options: { max-size: 10m, max-file: 3 } }` |
-| Нет `read_only: true` + `tmpfs` для app | Astro 7 включает file-session storage (видно в логе `pnpm check`) — нужен writable путь, учесть при `read_only` |
-| `compose.local.yml` без `restart`/healthcheck | привести к паритету с prod |
-| Нет `security_opt: no-new-privileges` | добавить обоим сервисам |
+| Проблема                                      | Исправление                                                                                                     |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Нет `deploy.resources.limits`                 | `mem_limit`/`cpus` — иначе утечка в Node положит весь VPS                                                       |
+| Нет ротации логов                             | `logging: { driver: json-file, options: { max-size: 10m, max-file: 3 } }`                                       |
+| Нет `read_only: true` + `tmpfs` для app       | Astro 7 включает file-session storage (видно в логе `pnpm check`) — нужен writable путь, учесть при `read_only` |
+| `compose.local.yml` без `restart`/healthcheck | привести к паритету с prod                                                                                      |
+| Нет `security_opt: no-new-privileges`         | добавить обоим сервисам                                                                                         |
 
 ### GitHub Actions
 
 **Файл:** `.github/workflows/deploy.yml`
 
-| Проблема | Строка | Исправление |
-|---|---|---|
-| **Нет CI-проверки качества** | — | отдельный job `pnpm install --frozen-lockfile && pnpm check` **до** сборки образа; сейчас образ собирается и публикуется даже если код не компилируется |
-| Actions не запинены на SHA | 27, 30, 61 | `actions/checkout@<sha> # v4` — защита от supply-chain |
-| `docker build` без buildx-кэша | 37-41 | `docker/build-push-action@<sha>` + `cache-from/to: type=gha` — сборка с 3–5 мин до ~40 с |
-| Нет `provenance`/`sbom` | 37-41 | `provenance: true`, `sbom: true` в build-push-action |
-| Нет `concurrency` | — | `concurrency: { group: deploy-${{ github.ref }}, cancel-in-progress: true }` |
-| `--all-tags` при push | 44 | пушить явные теги `:sha-...` и `:latest` |
-| Билд с `main-design-green` пушит `:latest` | 5 | ограничить `:latest` только `main`, иначе ветка перезапишет prod-тег |
-| Нет `environment:` с protection rules | 55 | `environment: production` + required reviewers |
-| Нет health-gate после деплоя | 62-76 | `curl -fsS https://anrotrip.ru/ || rollback` |
+| Проблема                                   | Строка     | Исправление                                                                                                                                             |
+| ------------------------------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Нет CI-проверки качества**               | —          | отдельный job `pnpm install --frozen-lockfile && pnpm check` **до** сборки образа; сейчас образ собирается и публикуется даже если код не компилируется |
+| Actions не запинены на SHA                 | 27, 30, 61 | `actions/checkout@<sha> # v4` — защита от supply-chain                                                                                                  |
+| `docker build` без buildx-кэша             | 37-41      | `docker/build-push-action@<sha>` + `cache-from/to: type=gha` — сборка с 3–5 мин до ~40 с                                                                |
+| Нет `provenance`/`sbom`                    | 37-41      | `provenance: true`, `sbom: true` в build-push-action                                                                                                    |
+| Нет `concurrency`                          | —          | `concurrency: { group: deploy-${{ github.ref }}, cancel-in-progress: true }`                                                                            |
+| `--all-tags` при push                      | 44         | пушить явные теги `:sha-...` и `:latest`                                                                                                                |
+| Билд с `main-design-green` пушит `:latest` | 5          | ограничить `:latest` только `main`, иначе ветка перезапишет prod-тег                                                                                    |
+| Нет `environment:` с protection rules      | 55         | `environment: production` + required reviewers                                                                                                          |
+| Нет health-gate после деплоя               | 62-76      | `curl -fsS https://anrotrip.ru/                                                                                                                         |     | rollback` |
 
 `permissions` заданы минимально (`contents: read`, `packages: write`) ✅. Деплой за `workflow_dispatch` с явным `deploy: true` ✅. Dependabot настроен с группировкой ✅.
 
 ### Отсутствующий тулинг
 
-| Нет | Зачем нужно |
-|---|---|
+| Нет                                       | Зачем нужно                                                                                      |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Линтер (`oxlint` / `eslint-plugin-astro`) | `pnpm check` проверяет только типы; a11y-баги вроде `div onclick` линтер поймал бы автоматически |
-| `prettier` + `pnpm format` | `prettier-plugin-astro` в devDeps есть, конфига и скрипта нет |
-| `.editorconfig` | в `package.json` табы, в `astro.config.mjs` — 2 пробела |
-| Pre-commit hook (`lefthook`) | `pnpm check` + format на staged |
-| Lighthouse CI | без него регрессии LCP/CLS невидимы |
-| Playwright smoke-тесты | 3 формы + модалки + меню — нулевое покрытие |
-| `pnpm spellcheck` покрывает 2 файла | `package.json:12` — расширить на `src/**/*.{astro,md}` |
+| `prettier` + `pnpm format`                | `prettier-plugin-astro` в devDeps есть, конфига и скрипта нет                                    |
+| `.editorconfig`                           | в `package.json` табы, в `astro.config.mjs` — 2 пробела                                          |
+| Pre-commit hook (`lefthook`)              | `pnpm check` + format на staged                                                                  |
+| Lighthouse CI                             | без него регрессии LCP/CLS невидимы                                                              |
+| Playwright smoke-тесты                    | 3 формы + модалки + меню — нулевое покрытие                                                      |
+| `pnpm spellcheck` покрывает 2 файла       | `package.json:12` — расширить на `src/**/*.{astro,md}`                                           |
 
 ### Версии Node
 
@@ -428,15 +439,15 @@ if (!host) throw new Error('SMTP_HOST не задан');
 
 ### Замеры
 
-| Что | Размер |
-|---|---|
-`src/assets/` | 3,5 MB
-`dist/` | 8,5 MB
-`global.css` (исходник) | 58 KB / 1982 строки
-`dist/client/_astro/typograf.*.css` | **363 KB** raw · 55 KB gzip · 44 KB br
-Bundled JS | 28 KB (ClientRouter 16 KB + Header 9 KB)
-Inline JS на HTML-ответ | **~68 KB**
-WOFF2 в `dist/` | **828 KB** (78 файлов)
+| Что                                 | Размер                                   |
+| ----------------------------------- | ---------------------------------------- |
+| `src/assets/`                       | 3,5 MB                                   |
+| `dist/`                             | 8,5 MB                                   |
+| `global.css` (исходник)             | 58 KB / 1982 строки                      |
+| `dist/client/_astro/typograf.*.css` | **363 KB** raw · 55 KB gzip · 44 KB br   |
+| Bundled JS                          | 28 KB (ClientRouter 16 KB + Header 9 KB) |
+| Inline JS на HTML-ответ             | **~68 KB**                               |
+| WOFF2 в `dist/`                     | **828 KB** (78 файлов)                   |
 
 Топ-5 ассетов: `tours/thailand.webp` 235 KB (1200×655), `tours/antalya.webp` 196 KB, `welcome/welcome.webp` 174 KB, `team/team.webp` 174 KB, `tours/egypt.webp` 154 KB.
 
@@ -460,7 +471,7 @@ if (!prefersReduced && !sameOriginReferrer) {
 **Файлы:** `src/styles/global.css:4-15`, `astro.config.mjs:29-33`
 
 ```css
-@import '@fontsource/inter/400.css';        /* весь latin+cyrillic+greek+vietnamese */
+@import '@fontsource/inter/400.css'; /* весь latin+cyrillic+greek+vietnamese */
 @import '@fontsource/montserrat/600.css';
 @import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
 @import '@fortawesome/fontawesome-free/css/solid.min.css';
@@ -483,8 +494,12 @@ if (!prefersReduced && !sameOriginReferrer) {
 **Файл:** `src/components/widgets/NemoSearch.astro:20-22, 52-56`
 
 ```astro
-<link rel="stylesheet" href={`${NEMO_CDN_BASE}/flights.search.widget.min.css`} />
-<script is:inline defer src={`${NEMO_CDN_BASE}/flights.search.widget.min.js`}></script>
+<link
+	rel="stylesheet"
+	href={`${NEMO_CDN_BASE}/flights.search.widget.min.css`}
+/>
+<script is:inline defer src={`${NEMO_CDN_BASE}/flights.search.widget.min.js`}
+></script>
 ```
 
 `<link rel="stylesheet">` на сторонний CDN — render-blocking запрос к внешнему хосту в критическом пути. Инициализация на `DOMContentLoaded`, без ожидания видимости.
@@ -512,6 +527,7 @@ const ogImageVersion = await (async () => {
 **Файл:** `astro.config.mjs:36`
 
 Интеграция создала 34 файла `.br/.gz/.zst` в `dist/client/`, но:
+
 - `@astrojs/node` standalone не отдаёт предсжатые файлы;
 - Caddy работает через `reverse_proxy`, а не `file_server { precompressed }`;
 - HTML при SSR вообще не проходит предсжатие (это документированное ограничение пакета).
@@ -530,14 +546,14 @@ encode gzip
 
 ### PERF-7. Изображения
 
-| Проблема | Файл | Исправление |
-|---|---|---|
-| Hero отдаётся в 3840×2160 | `Hero.astro:71-78` | `width={1920}` + `sizes="100vw"`; 4K-декодирование на мобильном — самая дорогая операция на первом экране |
-| Нет AVIF нигде | все | `<Picture formats={['avif','webp']}>` для Hero и туров |
-| `tours/` исключены из оптимизации | `scripts/optimize-images.mjs:28` | убрать из SKIP — там 5 из топ-8 тяжёлых файлов |
-| Нет `sizes` | Team, OurPartners, JournalSection, blog cards | добавить (есть в PopularTours, Reviews, Awards) |
-| Preload 3 картинок туров конкурирует с Hero | `index.astro:43-60` | убрать — они ниже первого экрана и отбирают полосу у LCP-ресурса |
-| `welcome.webp` 174 KB на fullscreen | `cabinet.astro:50-57` | resize до 1920 + AVIF |
+| Проблема                                    | Файл                                          | Исправление                                                                                               |
+| ------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Hero отдаётся в 3840×2160                   | `Hero.astro:71-78`                            | `width={1920}` + `sizes="100vw"`; 4K-декодирование на мобильном — самая дорогая операция на первом экране |
+| Нет AVIF нигде                              | все                                           | `<Picture formats={['avif','webp']}>` для Hero и туров                                                    |
+| `tours/` исключены из оптимизации           | `scripts/optimize-images.mjs:28`              | убрать из SKIP — там 5 из топ-8 тяжёлых файлов                                                            |
+| Нет `sizes`                                 | Team, OurPartners, JournalSection, blog cards | добавить (есть в PopularTours, Reviews, Awards)                                                           |
+| Preload 3 картинок туров конкурирует с Hero | `index.astro:43-60`                           | убрать — они ниже первого экрана и отбирают полосу у LCP-ресурса                                          |
+| `welcome.webp` 174 KB на fullscreen         | `cabinet.astro:50-57`                         | resize до 1920 + AVIF                                                                                     |
 
 ### PERF-8. Клиентский JS
 
@@ -557,9 +573,10 @@ encode gzip
 
 ```astro
 <div
-  class="snap-start shrink-0 w-32 sm:w-36 group cursor-pointer"
-  onclick={`openLightbox(${index})`}
+	class="snap-start shrink-0 w-32 sm:w-36 group cursor-pointer"
+	onclick={`openLightbox(${index})`}
 >
+</div>
 ```
 
 `<div>` с `onclick`, без `tabindex`, без роли, без обработки Enter/Space. Для скринридера и клавиатурной навигации 8 отзывов просто не существуют. Плюс строковый `onclick` — это то, что заставляет держать `'unsafe-inline'` в CSP.
@@ -586,29 +603,29 @@ Tab уходит под overlay, фокус не возвращается на `
 
 ### A11Y-5. Контраст ниже WCAG AA
 
-| Цвет | Фон | Ratio | Норма | Где |
-|---|---|---|---|---|
-| `#00abb3` (primary) | белый | **2,81:1** | 4,5:1 | `Hero.astro:252` (13px), `global.css:611` |
-| `#33bfc6` (primary-light) | белый | **2,23:1** | 4,5:1 | `.section-badge__label` |
-| `#9ca3af` (gray-400) | белый | **2,54:1** | 4,5:1 | `CallbackModal.astro:51,96`, `Reviews.astro:273`, `blog/[...page].astro:435` |
-| `white/40` | gray-950 | **3,74:1** | 4,5:1 | `Reviews.astro:98` (11px) |
+| Цвет                      | Фон      | Ratio      | Норма | Где                                                                          |
+| ------------------------- | -------- | ---------- | ----- | ---------------------------------------------------------------------------- |
+| `#00abb3` (primary)       | белый    | **2,81:1** | 4,5:1 | `Hero.astro:252` (13px), `global.css:611`                                    |
+| `#33bfc6` (primary-light) | белый    | **2,23:1** | 4,5:1 | `.section-badge__label`                                                      |
+| `#9ca3af` (gray-400)      | белый    | **2,54:1** | 4,5:1 | `CallbackModal.astro:51,96`, `Reviews.astro:273`, `blog/[...page].astro:435` |
+| `white/40`                | gray-950 | **3,74:1** | 4,5:1 | `Reviews.astro:98` (11px)                                                    |
 
 Для мелкого текста: `text-primary-dark` (#008a91), `text-gray-500`/`600`, `text-white/70`+.
 
 ### A11Y-6. Прочее
 
-| Проблема | Файл | Исправление |
-|---|---|---|
-| `#menu-toggle` без `aria-controls`, drawer без focus trap | `Header.astro:375-380, 409-419` | `aria-controls="mobile-menu"` + trap ⚠️ Header заморожен — согласовать |
-| `ui/Modal.astro` — `<dialog>` без `aria-labelledby` | `Modal.astro:13-35` | `id` на `<h3>` + связать |
-| Рейтинг в ReviewModal не `required`, звёзды без текста | `ReviewModal.astro:44-67` | `required` + `<span class="sr-only">{star} из 5</span>` |
-| Success-блоки без `aria-live` | `CallbackModal.astro:116-124`, `GiftModal.astro:116-124`, `Reviews.astro:359-367` | `role="status" aria-live="polite"` |
-| ScrollProgress без роли | `ScrollProgress.astro:6-10` | `role="progressbar"` + `aria-valuenow` |
-| Cookie banner без focus trap/Escape/initial focus | `CookieBanner.astro:6-12, 61-104` | есть `role="dialog"` и labels, добавить управление фокусом |
-| Логотип на главной `href="#"` | `Header.astro:178-179` | `aria-label="ANRO TRIP — наверх страницы"` ⚠️ Header заморожен |
-| Нет `inputmode="tel"` | `CallbackModal.astro:75-83`, `cabinet.astro:110-117`, `Reviews.astro:291-298` | добавить |
-| Нет `aria-current` в навигации | `Header.astro` | `aria-current="page"` ⚠️ заморожен |
-| Skip-link ведёт на `<div id="content">` | `Layout.astro:394-399` | лучше `#main` на `<main>` |
+| Проблема                                                  | Файл                                                                              | Исправление                                                            |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `#menu-toggle` без `aria-controls`, drawer без focus trap | `Header.astro:375-380, 409-419`                                                   | `aria-controls="mobile-menu"` + trap ⚠️ Header заморожен — согласовать |
+| `ui/Modal.astro` — `<dialog>` без `aria-labelledby`       | `Modal.astro:13-35`                                                               | `id` на `<h3>` + связать                                               |
+| Рейтинг в ReviewModal не `required`, звёзды без текста    | `ReviewModal.astro:44-67`                                                         | `required` + `<span class="sr-only">{star} из 5</span>`                |
+| Success-блоки без `aria-live`                             | `CallbackModal.astro:116-124`, `GiftModal.astro:116-124`, `Reviews.astro:359-367` | `role="status" aria-live="polite"`                                     |
+| ScrollProgress без роли                                   | `ScrollProgress.astro:6-10`                                                       | `role="progressbar"` + `aria-valuenow`                                 |
+| Cookie banner без focus trap/Escape/initial focus         | `CookieBanner.astro:6-12, 61-104`                                                 | есть `role="dialog"` и labels, добавить управление фокусом             |
+| Логотип на главной `href="#"`                             | `Header.astro:178-179`                                                            | `aria-label="ANRO TRIP — наверх страницы"` ⚠️ Header заморожен         |
+| Нет `inputmode="tel"`                                     | `CallbackModal.astro:75-83`, `cabinet.astro:110-117`, `Reviews.astro:291-298`     | добавить                                                               |
+| Нет `aria-current` в навигации                            | `Header.astro`                                                                    | `aria-current="page"` ⚠️ заморожен                                     |
+| Skip-link ведёт на `<div id="content">`                   | `Layout.astro:394-399`                                                            | лучше `#main` на `<main>`                                              |
 
 ### A11Y-7. Логика ScrollToTop инвертирована
 
@@ -639,9 +656,7 @@ skip-link, `lang="ru"`, landmarks, FAQ-аккордеон с `aria-expanded`/`ar
 **Файл:** `src/pages/blog/[...page].astro:70-73`
 
 ```astro
-<Layout
-  title="Журнал о путешествиях | ANRO TRIP"
-  canonicalURL={blogIndexUrl}
+<Layout title="Журнал о путешествиях | ANRO TRIP" canonicalURL={blogIndexUrl}
 ```
 
 `/blog/2` отдаёт `canonical` на `/blog` → страницы 2+ выпадают из индекса вместе со всеми статьями, которые есть только на них. Нет `rel="prev"/"next"`, title не различается.
@@ -653,7 +668,7 @@ skip-link, `lang="ru"`, landmarks, FAQ-аккордеон с `aria-expanded`/`ar
 **Файл:** `src/pages/index.astro:34`
 
 ```astro
-<Layout title="ANRO TRIP — Будь на высоте!">
+<Layout title="ANRO TRIP — Будь на высоте!" />
 ```
 
 Берётся дефолт из `Layout.astro:38` (46 символов). Для главной коммерческого сайта это самая ценная строка в SERP. Нужны 120–160 символов с услугами и гео.
@@ -709,37 +724,37 @@ skip-link, `lang="ru"`, landmarks, FAQ-аккордеон с `aria-expanded`/`ar
 
 ### Размеры файлов
 
-| Файл | Строк |
-|---|---|
-| `Header.astro` | **1233** ⚠️ заморожен |
-| `Layout.astro` | 883 |
-| `Reviews.astro` | 711 |
-| `About.astro` | 640 |
-| `OfficeWidget.astro` | 602 |
-| `blog/[...page].astro` | 590 |
-| `Awards.astro` | 504 |
-| `Footer.astro` | 463 |
-| `Hero.astro` | 455 |
-| `ExternalReviewsRow.astro` | 441 |
-| `blog/[...slug].astro` | 415 |
-| `Team.astro` | 353 |
-| `privacy.astro` / `FAQ.astro` | 327 |
-| `SearchWidget.astro` | 310 |
+| Файл                          | Строк                 |
+| ----------------------------- | --------------------- |
+| `Header.astro`                | **1233** ⚠️ заморожен |
+| `Layout.astro`                | 883                   |
+| `Reviews.astro`               | 711                   |
+| `About.astro`                 | 640                   |
+| `OfficeWidget.astro`          | 602                   |
+| `blog/[...page].astro`        | 590                   |
+| `Awards.astro`                | 504                   |
+| `Footer.astro`                | 463                   |
+| `Hero.astro`                  | 455                   |
+| `ExternalReviewsRow.astro`    | 441                   |
+| `blog/[...slug].astro`        | 415                   |
+| `Team.astro`                  | 353                   |
+| `privacy.astro` / `FAQ.astro` | 327                   |
+| `SearchWidget.astro`          | 310                   |
 
 ### ARCH-1. Четыре копии одного submit-обработчика
 
-| Файл | Endpoint | Строки |
-|---|---|---|
+| Файл                  | Endpoint        | Строки  |
+| --------------------- | --------------- | ------- |
 | `CallbackModal.astro` | `/api/callback` | 224-258 |
-| `GiftModal.astro` | `/api/gift` | 231-260 |
-| `ReviewModal.astro` | `/api/review` | 111-142 |
-| `Reviews.astro` | `/api/review` | 656-687 |
+| `GiftModal.astro`     | `/api/gift`     | 231-260 |
+| `ReviewModal.astro`   | `/api/review`   | 111-142 |
+| `Reviews.astro`       | `/api/review`   | 656-687 |
 
 Во всех четырёх — одни и те же дефекты:
 
 ```ts
-const res = await fetch('/api/callback', { /* ... */ });
-const data = await res.json();     // ← при 500 с HTML-телом падает SyntaxError
+const res = await fetch('/api/callback', {/* ... */});
+const data = await res.json(); // ← при 500 с HTML-телом падает SyntaxError
 ```
 
 1. Нет проверки `res.ok` перед `res.json()` — ответ 500/502 с HTML даёт `SyntaxError` и пользователь видит generic-ошибку вместо осмысленной.
@@ -751,41 +766,41 @@ const data = await res.json();     // ← при 500 с HTML-телом пада
 
 ### ARCH-2. Мёртвый и осиротевший код
 
-| Что | Статус |
-|---|---|
-| `widgets/TourvisorSearch.astro` (80+ строк) | **0 импортов** — Tourvisor грузится inline в `SearchWidget.astro:180+` |
-| `ReviewModal.astro` | Монтируется в `Layout.astro:408`, но событие `open-modal-review-modal` **не диспатчится нигде**. При этом дублирует поля формы из `Reviews.astro:254-370`. Лишний DOM на каждой странице + ловушка для следующего разработчика |
-| `siteApi` (`api-url.ts`) | не используется |
-| `protectBrandName`, `typografHtml`, `typografInstance` (`typograf.ts`) | не используются |
-| ~10 CSS-классов | `.deep-shadow`, `.btn-magnetic`, `.hero-logo-spin`, `.header-logo-spin`, `.gift-cta-btn`, `.about-services-pill`, `.about-avia-card`, `.reveal-from-left/right/scale`, `.shake-error`, `.hero-kenburns` — ~150–200 строк |
+| Что                                                                    | Статус                                                                                                                                                                                                                         |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `widgets/TourvisorSearch.astro` (80+ строк)                            | **0 импортов** — Tourvisor грузится inline в `SearchWidget.astro:180+`                                                                                                                                                         |
+| `ReviewModal.astro`                                                    | Монтируется в `Layout.astro:408`, но событие `open-modal-review-modal` **не диспатчится нигде**. При этом дублирует поля формы из `Reviews.astro:254-370`. Лишний DOM на каждой странице + ловушка для следующего разработчика |
+| `siteApi` (`api-url.ts`)                                               | не используется                                                                                                                                                                                                                |
+| `protectBrandName`, `typografHtml`, `typografInstance` (`typograf.ts`) | не используются                                                                                                                                                                                                                |
+| ~10 CSS-классов                                                        | `.deep-shadow`, `.btn-magnetic`, `.hero-logo-spin`, `.header-logo-spin`, `.gift-cta-btn`, `.about-services-pill`, `.about-avia-card`, `.reveal-from-left/right/scale`, `.shake-error`, `.hero-kenburns` — ~150–200 строк       |
 
 ### ARCH-3. Дублирование клиентской логики
 
-| Логика | Определение | Дубли/вызовы |
-|---|---|---|
-| `lockScroll`/`unlockScroll` | `Layout.astro:854-879` | CallbackModal:170,203 · GiftModal:170,205 · Reviews:472,487,622,643 · Awards:422,441 · ExternalReviewsRow:360,410 |
-| `smoothScrollTo` | `Layout.astro:337-362` | Header:740,746,759 · Hero:347,409 · PopularTours:184 · ScrollToTop:107 |
-| Focus trap | `CallbackModal.astro:137-162` | полный дубль в `GiftModal.astro:132-159`, частичный в `Reviews.astro:405` |
-| Marquee | `Partners.astro:119-191` | идентичен `OurPartners.astro:127-208` |
-| `socials[]` массив | `Footer.astro:39-89` | дубль в `FooterMinimal.astro:33-83` |
-| `.section-badge` разметка | — | 12+ файлов |
+| Логика                      | Определение                   | Дубли/вызовы                                                                                                      |
+| --------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `lockScroll`/`unlockScroll` | `Layout.astro:854-879`        | CallbackModal:170,203 · GiftModal:170,205 · Reviews:472,487,622,643 · Awards:422,441 · ExternalReviewsRow:360,410 |
+| `smoothScrollTo`            | `Layout.astro:337-362`        | Header:740,746,759 · Hero:347,409 · PopularTours:184 · ScrollToTop:107                                            |
+| Focus trap                  | `CallbackModal.astro:137-162` | полный дубль в `GiftModal.astro:132-159`, частичный в `Reviews.astro:405`                                         |
+| Marquee                     | `Partners.astro:119-191`      | идентичен `OurPartners.astro:127-208`                                                                             |
+| `socials[]` массив          | `Footer.astro:39-89`          | дубль в `FooterMinimal.astro:33-83`                                                                               |
+| `.section-badge` разметка   | —                             | 12+ файлов                                                                                                        |
 
 Обращает внимание паттерн: функции определены в `Layout.astro` и вызываются через `window.*` из компонентов. Это работает, но создаёт неявную зависимость, невидимую для TypeScript и для читателя компонента. Явные ES-модули в `src/lib/client/` решают и это.
 
 ### ARCH-4. Контент захардкожен в компонентах
 
-| Домен | Где | Записей |
-|---|---|---|
-| Team | `Team.astro:42-66` | **23** |
-| About services | `About.astro:12-64` | 9 |
-| Header nav | `Header.astro:45-86` | 12+ |
-| Partners (клиенты) | `Partners.astro:14-25` | 10 |
-| Review scans | `Reviews.astro:24-33` | 8 |
-| FAQ | `FAQ.astro:5-56` | 7 |
-| Trust badges | `TrustBadges.astro:8-55` | 5 |
-| Tours | `PopularTours.astro:11-48` | 4 |
-| Awards | `Awards.astro:52-104` | 4 |
-| Directions | `About.astro:69-91` | 3 |
+| Домен              | Где                        | Записей |
+| ------------------ | -------------------------- | ------- |
+| Team               | `Team.astro:42-66`         | **23**  |
+| About services     | `About.astro:12-64`        | 9       |
+| Header nav         | `Header.astro:45-86`       | 12+     |
+| Partners (клиенты) | `Partners.astro:14-25`     | 10      |
+| Review scans       | `Reviews.astro:24-33`      | 8       |
+| FAQ                | `FAQ.astro:5-56`           | 7       |
+| Trust badges       | `TrustBadges.astro:8-55`   | 5       |
+| Tours              | `PopularTours.astro:11-48` | 4       |
+| Awards             | `Awards.astro:52-104`      | 4       |
+| Directions         | `About.astro:69-91`        | 3       |
 
 Блог (`content.config.ts` + 7 md) и внешние отзывы (`external-reviews.ts`) сделаны как data layer — есть образец. Остальное смешано с разметкой: чтобы поправить телефон сотрудника, нужно открыть 353-строчный компонент.
 
@@ -815,25 +830,25 @@ Dark mode осознанно отключён (`color-scheme: only light`, 0 `da
 
 ### DS-1. Типографика и цвета живут в арбитражных значениях
 
-| Категория | Количество | Худшие места |
-|---|---|---|
-| `text-[Npx]` | **67** (14 размеров: 7,8,9,10,11,13,15px…) | `Header.astro` (8–15px), `OfficeWidget.astro` (9×11px) |
-| `bg-[#hex]` / `text-[#hex]` | 19 / 20 | Telegram `#2AABEE`, VK `#0077FF`, Yandex `#FC3F1D` в Header/Footer/blog share |
-| `shadow-[...]` | 31 | Hero, GiftSection, About CTA |
-| `w-[...]`/`h-[...]`/calc | 76 + 4 | `Hero.astro:107` |
-| `[@media(...)]` в классах | 27 | Header (`max-height:480px`) |
-| `style=` атрибуты | ~15 | blur-up, fluid font-size |
-| `!important` в global.css | 21 | blog overrides, modal fixes |
+| Категория                   | Количество                                 | Худшие места                                                                  |
+| --------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- |
+| `text-[Npx]`                | **67** (14 размеров: 7,8,9,10,11,13,15px…) | `Header.astro` (8–15px), `OfficeWidget.astro` (9×11px)                        |
+| `bg-[#hex]` / `text-[#hex]` | 19 / 20                                    | Telegram `#2AABEE`, VK `#0077FF`, Yandex `#FC3F1D` в Header/Footer/blog share |
+| `shadow-[...]`              | 31                                         | Hero, GiftSection, About CTA                                                  |
+| `w-[...]`/`h-[...]`/calc    | 76 + 4                                     | `Hero.astro:107`                                                              |
+| `[@media(...)]` в классах   | 27                                         | Header (`max-height:480px`)                                                   |
+| `style=` атрибуты           | ~15                                        | blur-up, fluid font-size                                                      |
+| `!important` в global.css   | 21                                         | blog overrides, modal fixes                                                   |
 
 Один и тот же 10px записан как `text-[10px]` в компонентах и `text-[0.625rem]` в блоге. Токены нужны прежде всего для micro-типографики (7–11px) и брендовых цветов платформ:
 
 ```css
 @theme {
-  --text-micro: 0.625rem;    /* 10px */
-  --text-caption: 0.6875rem; /* 11px */
-  --color-tg: #2aabee;
-  --color-vk: #0077ff;
-  --color-yandex: #fc3f1d;
+	--text-micro: 0.625rem; /* 10px */
+	--text-caption: 0.6875rem; /* 11px */
+	--color-tg: #2aabee;
+	--color-vk: #0077ff;
+	--color-yandex: #fc3f1d;
 }
 ```
 
@@ -863,28 +878,28 @@ class="absolute top-0 right-0 p-5 flex gap-3 z-2147483649"
 
 ### Систематические расхождения версий
 
-| Файл | Указано | Фактически |
-|---|---|---|
-| `AGENTS.md:25` | Astro 6.x | **7.2.9** |
-| `.specify/memory/constitution.md:15-19` | Astro ^6.1.8, Tailwind ^4.2.x, TS ^5.7.3, Node ^22.13.0 | **7.2.9 / 4.3.2 / 5.9.3 / 22.23.2** |
-| `.doc/notes-blur-production.md:41` | Astro 6.x + Tailwind 4.2.x | **7.x + 4.3.x** |
-| `.doc/anro-trip-guide-optimized.md:7` | Astro 5.16.13 + Tailwind 4.1.18 | **7.2.9 / 4.3.2** |
-| `.doc/audit-full-2026-04.md:24`, `.doc/project-roadmap.md:10` | Astro 6.x | **7.x** |
-| `.doc/SEO-чек-лист.md:13`, `project-roadmap.md:29` | `astro-sitemap` | **`@astrojs/sitemap`** |
+| Файл                                                          | Указано                                                 | Фактически                          |
+| ------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------- |
+| `AGENTS.md:25`                                                | Astro 6.x                                               | **7.2.9**                           |
+| `.specify/memory/constitution.md:15-19`                       | Astro ^6.1.8, Tailwind ^4.2.x, TS ^5.7.3, Node ^22.13.0 | **7.2.9 / 4.3.2 / 5.9.3 / 22.23.2** |
+| `.doc/notes-blur-production.md:41`                            | Astro 6.x + Tailwind 4.2.x                              | **7.x + 4.3.x**                     |
+| `.doc/anro-trip-guide-optimized.md:7`                         | Astro 5.16.13 + Tailwind 4.1.18                         | **7.2.9 / 4.3.2**                   |
+| `.doc/audit-full-2026-04.md:24`, `.doc/project-roadmap.md:10` | Astro 6.x                                               | **7.x**                             |
+| `.doc/SEO-чек-лист.md:13`, `project-roadmap.md:29`            | `astro-sitemap`                                         | **`@astrojs/sitemap`**              |
 
 ### Битые пути и маршруты
 
-| Где | Утверждение | Реальность |
-|---|---|---|
-| `AGENTS.md:44` | `hero/… plane.avif` | удалён (коммит `2bf8379`) |
-| `AGENTS.md:49` | `awards/` — 3 изображения | **16** (`maxx-voyage/` 12 + 4) |
-| `AGENTS.md:47` | только `partners/` | есть ещё `our-partners/` (3 файла) |
-| `AGENTS.md:63` | `corp.astro` в `src/pages/` | архив `src/_archive/corp/` (коммит `7d897db`) |
-| `AGENTS.md:156` | `src/.env.example` | корень: `.env.example` |
-| `AGENTS.md:168-175` | таблица страниц | нет `/404` |
-| `anro-trip-guide-optimized.md:36,37,66,69` | `plane.avif`, `dubai`, `pages/corp.astro`, `public/favicon.svg` | ничего из этого не существует |
-| `site-analysis-full.md:14-15,33` | Google Fonts preconnect, Hero AVIF | проект на `@fontsource`, hero — `world.webp` |
-| `Анализ-текста-сайта.md:29+`, `audit-mobile.md:3`, `testing-plan.md:12`, `commercial-resource-roadmap.md:39` | разделы/тесты для `/corp` | маршрут не публикуется |
+| Где                                                                                                          | Утверждение                                                     | Реальность                                    |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------- |
+| `AGENTS.md:44`                                                                                               | `hero/… plane.avif`                                             | удалён (коммит `2bf8379`)                     |
+| `AGENTS.md:49`                                                                                               | `awards/` — 3 изображения                                       | **16** (`maxx-voyage/` 12 + 4)                |
+| `AGENTS.md:47`                                                                                               | только `partners/`                                              | есть ещё `our-partners/` (3 файла)            |
+| `AGENTS.md:63`                                                                                               | `corp.astro` в `src/pages/`                                     | архив `src/_archive/corp/` (коммит `7d897db`) |
+| `AGENTS.md:156`                                                                                              | `src/.env.example`                                              | корень: `.env.example`                        |
+| `AGENTS.md:168-175`                                                                                          | таблица страниц                                                 | нет `/404`                                    |
+| `anro-trip-guide-optimized.md:36,37,66,69`                                                                   | `plane.avif`, `dubai`, `pages/corp.astro`, `public/favicon.svg` | ничего из этого не существует                 |
+| `site-analysis-full.md:14-15,33`                                                                             | Google Fonts preconnect, Hero AVIF                              | проект на `@fontsource`, hero — `world.webp`  |
+| `Анализ-текста-сайта.md:29+`, `audit-mobile.md:3`, `testing-plan.md:12`, `commercial-resource-roadmap.md:39` | разделы/тесты для `/corp`                                       | маршрут не публикуется                        |
 
 ### Расхождение GitHub-организации
 
@@ -892,44 +907,44 @@ class="absolute top-0 right-0 p-5 flex gap-3 z-2147483649"
 
 ### Расхождения в контактах (влияет и на SEO — см. SEO-4)
 
-| Источник | Значение |
-|---|---|
-| `AGENTS.md:213` | Telegram `@anrotrip` |
-| `Header.astro:25` | `t.me/anro_trip` |
-| `AGENTS.md:214` | email `online@anrotrip.ru` |
-| Footer / Contacts | `anro@anrotrip.ru` |
-| `AGENTS.md:215` | адрес — Екатеринбург |
-| `Contacts.astro` | основной офис — **Челябинск**, Екатеринбург — представительство |
-| `Layout.astro` schema | `+78002224473` |
-| Hero / FAQ | `+7 (922) 026-70-59` |
+| Источник              | Значение                                                        |
+| --------------------- | --------------------------------------------------------------- |
+| `AGENTS.md:213`       | Telegram `@anrotrip`                                            |
+| `Header.astro:25`     | `t.me/anro_trip`                                                |
+| `AGENTS.md:214`       | email `online@anrotrip.ru`                                      |
+| Footer / Contacts     | `anro@anrotrip.ru`                                              |
+| `AGENTS.md:215`       | адрес — Екатеринбург                                            |
+| `Contacts.astro`      | основной офис — **Челябинск**, Екатеринбург — представительство |
+| `Layout.astro` schema | `+78002224473`                                                  |
+| Hero / FAQ            | `+7 (922) 026-70-59`                                            |
 
 Нужен единый канон в `src/data/company.ts` + ссылка на него из `AGENTS.md`.
 
 ### Устаревшие TODO (отмечены как невыполненные, но уже сделаны)
 
-| Документ | TODO | Реальность |
-|---|---|---|
-| `project-roadmap.md:35-36` | добавить OpenGraph, sitemap, robots | `Layout.astro`, `@astrojs/sitemap`, `public/robots.txt` |
-| `project-roadmap.md` Фаза 4 | Nemo-виджет | `NemoSearch.astro` + `SearchWidget.astro` на главной |
-| `project-roadmap.md:13` | `/corp` ✅ готово | архивирован |
-| `audit-full-2026-04.md:65-67` | нужны OpenGraph, Schema.org, canonical, zod | всё реализовано |
-| `security-baseline-package.md` | CSP, HSTS, Origin-проверка | `middleware.ts`, `security.ts`, `Caddyfile` |
-| `nemo-flights-widget-plan.md:3` | «Запланировано (Фаза 4)» | виджет в проде |
-| `refactoring-plan.md` | размеры Header 1248 / Reviews 672 / About 568 / Footer 435 | **1233 / 711 / 640 / 463** |
+| Документ                        | TODO                                                       | Реальность                                              |
+| ------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
+| `project-roadmap.md:35-36`      | добавить OpenGraph, sitemap, robots                        | `Layout.astro`, `@astrojs/sitemap`, `public/robots.txt` |
+| `project-roadmap.md` Фаза 4     | Nemo-виджет                                                | `NemoSearch.astro` + `SearchWidget.astro` на главной    |
+| `project-roadmap.md:13`         | `/corp` ✅ готово                                          | архивирован                                             |
+| `audit-full-2026-04.md:65-67`   | нужны OpenGraph, Schema.org, canonical, zod                | всё реализовано                                         |
+| `security-baseline-package.md`  | CSP, HSTS, Origin-проверка                                 | `middleware.ts`, `security.ts`, `Caddyfile`             |
+| `nemo-flights-widget-plan.md:3` | «Запланировано (Фаза 4)»                                   | виджет в проде                                          |
+| `refactoring-plan.md`           | размеры Header 1248 / Reviews 672 / About 568 / Footer 435 | **1233 / 711 / 640 / 463**                              |
 
 Устаревшие TODO хуже отсутствующих: агент или новый разработчик потратит время на уже сделанное.
 
 ### Консолидация
 
-| Действие | Файлы | Причина |
-|---|---|---|
+| Действие                            | Файлы                                                                                                                                       | Причина                                            |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | **Архивировать** в `.doc/_archive/` | `anro-trip-guide-optimized.md`, `site-analysis-full.md`, `audit-full-2026-04.md`, `dev_site.md` (перепечатка чужой статьи), `SEO_trends.md` | массовые расхождения; ценность только историческая |
-| **Объединить** | `audit-full-2026-04` + `technical-audit-checklist` + `site-analysis-full` → один живой техаудит | три пересекающихся аудита разных дат |
-| **Объединить** | `security-audit-2026-07` + `security-baseline-package` + `security-hardening-checklist` | дублируют CSP/forms/VPS |
-| **Объединить** | `design-overhaul-2026` + `design-report-2026` | один дизайн-цикл |
-| **Объединить** | `mobile-menu.md` → раздел в `header-frozen.md` | явная перекрёстная ссылка |
-| **Дедуплицировать** | `.ai-factory/plans/feature-max-blog-drafts.md` vs `.doc/max-blog-import-plan.md` | одна тема, два плана |
-| **Не трогать** ✅ | `forms.md`, `SEO-чек-лист.md`, `technical-audit-checklist.md`, `header-frozen.md`, `legal-pages-review.md`, `analytics-cookies-plan.md` | наиболее соответствуют коду |
+| **Объединить**                      | `audit-full-2026-04` + `technical-audit-checklist` + `site-analysis-full` → один живой техаудит                                             | три пересекающихся аудита разных дат               |
+| **Объединить**                      | `security-audit-2026-07` + `security-baseline-package` + `security-hardening-checklist`                                                     | дублируют CSP/forms/VPS                            |
+| **Объединить**                      | `design-overhaul-2026` + `design-report-2026`                                                                                               | один дизайн-цикл                                   |
+| **Объединить**                      | `mobile-menu.md` → раздел в `header-frozen.md`                                                                                              | явная перекрёстная ссылка                          |
+| **Дедуплицировать**                 | `.ai-factory/plans/feature-max-blog-drafts.md` vs `.doc/max-blog-import-plan.md`                                                            | одна тема, два плана                               |
+| **Не трогать** ✅                   | `forms.md`, `SEO-чек-лист.md`, `technical-audit-checklist.md`, `header-frozen.md`, `legal-pages-review.md`, `analytics-cookies-plan.md`     | наиболее соответствуют коду                        |
 
 ### Недостающая документация
 
@@ -963,54 +978,54 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 
 Всё в этом этапе либо ломает заявленную функциональность, либо создаёт риск потери данных.
 
-| # | Задача | Файлы |
-|---|---|---|
-| 0.1 | **Проверить, что prod жив с текущим Caddyfile.** `trusted_proxies cloudflare` требует плагина, отсутствующего в `caddy:2-alpine`. Если сервер работает — значит конфиг на VPS ≠ конфиг в репозитории; синхронизировать | `Caddyfile:5`, `compose.yml:7` |
-| 0.2 | `security.allowedDomains` — восстановить работу rate-limit и получение реального IP | `astro.config.mjs` |
-| 0.3 | `bodySizeLimit: 64 * 1024` в адаптере + `request_body max_size` в Caddy | `astro.config.mjs:26`, `Caddyfile` |
-| 0.4 | Whitelist хостов в `getPublicOrigin()` | `src/lib/site-urls.ts:62-69` |
-| 0.5 | `pnpm optimize:images && pnpm exec astro build` в Dockerfile + поправить лживый комментарий | `Dockerfile:14-15` |
-| 0.6 | `pnpm prune --prod` перед копированием `node_modules` (401 MB → ~5 MB) | `Dockerfile:23-24` |
-| 0.7 | Убрать `.doc/`, `AGENTS.md`, `.specify/`, `.ai-factory.json`, `scripts/*` из `.gitignore` и закоммитить | `.gitignore:26-42` |
-| 0.8 | CI-job `pnpm check` **до** сборки образа | `.github/workflows/deploy.yml` |
-| 0.9 | Ограничить тег `:latest` только ветку `main` | `.github/workflows/deploy.yml:5` |
+| #   | Задача                                                                                                                                                                                                                 | Файлы                              |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 0.1 | **Проверить, что prod жив с текущим Caddyfile.** `trusted_proxies cloudflare` требует плагина, отсутствующего в `caddy:2-alpine`. Если сервер работает — значит конфиг на VPS ≠ конфиг в репозитории; синхронизировать | `Caddyfile:5`, `compose.yml:7`     |
+| 0.2 | `security.allowedDomains` — восстановить работу rate-limit и получение реального IP                                                                                                                                    | `astro.config.mjs`                 |
+| 0.3 | `bodySizeLimit: 64 * 1024` в адаптере + `request_body max_size` в Caddy                                                                                                                                                | `astro.config.mjs:26`, `Caddyfile` |
+| 0.4 | Whitelist хостов в `getPublicOrigin()`                                                                                                                                                                                 | `src/lib/site-urls.ts:62-69`       |
+| 0.5 | `pnpm optimize:images && pnpm exec astro build` в Dockerfile + поправить лживый комментарий                                                                                                                            | `Dockerfile:14-15`                 |
+| 0.6 | `pnpm prune --prod` перед копированием `node_modules` (401 MB → ~5 MB)                                                                                                                                                 | `Dockerfile:23-24`                 |
+| 0.7 | Убрать `.doc/`, `AGENTS.md`, `.specify/`, `.ai-factory.json`, `scripts/*` из `.gitignore` и закоммитить                                                                                                                | `.gitignore:26-42`                 |
+| 0.8 | CI-job `pnpm check` **до** сборки образа                                                                                                                                                                               | `.github/workflows/deploy.yml`     |
+| 0.9 | Ограничить тег `:latest` только ветку `main`                                                                                                                                                                           | `.github/workflows/deploy.yml:5`   |
 
 **Проверка этапа:** задеплоить на staging, залогировать `clientAddress` (должен быть реальный IP клиента, не `172.x`), отправить 6 заявок с одного IP (6-я → 429), отправить 1 заявку с другого IP (должна пройти), убедиться что `dist/` содержит оптимизированные картинки, замерить размер образа.
 
 ### Этап 1 — Быстрые победы по метрикам (2–3 дня)
 
-| # | Задача | Ожидаемый эффект |
-|---|---|---|
-| 1.1 | Убрать `opacity: 0` с `<html>`/`<body>`; fade — только на overlay | LCP −500 мс на холодных заходах |
-| 1.2 | Заменить Font Awesome на SVG через `astro-iconify` | CSS −~200 KB, woff2 −252 KB |
-| 1.3 | `@fontsource/*/cyrillic-*.css` + `latin-*.css` вместо полных | woff2 828 KB → ~150 KB |
-| 1.4 | `encode zstd br gzip` в Caddy | −20 % трафика |
-| 1.5 | Убрать `astro-compressor` (при SSR не работает) **либо** отдавать `/_astro/*` через Caddy `file_server { precompressed }` | быстрее сборка / меньше нагрузки на Node |
-| 1.6 | `prerender = true` для `privacy`, `terms`, `404`, `index` | закрывает SEO-1 (sitemap) + снимает SSR-нагрузку |
-| 1.7 | `ogImageVersion` — build-time вместо `stat()` на запрос | −1 файловая операция на каждый ответ |
-| 1.8 | `Cache-Control` для HTML в middleware | предсказуемое кеширование на Cloudflare |
-| 1.9 | Nemo — lazy через `IntersectionObserver` + `preconnect` к `cdn.nemo.travel` | разблокирует первый экран |
-| 1.10 | Hero `width={1920}` + `sizes`; убрать preload картинок туров; включить `tours/` в `optimize-images` | LCP, −500 KB ассетов |
-| 1.11 | `dumb-init` в Dockerfile; limits + log rotation в compose | корректный SIGTERM, защита VPS |
-| 1.12 | Запинить actions на SHA; buildx-кэш; `provenance` | supply-chain + сборка ~40 с |
-| 1.13 | `noindex` на 404; canonical + prev/next + title для пагинации блога; уникальный description главной | SEO-2, SEO-3, SEO-5 |
+| #    | Задача                                                                                                                    | Ожидаемый эффект                                 |
+| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 1.1  | Убрать `opacity: 0` с `<html>`/`<body>`; fade — только на overlay                                                         | LCP −500 мс на холодных заходах                  |
+| 1.2  | Заменить Font Awesome на SVG через `astro-iconify`                                                                        | CSS −~200 KB, woff2 −252 KB                      |
+| 1.3  | `@fontsource/*/cyrillic-*.css` + `latin-*.css` вместо полных                                                              | woff2 828 KB → ~150 KB                           |
+| 1.4  | `encode zstd br gzip` в Caddy                                                                                             | −20 % трафика                                    |
+| 1.5  | Убрать `astro-compressor` (при SSR не работает) **либо** отдавать `/_astro/*` через Caddy `file_server { precompressed }` | быстрее сборка / меньше нагрузки на Node         |
+| 1.6  | `prerender = true` для `privacy`, `terms`, `404`, `index`                                                                 | закрывает SEO-1 (sitemap) + снимает SSR-нагрузку |
+| 1.7  | `ogImageVersion` — build-time вместо `stat()` на запрос                                                                   | −1 файловая операция на каждый ответ             |
+| 1.8  | `Cache-Control` для HTML в middleware                                                                                     | предсказуемое кеширование на Cloudflare          |
+| 1.9  | Nemo — lazy через `IntersectionObserver` + `preconnect` к `cdn.nemo.travel`                                               | разблокирует первый экран                        |
+| 1.10 | Hero `width={1920}` + `sizes`; убрать preload картинок туров; включить `tours/` в `optimize-images`                       | LCP, −500 KB ассетов                             |
+| 1.11 | `dumb-init` в Dockerfile; limits + log rotation в compose                                                                 | корректный SIGTERM, защита VPS                   |
+| 1.12 | Запинить actions на SHA; buildx-кэш; `provenance`                                                                         | supply-chain + сборка ~40 с                      |
+| 1.13 | `noindex` на 404; canonical + prev/next + title для пагинации блога; уникальный description главной                       | SEO-2, SEO-3, SEO-5                              |
 
 **Проверка:** Lighthouse до/после (мобильный профиль), размеры `dist/client/_astro/*.css` и суммы woff2, `curl -I` на HTML и `/_astro/*`.
 
 ### Этап 2 — Доступность и доверие (2–3 дня)
 
-| # | Задача |
-|---|---|
-| 2.1 | `src/lib/client/focus-trap.ts` + применить в Reviews-lightbox, форме отзыва, mobile drawer, cookie banner |
-| 2.2 | `role="dialog" aria-modal aria-labelledby` во все overlay (Callback, Gift, Reviews ×2) |
-| 2.3 | `<div onclick>` → `<button>` в `Reviews.astro:73` и `About.astro:374` (снимает и зависимость CSP от `unsafe-inline`) |
-| 2.4 | Контраст: `primary` → `primary-dark` для мелкого текста, `gray-400` → `gray-500/600`, `white/40` → `white/70` |
-| 2.5 | `role="status" aria-live="polite"` на success-блоки; `inputmode="tel"`; `required` + sr-only текст на рейтинг |
-| 2.6 | `role="progressbar"` для ScrollProgress; выяснить с владельцем логику ScrollToTop |
-| 2.7 | Иконки 180/192/512 + `site.webmanifest` + `theme-color` |
-| 2.8 | `src/data/company.ts` как единый источник NAP → schema, компоненты, `AGENTS.md` |
-| 2.9 | `aggregateRating` из `external-reviews.ts` + `geo` + `openingHoursSpecification` + `WebSite`/`SearchAction` |
-| 2.10 | `/.well-known/security.txt` |
+| #    | Задача                                                                                                               |
+| ---- | -------------------------------------------------------------------------------------------------------------------- |
+| 2.1  | `src/lib/client/focus-trap.ts` + применить в Reviews-lightbox, форме отзыва, mobile drawer, cookie banner            |
+| 2.2  | `role="dialog" aria-modal aria-labelledby` во все overlay (Callback, Gift, Reviews ×2)                               |
+| 2.3  | `<div onclick>` → `<button>` в `Reviews.astro:73` и `About.astro:374` (снимает и зависимость CSP от `unsafe-inline`) |
+| 2.4  | Контраст: `primary` → `primary-dark` для мелкого текста, `gray-400` → `gray-500/600`, `white/40` → `white/70`        |
+| 2.5  | `role="status" aria-live="polite"` на success-блоки; `inputmode="tel"`; `required` + sr-only текст на рейтинг        |
+| 2.6  | `role="progressbar"` для ScrollProgress; выяснить с владельцем логику ScrollToTop                                    |
+| 2.7  | Иконки 180/192/512 + `site.webmanifest` + `theme-color`                                                              |
+| 2.8  | `src/data/company.ts` как единый источник NAP → schema, компоненты, `AGENTS.md`                                      |
+| 2.9  | `aggregateRating` из `external-reviews.ts` + `geo` + `openingHoursSpecification` + `WebSite`/`SearchAction`          |
+| 2.10 | `/.well-known/security.txt`                                                                                          |
 
 **Проверка:** axe DevTools на главной/блоге/legal, обход всего сайта только с клавиатуры, Rich Results Test, Search Console после деплоя.
 
@@ -1018,63 +1033,63 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 
 Порядок внутри этапа — по соотношению эффекта к трудозатратам.
 
-| # | Задача | Новые файлы |
-|---|---|---|
-| 3.1 | **`form-submit.ts`** — устраняет 4 дубля + добавляет `res.ok`, timeout, offline, `siteApi()` | `src/lib/client/form-submit.ts` |
-| 3.2 | `scroll-lock.ts`, `smooth-scroll.ts`, `scroll-reveal.ts` — вынести из `Layout.astro` | `src/lib/client/*.ts` |
-| 3.3 | Удалить `TourvisorSearch.astro`; удалить или подключить `ReviewModal.astro`; вычистить мёртвые экспорты и ~10 CSS-классов | — |
-| 3.4 | `SectionHeading.astro` — 12+ копий разметки | `src/components/ui/SectionHeading.astro` |
-| 3.5 | Data layer: team (23), services (9), faq (7), tours (4), awards (4), partners (10+3), review-docs (8), trust-badges (5), hero-stats | `src/data/*.ts` |
-| 3.6 | `env.ts` с zod + `ImportMetaEnv`; слить `env.d.ts` и `window.d.ts` | `src/lib/env.ts` |
-| 3.7 | Разбить `Reviews.astro` (711) | `reviews/ReviewsLightbox.astro`, `reviews/ReviewFormOverlay.astro`, `lib/client/reviews-lightbox.ts` |
-| 3.8 | Разбить `About.astro` (640) | `about/AboutHero`, `AboutBenefitsGrid`, `AboutDirections`, `AboutServicesGrid`, `AboutCta` |
-| 3.9 | Разбить `blog/[...page].astro` (590) | `blog/BlogHero`, `BlogFeaturedCard`, `BlogPostCard`, `BlogPagination` |
-| 3.10 | Разнести `mailer.ts` (295) на транспорт / telegram / rate-limit / шаблон | `src/lib/*.ts` |
-| 3.11 | `partners-marquee.ts` + `social-links.ts` (дубли Partners/OurPartners, Footer/FooterMinimal) | `src/lib/client/`, `src/data/` |
-| 3.12 | Перевести оставшиеся `is:inline` в bundled-модули (типизация + кеширование) | — |
-| 3.13 | Токены: `--text-micro/caption`, цвета платформ; нормальная z-шкала вместо `z-2147483649` | `global.css` |
-| 3.14 | SMTP `transporter` — синглтон с `pool: true` | `src/lib/mailer.ts` |
+| #    | Задача                                                                                                                              | Новые файлы                                                                                          |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 3.1  | **`form-submit.ts`** — устраняет 4 дубля + добавляет `res.ok`, timeout, offline, `siteApi()`                                        | `src/lib/client/form-submit.ts`                                                                      |
+| 3.2  | `scroll-lock.ts`, `smooth-scroll.ts`, `scroll-reveal.ts` — вынести из `Layout.astro`                                                | `src/lib/client/*.ts`                                                                                |
+| 3.3  | Удалить `TourvisorSearch.astro`; удалить или подключить `ReviewModal.astro`; вычистить мёртвые экспорты и ~10 CSS-классов           | —                                                                                                    |
+| 3.4  | `SectionHeading.astro` — 12+ копий разметки                                                                                         | `src/components/ui/SectionHeading.astro`                                                             |
+| 3.5  | Data layer: team (23), services (9), faq (7), tours (4), awards (4), partners (10+3), review-docs (8), trust-badges (5), hero-stats | `src/data/*.ts`                                                                                      |
+| 3.6  | `env.ts` с zod + `ImportMetaEnv`; слить `env.d.ts` и `window.d.ts`                                                                  | `src/lib/env.ts`                                                                                     |
+| 3.7  | Разбить `Reviews.astro` (711)                                                                                                       | `reviews/ReviewsLightbox.astro`, `reviews/ReviewFormOverlay.astro`, `lib/client/reviews-lightbox.ts` |
+| 3.8  | Разбить `About.astro` (640)                                                                                                         | `about/AboutHero`, `AboutBenefitsGrid`, `AboutDirections`, `AboutServicesGrid`, `AboutCta`           |
+| 3.9  | Разбить `blog/[...page].astro` (590)                                                                                                | `blog/BlogHero`, `BlogFeaturedCard`, `BlogPostCard`, `BlogPagination`                                |
+| 3.10 | Разнести `mailer.ts` (295) на транспорт / telegram / rate-limit / шаблон                                                            | `src/lib/*.ts`                                                                                       |
+| 3.11 | `partners-marquee.ts` + `social-links.ts` (дубли Partners/OurPartners, Footer/FooterMinimal)                                        | `src/lib/client/`, `src/data/`                                                                       |
+| 3.12 | Перевести оставшиеся `is:inline` в bundled-модули (типизация + кеширование)                                                         | —                                                                                                    |
+| 3.13 | Токены: `--text-micro/caption`, цвета платформ; нормальная z-шкала вместо `z-2147483649`                                            | `global.css`                                                                                         |
+| 3.14 | SMTP `transporter` — синглтон с `pool: true`                                                                                        | `src/lib/mailer.ts`                                                                                  |
 
 `Header.astro` (1233 строки) — план разбиения готов, но требует **явного согласия владельца** (`AGENTS.md`, `.doc/header-frozen.md`).
 
 ### Этап 4 — Процессы и качество (параллельно, 2–3 дня)
 
-| # | Задача |
-|---|---|
+| #   | Задача                                                                                                              |
+| --- | ------------------------------------------------------------------------------------------------------------------- |
 | 4.1 | `oxlint` (или `eslint-plugin-astro` + `jsx-a11y`) + `pnpm lint` в CI — автоматически ловит `div onclick` и подобное |
-| 4.2 | `.prettierrc` + `pnpm format`; `.editorconfig` (сейчас табы и 2 пробела в разных файлах) |
-| 4.3 | `lefthook` pre-commit: `pnpm check` + format на staged |
-| 4.4 | Playwright smoke: 3 формы, модалки, мобильное меню, 404, блог |
-| 4.5 | Lighthouse CI с бюджетами (LCP, CLS, JS/CSS-веса) в PR |
-| 4.6 | Расширить `spellcheck` с 2 файлов на `src/**/*.{astro,md}` |
-| 4.7 | `environment: production` + health-gate с откатом в deploy |
-| 4.8 | `engines.node` → `>=22.23.0 <23`; токен из URL в mirror-workflow убрать |
+| 4.2 | `.prettierrc` + `pnpm format`; `.editorconfig` (сейчас табы и 2 пробела в разных файлах)                            |
+| 4.3 | `lefthook` pre-commit: `pnpm check` + format на staged                                                              |
+| 4.4 | Playwright smoke: 3 формы, модалки, мобильное меню, 404, блог                                                       |
+| 4.5 | Lighthouse CI с бюджетами (LCP, CLS, JS/CSS-веса) в PR                                                              |
+| 4.6 | Расширить `spellcheck` с 2 файлов на `src/**/*.{astro,md}`                                                          |
+| 4.7 | `environment: production` + health-gate с откатом в deploy                                                          |
+| 4.8 | `engines.node` → `>=22.23.0 <23`; токен из URL в mirror-workflow убрать                                             |
 
 ### Этап 5 — Документация (1–2 дня, делать по факту завершения этапов)
 
-| # | Задача |
-|---|---|
+| #   | Задача                                                                                                                                                                                                       |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 5.1 | `AGENTS.md`: Astro 7, пути (`.env.example`, hero, awards, our-partners, corp в архиве), `/404`, недостающие компоненты и зависимости (`@astrojs/sitemap`, `astro-compressor`, `spellcheck`), канон контактов |
-| 5.2 | `.specify/memory/constitution.md`: версии → фактические; добавить `security.allowedDomains` как обязательный пункт |
-| 5.3 | Единая GitHub-организация во всей деплой-документации (`shkrndns`, не `hyperdevops`): `server-vps-stack-plan.md`, `deploy-prep-checklist.md`, `gitflic-mirror.md` |
-| 5.4 | Закрыть устаревшие TODO в `project-roadmap.md`, `audit-full-2026-04.md`, `nemo-flights-widget-plan.md`, `security-baseline-package.md`; обновить размеры в `refactoring-plan.md` |
-| 5.5 | Убрать `/corp` из активных документов (`Анализ-текста-сайта.md`, `audit-mobile.md`, `testing-plan.md`, `commercial-resource-roadmap.md`) |
-| 5.6 | Создать `.doc/_archive/`, перенести 5 устаревших документов, объединить пересекающиеся аудиты |
-| 5.7 | Дописать недостающее: Astro 7, middleware/CSP, `src/lib/`, глобальные виджеты Layout, `content.config.ts`, канон двух офисов |
-| 5.8 | Обновить `.doc/README.md` под новую структуру |
+| 5.2 | `.specify/memory/constitution.md`: версии → фактические; добавить `security.allowedDomains` как обязательный пункт                                                                                           |
+| 5.3 | Единая GitHub-организация во всей деплой-документации (`shkrndns`, не `hyperdevops`): `server-vps-stack-plan.md`, `deploy-prep-checklist.md`, `gitflic-mirror.md`                                            |
+| 5.4 | Закрыть устаревшие TODO в `project-roadmap.md`, `audit-full-2026-04.md`, `nemo-flights-widget-plan.md`, `security-baseline-package.md`; обновить размеры в `refactoring-plan.md`                             |
+| 5.5 | Убрать `/corp` из активных документов (`Анализ-текста-сайта.md`, `audit-mobile.md`, `testing-plan.md`, `commercial-resource-roadmap.md`)                                                                     |
+| 5.6 | Создать `.doc/_archive/`, перенести 5 устаревших документов, объединить пересекающиеся аудиты                                                                                                                |
+| 5.7 | Дописать недостающее: Astro 7, middleware/CSP, `src/lib/`, глобальные виджеты Layout, `content.config.ts`, канон двух офисов                                                                                 |
+| 5.8 | Обновить `.doc/README.md` под новую структуру                                                                                                                                                                |
 
 ### Этап 6 — Отложенное (обсудить приоритет)
 
-| # | Задача | Комментарий |
-|---|---|---|
-| 6.1 | **Nonce-CSP** вместо `'unsafe-inline'` | делать после 2.3 и 3.12, когда inline-скриптов почти не останется |
-| 6.2 | Вернуть `cssMinify` с точечным решением для blur | после 1.2/1.3 выигрыш будет уже небольшой; риск регрессии blur остаётся |
-| 6.3 | Hero/tours в AVIF через `<Picture>` | ещё −30 % веса картинок |
-| 6.4 | Изображения для 6 статей блога + `draft` в схеме | по плану `.doc/max-blog-import-plan.md` |
-| 6.5 | Rate-limit в Redis или `caddy-ratelimit` | когда появится вторая реплика |
-| 6.6 | PWA (service worker, offline) | `.doc/pwa-plan.md`; иконки и manifest уже в 2.7 |
-| 6.7 | Яндекс.Метрика | чеклист в `.doc/analytics-cookies-plan.md`; CookieBanner и privacy готовы |
-| 6.8 | Разбиение `Header.astro` | требует согласия владельца |
+| #   | Задача                                           | Комментарий                                                               |
+| --- | ------------------------------------------------ | ------------------------------------------------------------------------- |
+| 6.1 | **Nonce-CSP** вместо `'unsafe-inline'`           | делать после 2.3 и 3.12, когда inline-скриптов почти не останется         |
+| 6.2 | Вернуть `cssMinify` с точечным решением для blur | после 1.2/1.3 выигрыш будет уже небольшой; риск регрессии blur остаётся   |
+| 6.3 | Hero/tours в AVIF через `<Picture>`              | ещё −30 % веса картинок                                                   |
+| 6.4 | Изображения для 6 статей блога + `draft` в схеме | по плану `.doc/max-blog-import-plan.md`                                   |
+| 6.5 | Rate-limit в Redis или `caddy-ratelimit`         | когда появится вторая реплика                                             |
+| 6.6 | PWA (service worker, offline)                    | `.doc/pwa-plan.md`; иконки и manifest уже в 2.7                           |
+| 6.7 | Яндекс.Метрика                                   | чеклист в `.doc/analytics-cookies-plan.md`; CookieBanner и privacy готовы |
+| 6.8 | Разбиение `Header.astro`                         | требует согласия владельца                                                |
 
 ---
 
@@ -1093,6 +1108,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.1 — Caddyfile готов к `caddy:2-alpine` (2026-09-06)
 
 **Сделано:**
+
 - Удалён `trusted_proxies cloudflare` из site-блока (требует [сторонний модуль](https://caddyserver.com/docs/json/apps/http/trusted_proxies/cloudflare/), не входит в официальный образ).
 - Добавлен глобальный блок `{ servers { ... } }` с `trusted_proxies static` — 15 IPv4 + 7 IPv6 диапазонов с [cloudflare.com/ips-v4|v6](https://www.cloudflare.com/ips-v4/).
 - Включены `trusted_proxies_strict` и `client_ip_headers CF-Connecting-IP X-Forwarded-For` ([рекомендация Caddy](https://caddyserver.com/docs/caddyfile/options#trusted-proxies) для Cloudflare).
@@ -1104,6 +1120,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.2 — `security.allowedDomains` (Astro 7) (2026-09-06)
 
 **Сделано:**
+
 - В `astro.config.mjs` добавлен `security.allowedDomains`:
   - **production:** `anrotrip.ru`, `www.anrotrip.ru` (https)
   - **dev/preview:** + `localhost`, `127.0.0.1` (http)
@@ -1116,6 +1133,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.3 — `bodySizeLimit` 64 KB (2026-09-06)
 
 **Сделано:**
+
 - `astro.config.mjs`: `adapter: node({ bodySizeLimit: 64 * 1024 })` (было 1 GB по умолчанию).
 - `Caddyfile`: `request_body { max_size 64KB }` перед `reverse_proxy`.
 
@@ -1126,6 +1144,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.4 — Dockerfile: prebuild / optimize:images (2026-09-06)
 
 **Сделано:**
+
 - `Dockerfile` builder: `pnpm exec astro build` → `pnpm build` (запускает `prebuild` → `pnpm optimize:images`).
 - Комментарий исправлен: явно указано, почему нельзя `pnpm exec astro build`.
 
@@ -1136,6 +1155,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.5 — whitelist в `getPublicOrigin()` (2026-09-06)
 
 **Сделано:**
+
 - `src/lib/site-urls.ts`: production принимает только `anrotrip.ru` / `www.anrotrip.ru` из `X-Forwarded-Host` и `Host`.
 - Dev (`import.meta.env.PROD === false`): localhost/127.0.0.1 + любой `X-Forwarded-Host` (dev tunnels).
 - Протокол: только `http`/`https`, иначе fallback.
@@ -1147,6 +1167,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.6 — документация в git (вариант A, 2026-09-06)
 
 **Сделано:**
+
 - `.gitignore`: whitelist безопасных `.doc/*` (32 файла); **вне git** — 8 infra/security: `server-vps-stack-plan`, `deploy-prep-checklist`, `perimeter-edge-security`, `security-audit-2026-07`, `security-baseline-package`, `security-hardening-checklist`, `budget-costs`, `vps-plan-justification`.
 - `AGENTS.md` — снова отслеживается.
 - `scripts/*` — все утилиты (`typograf-blog.mjs`, `skin-tone-transfer.mjs` и др.).
@@ -1159,10 +1180,12 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.7 — `pnpm prune --prod` в Dockerfile (2026-09-06)
 
 **Сделано:**
+
 - Builder после `pnpm build`: `pnpm prune --prod`.
 - Runner копирует уже урезанный `node_modules`.
 
 **Замеры:**
+
 - `node_modules` в образе: **328 MB → 259 MB** (−21%)
 - Размер образа: **671 MB → 588 MB** (−83 MB)
 
@@ -1173,6 +1196,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.8 — CI: `pnpm check` перед сборкой образа (2026-09-06)
 
 **Сделано:**
+
 - Job `check` в `.github/workflows/deploy.yml`: checkout → pnpm 11.3 → Node 22 → `pnpm install --frozen-lockfile` → `pnpm check`.
 - `build-push` зависит от `check` (`needs: check`).
 
@@ -1181,6 +1205,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.9 — CI только `main`, ветка `main-design-green` удалена (2026-09-06)
 
 **Сделано:**
+
 - `.github/workflows/deploy.yml`: триггер push только `main` (убран `main-design-green`).
 - Удалена устаревшая ветка на GitHub: `git push origin --delete main-design-green` (была на 64 коммита позади `main`).
 
@@ -1189,6 +1214,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 0.10 — очистка dependabot-веток на GitHub (2026-09-06)
 
 **Сделано:**
+
 - Удалены 12 устаревших `origin/dependabot/*` (на 46–136 коммитов позади `main`).
 - На remote остался только `origin/main`.
 - `.github/dependabot.yml` сохранён — свежие PR создаст в понедельник.
@@ -1196,6 +1222,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.1 — убран page fade на `<html>`/`<body>` (2026-09-06)
 
 **Сделано:**
+
 - Удалён inline-скрипт fade-in в `Layout.astro` (`opacity: 0` на `<html>`/`<body>` скрывал контент до DOMContentLoaded → регресс LCP).
 - Fade на overlay (модалки, drawer, logo-click в Header) не тронут.
 
@@ -1206,6 +1233,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.2 — Font Awesome → SVG (astro-iconify) (2026-09-06)
 
 **Сделано:**
+
 - `FaIcon.astro` + `src/lib/fa-icons.ts` — обёртка Iconify (`fa6-solid:*`, `fa6-regular:*`).
 - Мигрированы ~15 компонентов, `mobile-nav-icons.ts`, `PhoneOutlineIcon.astro`.
 - Markdown: `rehype-fa-icons.mjs` — `<i class="fa-solid …">` → inline SVG при сборке.
@@ -1220,10 +1248,12 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.3 — subset шрифтов cyrillic + latin (2026-09-06)
 
 **Сделано:**
+
 - `global.css`: вместо полных `@fontsource/inter/{400,500,600}.css` и `montserrat/{600,700,800}.css` — только `cyrillic-*` + `latin-*` для каждого начертания.
 - Убраны greek, vietnamese, latin-ext, cyrillic-ext из бандла (не нужны для RU-сайта).
 
 **Замер woff2 в node_modules (только используемые начертания):**
+
 - Inter 400/500/600: **312 KB → 96 KB** (−69%)
 - Montserrat 600/700/800: **264 KB → 96 KB** (−64%)
 - **Итого: ~576 KB → ~192 KB**
@@ -1233,6 +1263,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.4 — `encode zstd gzip` в Caddy (2026-09-06)
 
 **Сделано:**
+
 - `Caddyfile`: `encode gzip` → `encode zstd gzip` — Caddy отдаёт zstd клиентам с поддержкой, иначе gzip (HTML/CSS/JS ≈ −15–20 % к одному gzip).
 - **Brotli (`br`)** в официальном `caddy:2-alpine` **нет** (`http.encoders.br` не зарегистрирован; только `gzip` + `zstd`). Для `br` нужен xcaddy-сборка — отложено.
 
@@ -1243,6 +1274,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.5 — убран `astro-compressor` (2026-09-06)
 
 **Сделано:**
+
 - Удалены `astro-compressor` из `package.json` и `compressor()` из `astro.config.mjs`.
 - При SSR + `reverse_proxy` предсжатые `.br/.gz` в `dist/client/` не отдавались; сжатие делает Caddy (`encode zstd gzip` из 1.4).
 - Сборка короче (нет post-build pass по 34+ файлам).
@@ -1260,6 +1292,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 **Временный обход (2026-09-06):** блог переведён на SSR — маршруты `blog/index.astro`, `blog/page/[page].astro`, `blog/[slug].astro` + `src/lib/blog-list.ts`. `pnpm build` — **Complete**.
 
 **Дополнительно:**
+
 - Редирект 301: `/blog/N` → `/blog/page/N` (legacy astro paginate) в `middleware.ts`.
 - SEO-2: canonical = текущая страница, `title` с номером, `rel="prev/next"` в `BlogListPage.astro`.
 - URL пагинации: `/blog/page/2` (было `/blog/2`).
@@ -1271,6 +1304,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.8 — Cache-Control для HTML в middleware (2026-09-06)
 
 **Сделано:**
+
 - HTML 200: `public, max-age=0, s-maxage=300, stale-while-revalidate=600` (CDN кеш, браузер revalidate).
 - `/api/*`: `no-store`.
 - HTML 404: `no-cache`.
@@ -1281,6 +1315,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.9 — Nemo lazy + preconnect (2026-09-06)
 
 **Сделано:**
+
 - Убраны render-blocking `<link rel="stylesheet">` и `<script defer>` из `NemoSearch.astro`.
 - Ассеты Nemo (CSS виджета, тема, JS) подгружаются через `IntersectionObserver` на `#search-widget` (`rootMargin: 200px`) — паттерн как у Tourvisor.
 - `preconnect` + `dns-prefetch` к `cdn.nemo.travel` в `index.astro` (раньше был только Tourvisor).
@@ -1292,12 +1327,14 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.10 — Hero LCP + приоритет загрузки (2026-09-06)
 
 **Сделано:**
+
 - `Hero.astro`: `width={1920}` `height={1080}` `sizes="100vw"` — не отдаём 4K-декодирование на мобильном.
 - `index.astro`: preload только Hero (1920px); убраны preload туров (ниже первого экрана, конкурировали с LCP; к тому же maldives/seychelles не использовались в сетке).
 - `PopularTours.astro`: все карточки `loading="lazy"` + `fetchpriority="low"` (секция ниже fold).
 - `JournalSection.astro`: все превью lazy + `sizes` для responsive srcset.
 
 **Отложено (по решению заказчика):**
+
 - `tours/` в `optimize-images` — ассеты «Актуальные предложения» будут полностью заменены; прогон sharp на текущих файлах не имеет смысла. После замены — убрать `/tours/` из `SKIP_PATTERNS` и прогнать `pnpm optimize:images`.
 - Тонкая настройка блога (AVIF, cardImage) — секция «Наш блог» будет меняться; `sizes` уже заложены под будущие ассеты.
 
@@ -1306,6 +1343,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.11 — dumb-init + limits + log rotation (2026-09-06)
 
 **Сделано:**
+
 - `Dockerfile`: `dumb-init` как `ENTRYPOINT` — `SIGTERM`/`SIGINT` корректно доходят до Node (без 10 с таймаута при `docker stop`). Заодно `wget` для `HEALTHCHECK`.
 - `compose.yml`: `mem_limit`/`cpus` (app 512m/1 CPU, caddy 128m/0.25 CPU), ротация логов `json-file` 10m×3, `security_opt: no-new-privileges` на оба сервиса.
 - `compose.local.yml`: `restart`, logging, `security_opt` — паритет с prod (без mem limits — локальная разработка).
@@ -1317,6 +1355,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.12 — CI: SHA-pin, buildx-кэш, provenance (2026-09-06)
 
 **Сделано:**
+
 - `deploy.yml`: все actions запинены на полный commit SHA (с комментарием версии).
 - `docker/setup-buildx-action` + `docker/build-push-action` вместо `docker build`/`push --all-tags`.
 - GHA cache: `cache-from/to: type=gha,mode=max` — повторные сборки быстрее.
@@ -1330,6 +1369,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.13 — SEO: 404 noindex, description главной (2026-09-06)
 
 **Сделано:**
+
 - `Layout.astro`: prop `robots` (дефолт `max-image-preview:large`).
 - `404.astro`: `robots="noindex, follow"`, `showSchema={false}` — soft-404 не попадает в индекс.
 - `index.astro`: уникальный description ~130 символов (услуги + Екатеринбург + УТП).
@@ -1340,6 +1380,7 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 ### ✅ 1.7 — `ogImageVersion` на этапе сборки (2026-09-06)
 
 **Сделано:**
+
 - Убран `stat()` из `Layout.astro` на каждый SSR-запрос.
 - `astro.config.mjs`: `vite.define` → `import.meta.env.OG_IMAGE_VERSION` (mtime `public/og-image.png|jpg` после prebuild).
 - Тип в `src/env.d.ts`.
@@ -1347,3 +1388,236 @@ Astro 7 (миграция, `compressHTML`, `security.allowedDomains`) · `src/mi
 **Проверка:** `pnpm check` — 0 errors.
 
 **Файлы:** `Layout.astro`, `astro.config.mjs`, `env.d.ts`
+
+### ✅ 2.1 — focus-trap.ts (2026-09-06)
+
+**Сделано:** `src/lib/client/focus-trap.ts`; подключено в CallbackModal, GiftModal, Reviews (lightbox + форма), Header drawer, CookieBanner.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.2 — role="dialog" aria-modal aria-labelledby (2026-09-06)
+
+**Сделано:** CallbackModal, GiftModal, Reviews lightbox и форма отзыва.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.3 — div onclick → button (2026-09-06)
+
+**Сделано:** Reviews.astro (карточки отзывов), About.astro (карточки услуг → `<button type="button">`).
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.4 — контраст WCAG AA (2026-09-06)
+
+**Сделано:** `text-primary-dark` для мелкого текста (Hero stats, section-badge); `gray-400` → `gray-500/600`; `white/40` → `white/70` (Reviews, ExternalReviewsRow); ссылки согласия в модалках — `primary-dark`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.5 — aria-live, inputmode tel, rating required (2026-09-06)
+
+**Сделано:** `role="status" aria-live="polite"` на success-блоки (Callback, Gift, Reviews); `inputmode="tel"` на телефонах (Callback, Gift, Reviews, cabinet); `required` + sr-only «N из 5» на звёзды ReviewModal.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.6 — ScrollProgress + ScrollToTop (2026-09-06)
+
+**Сделано:** ScrollProgress — `role="progressbar"`, `aria-valuenow/min/max`; ScrollToTop — **оставлена исходная логика** (кнопка у низа страницы, `docHeight - scrollPos < 50`).
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.7 — PWA icons + manifest (2026-09-06)
+
+**Сделано:** `public/apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png`; `public/site.webmanifest`; `Layout.astro` — manifest + apple-touch-icon 180; `theme-color` уже был.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.8 — src/data/company.ts NAP (2026-09-06)
+
+**Сделано:** единый источник телефонов, email, соцсетей, офисов; подключено в Layout schema, Contacts, Footer, Hero, Header (tel), OfficeWidget, FAQ, terms; AGENTS.md обновлён.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.9 — aggregateRating, geo, WebSite schema (2026-09-06)
+
+**Сделано:** `aggregateRating` (Яндекс + 2ГИС из `external-reviews.ts`); `geo` на TravelAgency и LocalBusiness Челябинск; `WebSite` + `SearchAction` → `#search-widget`; openingHours из `company.ts`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 2.10 — security.txt (2026-09-06)
+
+**Сделано:** `public/.well-known/security.txt` (Contact, Expires, Canonical, Policy).
+
+**Проверка:** `pnpm check` — 0 errors.
+
+---
+
+## Этап 3 — Архитектурный рефакторинг (2026-09-06)
+
+### ✅ 3.1 — form-submit.ts
+
+**Сделано:** `src/lib/client/form-submit.ts`; миграция CallbackModal, GiftModal, Reviews.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.2 — scroll-lock, smooth-scroll, scroll-reveal
+
+**Сделано:** вынесены из `Layout.astro` в `src/lib/client/*.ts`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.3 — мёртвый код
+
+**Сделано:** удалены TourvisorSearch, ReviewModal; неиспользуемые CSS/typograf.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.4 — SectionHeading.astro
+
+**Сделано:** `src/components/ui/SectionHeading.astro`; 12+ секций мигрированы.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.5 — data layer
+
+**Сделано:** `src/data/*.ts` (team, services, faq, tours, awards, partners, review-docs, trust-badges, hero-stats).
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.6 — env.ts + типы
+
+**Сделано:** `src/lib/env.ts` (zod SMTP/Telegram); `src/env.d.ts` объединён с Window; удалён `window.d.ts`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.7 — Reviews.astro
+
+**Сделано:** `reviews/ReviewsLightbox.astro`, `reviews/ReviewFormOverlay.astro`, `lib/client/reviews-lightbox.ts`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.8 — About.astro
+
+**Сделано:** `about/AboutHero`, `AboutBenefitsGrid`, `AboutDirections`, `AboutServicesGrid`, `AboutCta`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.9 — blog-компоненты
+
+**Сделано:** `BlogHero`, `BlogFeaturedCard`, `BlogPostCard`, `BlogPagination`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.10 — mailer.ts
+
+**Сделано:** `mail-transport`, `mail-telegram`, `mail-templates`, `rate-limit`, `mail-types`; `mailer.ts` — re-export.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.11 — partners-marquee + social-links
+
+**Сделано:** `lib/client/partners-marquee.ts`; `data/social-links.ts` + `ui/SocialLinkIcon.astro`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.12 — is:inline → bundled
+
+**Сделано:** FAQ, Team, ScrollToTop, SearchWidget, NemoSearch, Modal, Layout navigation, index anchor; JSON-LD оставлен inline.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.13 — токены + z-шкала
+
+**Сделано:** `--font-size-micro/caption`, `--color-platform-*`, `z-modal-controls`, `z-overlay-top`, `text-micro/caption`; убран `z-2147483649`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+### ✅ 3.14 — SMTP pool singleton
+
+**Сделано:** `mail-transport.ts` — синглтон transporter с `pool: true`.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+---
+
+## Этап 4 — Процессы и качество (2026-09-07)
+
+### ✅ 4.1 — oxlint + eslint + CI
+
+**Сделано:**
+
+- `oxlint` (TS/JS) + `eslint` + `eslint-plugin-astro` + `jsx-a11y` — `pnpm lint`.
+- `eslint.config.js`, `.oxlintrc.json`.
+- CI: `.github/workflows/ci.yml` (quality job) + lint в `deploy.yml` check.
+- Исправлены a11y/линт-нарушения: `GiftSection` (div→button), `FavoritesWidget` (a→button), ternary в `Header`, пустые h3 с sr-only.
+
+**Проверка:** `pnpm lint` — 0 errors; `pnpm check` — 0 errors.
+
+### ✅ 4.2 — Prettier + EditorConfig
+
+**Сделано:** `.prettierrc`, `.prettierignore`, `.editorconfig`; `pnpm format` / `format:check` (ts/js/json/yml/css/md — `.astro` с `.map()`+HTML-комментариями пока вне check из-за ограничения prettier-plugin-astro).
+
+**Проверка:** `pnpm format:check` — OK.
+
+### ✅ 4.3 — lefthook pre-commit
+
+**Сделано:** `lefthook.yml` — `pnpm check` + prettier на staged; `prepare` → `lefthook install`; `allowBuilds: lefthook: true` в `pnpm-workspace.yaml`.
+
+### ✅ 4.4 — Playwright smoke
+
+**Сделано:** `playwright.config.ts`, `e2e/smoke.spec.ts` (главная, 3 модалки, 404, блог), `e2e/mobile-menu.spec.ts` (drawer).
+
+**Проверка:** 7/7 passed (chromium + mobile-chrome).
+
+### ✅ 4.5 — Lighthouse CI
+
+**Сделано:** `lighthouserc.cjs` с бюджетами LCP/CLS/JS/CSS; job `lighthouse` в CI (только PR).
+
+### ✅ 4.6 — spellcheck
+
+**Сделано:** scope `src/**/*.astro` + `src/**/*.md`; `@cspell/dict-ru_ru`; project words; exclude `terms`/`privacy`.
+
+**Проверка:** `pnpm spellcheck` — 0 issues.
+
+### ✅ 4.7 — deploy health-gate
+
+**Сделано:** `compose.yml` — `environment: NODE_ENV=production`, explicit `healthcheck`; `deploy.yml` — ожидание healthy + rollback при провале.
+
+### ✅ 4.8 — engines.node + mirror token
+
+**Сделано:** `engines.node` → `>=22.23.0 <23`; Gitflic mirror — credential helper вместо токена в URL workflow-файла.
+
+**Проверка:** `pnpm check` — 0 errors.
+
+---
+
+## Этап 5 — Документация (2026-09-07)
+
+### ✅ 5.1 — AGENTS.md
+
+**Сделано:** Astro 7, data layer, client modules, lint/e2e/spellcheck, NAP, corp в архиве.
+
+### ✅ 5.2 — constitution.md
+
+**Сделано:** актуальные версии; `security.allowedDomains` обязателен.
+
+### ✅ 5.3 — GitHub org
+
+**Сделано:** `shkrndns` в deploy-доках.
+
+### ✅ 5.4–5.5 — TODO и /corp
+
+**Сделано:** roadmap, nemo, security-baseline, refactoring; corp убран из активных доков.
+
+### ✅ 5.6 — `_archive/`
+
+**Сделано:** 5 устаревших файлов перенесены.
+
+### ✅ 5.7 — architecture-reference.md
+
+**Сделано:** middleware, lib, widgets, content, офисы.
+
+### ✅ 5.8 — README.md
+
+**Сделано:** обновлён указатель.
+
+**Проверка:** `pnpm check` — 0 errors.

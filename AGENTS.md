@@ -1,38 +1,47 @@
 # ANRO TRIP — Руководство для ИИ-агентов
 
-Сайт туристического агентства «ANRO TRIP» (г. Екатеринбург). Более 18 лет опыта в организации путешествий и командировок по всему миру.
+Сайт туристического агентства «ANRO TRIP». Основной офис — **Челябинск**; представительства — Москва, Екатеринбург.
 
 > **Конституция проекта:** `.specify/memory/constitution.md` — читать первым делом!  
-> **Документация:** `.doc/README.md` — указатель всех справочных документов.
+> **Документация:** `.doc/README.md` — указатель справочных документов.  
+> **Архитектура:** `.doc/architecture-reference.md` — middleware, `src/lib/`, виджеты, контент.
 
 ---
 
-## Команды (запускать перед коммитом)
+## Команды (перед коммитом)
 
-| Команда | Что делает |
-|---|---|
-| **`pnpm check`** | ✅ TypeScript + Astro check — **рекомендуется перед коммитом и для ИИ перед завершением задачи** |
-| `pnpm dev` | Dev-сервер на localhost:4321 |
-| `pnpm build` | Production сборка (включает optimize:images) |
-| `pnpm preview` | Preview production сборки |
-| `pnpm optimize:images` | Sharp-оптимизация изображений |
-| `pnpm typograf:blog` | Типографика для markdown блога |
+| Команда                | Что делает                                                |
+| ---------------------- | --------------------------------------------------------- |
+| **`pnpm check`**       | TypeScript + Astro check — **обязательно перед коммитом** |
+| `pnpm lint`            | oxlint (TS) + eslint (astro + jsx-a11y)                   |
+| `pnpm format:check`    | Prettier (ts/js/json/yml/css/md)                          |
+| `pnpm spellcheck`      | cspell по `src/**/*.{astro,md}`                           |
+| `pnpm test:e2e`        | Playwright smoke (нужен `pnpm build` + preview)           |
+| `pnpm dev`             | Dev-сервер localhost:4321                                 |
+| `pnpm build`           | Production сборка (`prebuild` → `optimize:images`)        |
+| `pnpm preview`         | Preview production-сборки                                 |
+| `pnpm optimize:images` | Sharp-оптимизация ассетов                                 |
+| `pnpm typograf:blog`   | Типографика markdown блога                                |
+
+Pre-commit (lefthook): `pnpm check` + prettier на staged-файлах.
 
 ---
 
 ## Технологический стек
 
-- **Astro 6.x** — SSR, Node adapter (`standalone`)
-- **Tailwind CSS 4.x** — v4 синтаксис (отличается от v3!)
-- **TypeScript** — строгая типизация
-- **pnpm 11.x** — менеджер пакетов (не npm, не yarn!)
-- **Sharp** — оптимизация изображений
-- **@fontsource** — локальные шрифты Inter + Montserrat (без Google CDN)
-- **Font Awesome Free** — иконки
-- **astro-iconify** — SVG иконки
-- **nodemailer** — SMTP email (Яндекс 360)
-- **Telegram Bot API** — уведомления о заявках
-- **zod** — валидация форм
+| Слой            | Технология                                                  |
+| --------------- | ----------------------------------------------------------- |
+| Framework       | **Astro 7.x** — SSR, `@astrojs/node` standalone             |
+| Styling         | **Tailwind CSS 4.x** (v4 синтаксис!)                        |
+| Language        | TypeScript strict                                           |
+| Package manager | **pnpm 11.x**                                               |
+| Node            | **>=22.23.0 <23** (см. `.node-version`)                     |
+| Images          | Sharp + WebP; `<Image>` из `astro:assets`                   |
+| Icons           | **astro-iconify** + `FaIcon.astro` (Font Awesome удалён)    |
+| Fonts           | @fontsource Inter + Montserrat (cyrillic + latin, локально) |
+| Forms API       | nodemailer SMTP + Telegram Bot + **zod**                    |
+| SEO             | `@astrojs/sitemap`, JSON-LD в `Layout.astro`                |
+| Quality         | oxlint, eslint, prettier, cspell, Playwright, Lighthouse CI |
 
 ---
 
@@ -40,179 +49,134 @@
 
 ```
 src/
-├── assets/           # Изображения (WebP/AVIF), разбиты по папкам
-│   ├── hero/         # world.webp, plane.avif
-│   ├── tours/        # 7 туров (antalya, egypt, japan, maldives, seychelles, thailand, vietnam)
-│   ├── team/         # Фото сотрудников
-│   ├── partners/     # Логотипы партнёров
-│   ├── reviews/      # Фото рецензентов
-│   └── awards/       # Награды (3 изображения)
-├── components/       # Astro компоненты
-│   ├── ui/           # Modal.astro — базовый UI компонент
-│   ├── widgets/      # NemoSearch.astro, TourvisorSearch.astro
-│   └── *.astro       # Секции страниц (Hero, About, Awards, ...)
-├── content/
-│   └── blog/         # 7 markdown статей
-├── integrations/     # rehype-typograf.mjs
-├── layouts/          # Layout.astro
-├── lib/              # Утилиты (mailer, schemas, typograf, site-urls, ...)
+├── assets/
+│   ├── hero/           # world.webp
+│   ├── tours/          # карточки «Актуальные предложения»
+│   ├── team/           # фото сотрудников
+│   ├── partners/       # Partners.astro (статы)
+│   ├── our-partners/   # OurPartners.astro (логотипы туроператоров)
+│   ├── reviews/        # фото рецензентов + external/
+│   ├── awards/         # сертификаты и награды
+│   └── certif/         # подарочный сертификат
+├── components/
+│   ├── ui/             # Modal, SectionHeading, SocialLinkIcon, FaIcon
+│   ├── widgets/        # NemoSearch, ExternalReviewsRow
+│   ├── about/          # AboutHero, AboutBenefitsGrid, …
+│   ├── blog/           # BlogHero, BlogPostCard, …
+│   ├── reviews/        # ReviewsLightbox, ReviewFormOverlay
+│   └── *.astro         # секции страниц
+├── data/               # company, team, tours, faq, services, …
+├── content/blog/       # markdown статьи + _drafts/
+├── lib/
+│   ├── client/         # bundled client modules (forms, scroll, widgets)
+│   ├── env.ts          # zod-валидация SMTP/Telegram env
+│   ├── mail-*.ts       # транспорт, telegram, templates, rate-limit
+│   └── …               # schemas, security, site-urls, nemo-config
+├── layouts/Layout.astro
 ├── pages/
-│   ├── api/          # callback.ts, gift.ts, review.ts — Server endpoints
-│   ├── blog/         # [...page].astro, [...slug].astro
-│   ├── index.astro   # Главная страница
-│   ├── corp.astro    # Корпоративным клиентам
-│   ├── cabinet.astro # Личный кабинет (форма → lk.anrotrip.ru)
-│   ├── privacy.astro # Политика конфиденциальности (152-ФЗ)
-│   └── terms.astro   # Условия использования
-├── styles/
-│   └── global.css    # Единственный CSS-файл: @theme, @layer base, @layer components
-└── types/
-    └── window.d.ts   # Расширение Window (виджеты Nemo/Tourvisor)
+│   ├── api/            # callback, gift, review
+│   ├── blog/           # index, page/[page], [slug]
+│   ├── index.astro
+│   ├── 404.astro
+│   ├── cabinet.astro
+│   ├── privacy.astro
+│   └── terms.astro
+├── styles/global.css
+├── env.d.ts            # ImportMetaEnv + Window augmentation
+└── content.config.ts   # коллекция blog (draft, featured, max-import)
+src/_archive/corp/      # черновик /corp (не в src/pages/)
+.env.example            # шаблон переменных окружения (корень репо)
+e2e/                    # Playwright smoke-тесты
 ```
 
 ---
 
 ## Дизайн-система
 
-### Brand Colors (из `src/styles/global.css` → `@theme`)
+Токены в `src/styles/global.css` → `@theme`: `--color-primary`, `--color-red`, `--font-montserrat`, `--font-inter`, `--breakpoint-nav: 90rem` (`nav:`), z-шкала (`z-modal`, `z-overlay-top`), `--font-size-micro/caption`.
 
-```css
-/* Основной тил */
---color-primary:       #00abb3;
---color-primary-light: #33bfc6;
---color-primary-dark:  #008a91;
---color-secondary:     #006d73;
-
-/* Брендовый красный — Hero CTA, акцентные кнопки */
---color-red:           #e31a33;
---color-red-light:     #f2a8b3;
---color-red-dark:      #a01022;
---color-red-hover:     #c2142a;
-```
-
-### Шрифты
-
-- `font-montserrat` — заголовки (Montserrat 600/700/800)
-- `font-inter` — основной текст (Inter 400/500/600)
-
-### Кастомные брейкпоинты
-
-- `--breakpoint-nav: 90rem` — десктопная навигация от 1440px (используй `nav:`)
-
-### Motion
-
-```css
---transition-duration-fast:   200ms   /* hover цвет, focus */
---transition-duration-normal: 300ms   /* кнопки, карточки */
---transition-duration-slow:   500ms   /* модалки, overlay */
-```
+Tailwind v4: `bg-linear-to-r` (не `bg-gradient-to-r`).
 
 ---
 
-## Известные особенности и ограничения
+## Известные особенности
 
-### ⚠️ Blur в production
+### Blur в production
 
-`astro.config.mjs` содержит `vite.build.cssMinify: false`.  
-**Не менять!** Tailwind v4 + Vite минифицирует CSS так, что `backdrop-blur-*` классы перестают работать на production-сборке. Это известная особенность стека, не баг проекта.  
-Подробнее: `.doc/notes-blur-production.md`
+`vite.build.cssMinify: false` в `astro.config.mjs` — **не менять** (Tailwind v4 + Vite ломает `backdrop-blur-*`). См. `.doc/notes-blur-production.md`.
 
-### ⚠️ Хедер — заморожен
+### Хедер — заморожен
 
-`Header.astro` — структура меню, вёрстка, подменю и drawer **не менять без явной просьбы заказчика**.  
-Документация: `.doc/header-frozen.md`, `.doc/header-anchor-scroll.md`
+`Header.astro` — не менять без явной просьбы. `.doc/header-frozen.md`, `.doc/header-anchor-scroll.md`.
 
-### ⚠️ Tourvisor — полная перезагрузка
+### Corp — в архиве
 
-При переходе на главную через `<a href="/">` Tourvisor требует полной перезагрузки страницы (не View Transitions). Это намеренно.
+Маршрут `/corp` **не публикуется**. Восстановление: `src/_archive/corp/` → `src/pages/corp.astro`.
 
-### ⚠️ Corp-страница — в архиве
+### Astro 7: rate-limit и IP
 
-Маршрут `/corp` **не публикуется**. Черновик и ассеты: `src/_archive/corp/` (вне `src/pages/`).
+В `astro.config.mjs` обязателен `security.allowedDomains` — иначе `clientAddress` = IP прокси, rate-limit на весь сайт. См. аудит P0-1.
 
-### ⚠️ Tailwind v4 синтаксис
+### Tourvisor
 
-```
-НЕПРАВИЛЬНО (v3) → ПРАВИЛЬНО (v4):
-bg-gradient-to-r   →  bg-linear-to-r
-```
+Вкладка «Туры и Отели» в `SearchWidget.astro` — lazy-load JS Tourvisor. Полная перезагрузка при `<a href="/">` (не View Transitions). `FavoritesWidget` — обёртка над корзиной Tourvisor.
+
+### Nemo
+
+`NemoSearch.astro` — lazy через `IntersectionObserver`; конфиг в `src/lib/nemo-config.ts` + data-атрибуты на `#nemo-root`.
 
 ---
 
-## Компоненты: ключевые паттерны
+## Паттерны
 
-### Модальные окна
+### Модалки
 
-- `CallbackModal.astro`, `GiftModal.astro`, `ReviewModal.astro` — используют `src/components/ui/Modal.astro`
-- Блокировка скролла: `lockScroll()` / `unlockScroll()` с компенсацией ширины скроллбара
-- Открытие: custom events (`open-callback-modal`, `open-gift-modal`, `open-review-modal`)
+`CallbackModal`, `GiftModal`, `ReviewFormOverlay` → `ui/Modal.astro`. Scroll-lock: `src/lib/client/scroll-lock.ts`. Focus-trap: `focus-trap.ts`.
 
-### Формы и API
+### Формы
 
-- Эндпоинты: `src/pages/api/callback.ts`, `gift.ts`, `review.ts`
-- Валидация: Zod (схемы в `src/lib/schemas.ts`)
-- Отправка: nodemailer SMTP + Telegram Bot
-- Защита: honeypot поле + rate-limit (см. `.doc/forms.md`)
-- Переменные окружения: `src/.env.example`
+Клиент: `form-submit.ts`. Сервер: `src/pages/api/*.ts`, zod в `schemas.ts`, honeypot + rate-limit. Док: `.doc/forms.md`.
 
-### Поиск туров
+### Data layer
 
-- **Nemo** (`NemoSearch.astro`): виджет поиска туров, кастомная тема ANRO TRIP
-- **Tourvisor** (`TourvisorSearch.astro`): альтернативный виджет
-- Конфигурация: `src/types/window.d.ts` расширяет `Window`
+Статика секций — `src/data/*.ts`. NAP — **`src/data/company.ts`** (единственный канон телефонов, email, офисов, schema).
 
 ---
 
 ## Страницы
 
-| Маршрут | Компонент | Описание |
-|---|---|---|
-| `/` | `index.astro` | Главная: Hero, поиск, туры, о компании, партнёры, отзывы, награды, подарки, команда, контакты |
-| `/cabinet` | `cabinet.astro` | Форма входа (action → lk.anrotrip.ru) |
-| `/terms` | `terms.astro` | Условия использования |
-| `/privacy` | `privacy.astro` | Политика конфиденциальности (152-ФЗ) |
-| `/blog` | `blog/[...page].astro` | Список статей (7 материалов) |
-| `/blog/[slug]` | `blog/[...slug].astro` | Статья журнала |
-
----
-
-## Внешние сервисы
-
-| Сервис | Назначение |
-|---|---|
-| Nemo API | Поиск туров (виджет) |
-| Tourvisor | Поиск туров (iframe) |
-| Яндекс.Карты | Карта офиса в Contacts.astro |
-| lk.anrotrip.ru | Личный кабинет (внешний сервис) |
-| WhatsApp/Telegram | Контактные ссылки |
-| Яндекс SMTP | Email-уведомления (smtp.yandex.ru:465) |
-| Telegram Bot | Push-уведомления о заявках |
+| Маршрут              | Файл                | Примечание                     |
+| -------------------- | ------------------- | ------------------------------ |
+| `/`                  | `index.astro`       | Hero, SearchWidget, все секции |
+| `/blog`              | `blog/index.astro`  | SSR, пагинация `/blog/page/N`  |
+| `/blog/[slug]`       | `blog/[slug].astro` | Статья                         |
+| `/404`               | `404.astro`         | `robots=noindex`               |
+| `/cabinet`           | `cabinet.astro`     | форма → lk.anrotrip.ru         |
+| `/terms`, `/privacy` | legal               | SSR                            |
 
 ---
 
 ## Деплой
 
-> **Чеклист подготовки, сроки, роли агент/владелец:** `.doc/deploy-prep-checklist.md`
-
 ```
-GitHub push (main) → Actions: build-push → Docker image → GHCR
-                  → Actions: deploy (вручную) → Beget VPS → Caddy → :4321
+push main → CI (check, lint, e2e) → GHCR образ
+         → Deploy workflow (вручную, deploy: true) → Beget VPS → Caddy → :4321
 ```
 
-- **Образ**: `ghcr.io/shkrndns/white_anrotrip:latest`
-- **VPS**: Beget, deploy user, `/home/deploy/anrotrip/`
-- **HTTPS**: Caddy (автоматические сертификаты Let's Encrypt)
-- **Зеркало**: Gitflic (`.github/workflows/mirror-gitflic.yml`)
+- Образ: `ghcr.io/shkrndns/white_anrotrip:latest`
+- GitHub: `github.com/shkrndns/white_anrotrip`
+- Health-gate + rollback в `deploy.yml`
+- Чеклист: `.doc/deploy-prep-checklist.md`
 
 ---
 
-## Контакты проекта
+## Контакты (канон)
 
-- **Телефон:** +7 (922) 026-70-59
-- **WhatsApp:** +7 922 026-70-59  
-- **Telegram:** @anrotrip
-- **Email:** online@anrotrip.ru
-- **Адрес:** г. Екатеринбург
+Источник: `src/data/company.ts`.
+
+- **Телефон бесплатный:** 8 (800) 222-44-73
+- **Мобильный / WhatsApp / Telegram:** +7 (922) 026-70-59
+- **Email сайт:** anro@anrotrip.ru · **команда:** online@anrotrip.ru
+- **Офис (primary):** г. Челябинск, ул. 250-летия Челябинска, д. 29, пом. 2
+- **Представительства:** Москва, Екатеринбург
 - **Сайт:** https://anrotrip.ru
-- **GitHub:** github.com/shkrndns/white_anrotrip
-- **Gitflic:** gitflic.ru/project/shkrndns/white_anrotrip

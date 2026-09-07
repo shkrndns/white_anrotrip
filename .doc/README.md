@@ -1,107 +1,88 @@
 # Документация проекта (`.doc/`)
 
-Краткий указатель файлов. Конституция проекта: `.specify/memory/constitution.md`; для агентов — корневой **`AGENTS.md`** (там же таблица команд: **`pnpm check`** — рекомендуемая проверка перед коммитом и для ИИ перед завершением задачи).
+> **Актуально:** сентябрь 2026  
+> Конституция: `.specify/memory/constitution.md` · для агентов: **`AGENTS.md`** · архитектура: **[architecture-reference.md](./architecture-reference.md)**
+
+---
+
+## Старт здесь
+
+| Документ                                                 | Когда читать                                  |
+| -------------------------------------------------------- | --------------------------------------------- |
+| [audit-2026-09-full.md](./audit-2026-09-full.md)         | Полный аудит + журнал этапов 0–5              |
+| [architecture-reference.md](./architecture-reference.md) | Astro 7, middleware, `src/lib/`, виджеты, NAP |
+| [project-roadmap.md](./project-roadmap.md)               | Фазы проекта (чекбоксы)                       |
+| [forms.md](./forms.md)                                   | Формы, API, `.env`, 152-ФЗ                    |
+
+**Команды качества:** `pnpm check` · `pnpm lint` · `pnpm test:e2e` · `pnpm spellcheck`
 
 ---
 
 ## Инфраструктура и деплой
 
-| Документ | Описание |
-| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [server-vps-stack-plan.md](./server-vps-stack-plan.md) | **Канон прода:** Beget VPS, Docker, Caddy, Astro SSR, GitHub Actions, formы / nodemailer SMTP + Telegram |
-| [deploy-prep-checklist.md](./deploy-prep-checklist.md) | **Подготовка к деплою:** сроки, что сделать заранее, роли (агент / владелец), чеклист на 1–2 дня |
-| [gitflic-mirror.md](./gitflic-mirror.md) | Зеркало на Gitflic (РФ): как работает, токены, что делать если GitHub недоступен |
-| [perimeter-edge-security.md](./perimeter-edge-security.md) | Периметр: фаервол, SSH, Cloudflare / DDoS-Guard, DNS (REG.RU), чек-лист миграции с Tilda |
-| [security-baseline-package.md](./security-baseline-package.md) | Этапный baseline-пакет безопасности: что внедрять сразу, что делать по мере интеграций |
-| [security-hardening-checklist.md](./security-hardening-checklist.md) | Полный security-чеклист + готовые конфиги (Caddy/SSH/UFW/fail2ban) |
-| [skills-primary-shortlists.md](./skills-primary-shortlists.md) | Основные agent skills (код / маркетинг / смешанный режим, 15–25 имён в каждом списке) |
-| [notes-blur-production.md](./notes-blur-production.md) | Blur в production: почему `cssMinify: false` и нельзя менять (Tailwind v4 + Vite) |
+| Документ                                               | Описание                                                 |
+| ------------------------------------------------------ | -------------------------------------------------------- |
+| [server-vps-stack-plan.md](./server-vps-stack-plan.md) | Beget VPS, Docker, Caddy, GHCR `shkrndns/white_anrotrip` |
+| [deploy-prep-checklist.md](./deploy-prep-checklist.md) | Подготовка к первому деплою                              |
+| [gitflic-mirror.md](./gitflic-mirror.md)               | Зеркало Gitflic                                          |
+| [notes-blur-production.md](./notes-blur-production.md) | `cssMinify: false` — не менять                           |
+
+> `perimeter-edge-security.md`, `security-audit-2026-07.md`, `budget-costs.md` — в `.gitignore` (infra-only).
 
 ---
 
-## Формы и API
+## Безопасность и формы
 
-| Документ | Описание |
-| ---------------------- | ---------------------------------------------------------------------------------------------------- |
-| [forms.md](./forms.md) | Все формы: поля, эндпоинты, UI-состояния, `.env`, nodemailer SMTP + Telegram, защита (honeypot / rate-limit), 152-ФЗ |
-| [legal-pages-review.md](./legal-pages-review.md) | **Юридические страницы:** `/privacy`, `/terms`, cookie-баннер, чеклист для юриста |
-| [analytics-cookies-plan.md](./analytics-cookies-plan.md) | **Cookie и аналитика:** текущий стек без Метрики, чеклист подключения Яндекс Метрики |
-| [nemo-flights-widget-plan.md](./nemo-flights-widget-plan.md) | **Nemo авиа:** виджет на главной, своя тема, DNS/SSL `ticket.`/`b2b.`, этапы до и после деплоя VPS |
-
----
-
-## SEO, производительность и контент
-
-| Документ | Описание |
-| -------------------------------------------------- | ------------------- |
-| [technical-audit-checklist.md](./technical-audit-checklist.md) | **Технический аудит:** Core Web Vitals, UX/конверсия, SEO, видимость в ИИ-ответах, техдолг — приоритеты и статус anrotrip.ru |
-| [SEO-чек-лист.md](./SEO-чек-лист.md) | SEO-чек-лист (технический + контентный + локальный + GEO/AEO) |
-| [Контент-стратегия.md](./Контент-стратегия.md) | Контент-стратегия и контент-план блога |
-| [max-blog-import-plan.md](./max-blog-import-plan.md) | **Импорт MAX → черновики блога:** автоимпорт постов канала, ручная публикация после правки |
-| [Семантическое-ядро.md](./Семантическое-ядро.md) | Семантическое ядро: кластеры ключевых слов |
-| [Анализ-текста-сайта.md](./Анализ-текста-сайта.md) | Анализ текстов сайта: читаемость, SEO, типографика |
+| Документ                                                       | Описание                           |
+| -------------------------------------------------------------- | ---------------------------------- |
+| [forms.md](./forms.md)                                         | Callback, gift, review, rate-limit |
+| [security-baseline-package.md](./security-baseline-package.md) | Этапы hardening                    |
+| [legal-pages-review.md](./legal-pages-review.md)               | `/privacy`, `/terms`, cookie       |
 
 ---
 
-## Аудиты
+## SEO, контент, тесты
 
-| Документ | Описание |
-| ---------------------------------------------------- | --------------------------------------------------------------- |
-| [audit-2026-09-full.md](./audit-2026-09-full.md) | **Полный аудит (сентябрь 2026):** безопасность, инфраструктура, производительность, a11y, SEO, архитектура, дизайн-система, актуальность документации + план действий по этапам |
-| [security-audit-2026-07.md](./security-audit-2026-07.md) | **Security-аудит приложения** (июль 2026): светофор, сделано, TODO |
-| [audit-full-2026-04.md](./audit-full-2026-04.md) | Полный аудит (апрель 2026, включает план прода) — ⚠️ устарел, см. аудит 2026-09 |
-| [audit-mobile.md](./audit-mobile.md) | Мобильный аудит |
-
----
-
-## Навигация и UI
-
-| Документ | Описание |
-| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| [header-frozen.md](./header-frozen.md) | **Хедер (главная + corp, десктоп + мобильный):** структура меню, вёрстка, подменю, drawer; **не менять без явной просьбы заказчика** |
-| [header-anchor-scroll.md](./header-anchor-scroll.md) | Якоря меню хедера: десктоп/мобиль, числа отступов, `scroll-mt` для `#awards` / `#gift`; **не менять без согласования с заказчиком** |
-| [mobile-menu.md](./mobile-menu.md) | Мобильный drawer (часть хедера): см. также [header-frozen.md](./header-frozen.md) |
-| [responsive-adaptation.md](./responsive-adaptation.md) | Адаптив сайта: контрольные размеры, инструменты, процесс и чеклист проверки |
+| Документ                                                       | Описание                   |
+| -------------------------------------------------------------- | -------------------------- |
+| [technical-audit-checklist.md](./technical-audit-checklist.md) | CWV, SEO, техдолг          |
+| [SEO-чек-лист.md](./SEO-чек-лист.md)                           | SEO чеклист                |
+| [testing-plan.md](./testing-plan.md)                           | Playwright + Lighthouse CI |
+| [refactoring-plan.md](./refactoring-plan.md)                   | Статус рефакторинга        |
+| [max-blog-import-plan.md](./max-blog-import-plan.md)           | Импорт MAX → черновики     |
 
 ---
 
-## Дорожная карта
+## UI / навигация
 
-| Документ | Описание |
-| ---------------------------------------------------- | --------------------------------------------------------------- |
-| [project-roadmap.md](./project-roadmap.md) | **Главный план действий:** фазы деплоя, кода, SEO, security, PWA — с чекбоксами и ссылками |
-| [commercial-resource-roadmap.md](./commercial-resource-roadmap.md) | **Коммерческое развитие:** запуск текущего сайта, SEO-страницы, собственные виджеты, рост до платформы |
-| [pwa-plan.md](./pwa-plan.md) | PWA: иконки, манифест, service worker, офлайн-страница — пошаговый план |
-| [budget-costs.md](./budget-costs.md) | Смета затрат: VPS, домен, PWA, сравнение с Tilda — для заказчика и разработчика |
-| [vps-plan-justification.md](./vps-plan-justification.md) | Обоснование выбора тарифа Beget: почему 1 ядро / 15 ГБ впритык и почему 2 ядра / 30 ГБ оптимально |
-
----
-
-## Рефакторинг
-
-| Документ | Описание |
-| ---------------------------------------------------- | --------------------------------------------------------------- |
-| [refactoring-plan.md](./refactoring-plan.md) | **Анализ кода:** дублирование, большие компоненты, магические числа, JS в шаблонах, типизация — с приоритетами |
+| Документ                                               | Описание              |
+| ------------------------------------------------------ | --------------------- |
+| [header-frozen.md](./header-frozen.md)                 | **Хедер заморожен**   |
+| [header-anchor-scroll.md](./header-anchor-scroll.md)   | Якоря и scroll-mt     |
+| [mobile-menu.md](./mobile-menu.md)                     | Drawer (часть хедера) |
+| [responsive-adaptation.md](./responsive-adaptation.md) | Адаптив               |
 
 ---
 
-## Тестирование
+## Дорожные карты
 
-| Документ | Описание |
-| ---------------------------------------------------- | --------------------------------------------------------------- |
-| [testing-plan.md](./testing-plan.md) | **Обязателен перед любыми тестами:** E2E формы (Playwright), smoke-тесты страниц, Lighthouse, визуальная регрессия |
+| Документ                                                           | Описание                |
+| ------------------------------------------------------------------ | ----------------------- |
+| [commercial-resource-roadmap.md](./commercial-resource-roadmap.md) | Коммерческое развитие   |
+| [pwa-plan.md](./pwa-plan.md)                                       | PWA (SW — отложено)     |
+| [nemo-flights-widget-plan.md](./nemo-flights-widget-plan.md)       | Nemo авиа ✅ на главной |
 
 ---
 
-## Архивные (восстановлены из git-истории)
+## Архив
 
-> Эти документы существовали ранее и восстановлены из git-истории. Часть информации может быть устаревшей (например, версии пакетов).
+Устаревшие документы: **[`_archive/`](./_archive/README.md)** (5 файлов, перенесены 2026-09-07).
 
-| Документ | Описание |
-| ---------------------------------------------------- | --------------------------------------------------------------- |
-| [anro-trip-guide-optimized.md](./anro-trip-guide-optimized.md) | Компактное руководство проекта (архив, частично актуально) |
-| [site-analysis-full.md](./site-analysis-full.md) | Полный анализ сайта: шрифты, изображения, адаптивность, UX, SEO (Lighthouse 27.02.2026) |
-| [SEO_trends.md](./SEO_trends.md) | SEO тренды (архив 2026) |
-| [dev_site.md](./dev_site.md) | Dev-гайд (архив) |
-| [design-overhaul-2026.md](./design-overhaul-2026.md) | Дизайн-оверхол 2026 (архив) |
-| [design-report-2026.md](./design-report-2026.md) | Дизайн-отчёт 2026 (архив) |
+Живой аудит апреля 2026 → `_archive/audit-full-2026-04.md`; актуальный — `audit-2026-09-full.md`.
+
+---
+
+## Вне git (локально / infra)
+
+`server-vps-stack-plan.md` в whitelist `.gitignore` — в репозитории.  
+Не в git: `deploy-prep-checklist` secrets-части, `budget-costs`, часть security-планов — см. `.gitignore`.

@@ -7,6 +7,7 @@
 ## Цель
 
 Превратить сайт anrotrip.ru в Progressive Web App:
+
 - Add to Home Screen (iPhone / Android)
 - Кэширование статики (быстрый повторный вход)
 - Оффлайн-страница при потере сети
@@ -29,17 +30,22 @@
 
 ```json
 {
-  "name": "ANRO TRIP — Путешествия и командировки",
-  "short_name": "ANRO TRIP",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#00abb3",
-  "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ]
+	"name": "ANRO TRIP — Путешествия и командировки",
+	"short_name": "ANRO TRIP",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#00abb3",
+	"icons": [
+		{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+		{ "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+		{
+			"src": "/icon-maskable-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	]
 }
 ```
 
@@ -70,7 +76,7 @@
 
 ## Связанные документы
 
-| Документ | Содержание |
-|---|---|
-| [project-roadmap.md](./project-roadmap.md) | Фаза 5 |
-| [budget-costs.md](./budget-costs.md) | Смета PWA |
+| Документ                                   | Содержание |
+| ------------------------------------------ | ---------- |
+| [project-roadmap.md](./project-roadmap.md) | Фаза 5     |
+| [budget-costs.md](./budget-costs.md)       | Смета PWA  |

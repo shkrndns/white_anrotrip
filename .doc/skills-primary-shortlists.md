@@ -63,7 +63,7 @@
 
 ## Связанные документы
 
-| Документ | Содержание |
-|---|---|
-| [project-roadmap.md](./project-roadmap.md) | Общий план |
-| `.specify/memory/constitution.md` | Конституция проекта |
+| Документ                                   | Содержание          |
+| ------------------------------------------ | ------------------- |
+| [project-roadmap.md](./project-roadmap.md) | Общий план          |
+| `.specify/memory/constitution.md`          | Конституция проекта |

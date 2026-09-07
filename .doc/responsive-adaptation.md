@@ -33,31 +33,31 @@
 
 Минимальный набор viewport для проверки:
 
-| Размер | Что проверять |
-| --- | --- |
-| `320px` | Малые Android/iPhone SE, критичные переносы |
-| `360px` | Типовой Android |
-| `390px` | Современные iPhone |
-| `430px` | Крупные телефоны |
-| `768px` | Планшеты portrait |
-| `1024px` | Планшеты landscape / малые ноутбуки |
-| `1280px` | Ноутбуки |
-| `1440px+` | Десктоп и широкие экраны |
+| Размер    | Что проверять                               |
+| --------- | ------------------------------------------- |
+| `320px`   | Малые Android/iPhone SE, критичные переносы |
+| `360px`   | Типовой Android                             |
+| `390px`   | Современные iPhone                          |
+| `430px`   | Крупные телефоны                            |
+| `768px`   | Планшеты portrait                           |
+| `1024px`  | Планшеты landscape / малые ноутбуки         |
+| `1280px`  | Ноутбуки                                    |
+| `1440px+` | Десктоп и широкие экраны                    |
 
 Отдельно проверять вертикально низкие экраны: `height 520–680px`, потому что хедер, drawer, hero и модалки могут упираться в высоту.
 
 ## Сервисы и инструменты
 
-| Инструмент | Назначение |
-| --- | --- |
-| Chrome DevTools Device Toolbar | Базовая проверка размеров, touch, orientation |
-| Firefox Responsive Design Mode | Проверка отличий Firefox |
-| BrowserStack | Реальные iPhone, Android, планшеты и браузеры |
-| LambdaTest | Альтернатива BrowserStack |
-| Polypane | Одновременный просмотр нескольких viewport |
-| Responsively App | Несколько экранов рядом, удобен для быстрой визуальной проверки |
-| Screenfly / Am I Responsive | Быстрая демонстрационная проверка |
-| Lighthouse / PageSpeed Insights | Mobile UX и performance-сигналы |
+| Инструмент                      | Назначение                                                      |
+| ------------------------------- | --------------------------------------------------------------- |
+| Chrome DevTools Device Toolbar  | Базовая проверка размеров, touch, orientation                   |
+| Firefox Responsive Design Mode  | Проверка отличий Firefox                                        |
+| BrowserStack                    | Реальные iPhone, Android, планшеты и браузеры                   |
+| LambdaTest                      | Альтернатива BrowserStack                                       |
+| Polypane                        | Одновременный просмотр нескольких viewport                      |
+| Responsively App                | Несколько экранов рядом, удобен для быстрой визуальной проверки |
+| Screenfly / Am I Responsive     | Быстрая демонстрационная проверка                               |
+| Lighthouse / PageSpeed Insights | Mobile UX и performance-сигналы                                 |
 
 ## Рекомендуемый процесс
 

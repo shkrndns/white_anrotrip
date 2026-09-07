@@ -13,6 +13,7 @@
 - В dev-режиме (`pnpm dev`) всё работает нормально — проблема только в production
 
 Затронутые компоненты:
+
 - `Header.astro` — стеклянный эффект шапки
 - `ui/Modal.astro` — backdrop blur модальных окон
 - `CallbackModal.astro`, `GiftModal.astro`, `ReviewModal.astro`
@@ -48,6 +49,7 @@ vite: {
 ## Влияние на производительность
 
 CSS без минификации немного больше по размеру (~5–15% для нашего стека), но:
+
 - Caddy сжимает ответы через `encode gzip` → разница в сети минимальна
 - Blur-эффекты критичны для UX (Header, Modal)
 

@@ -8,14 +8,14 @@
 
 ### Что собирается
 
-| Источник | Данные | Где в коде |
-|----------|--------|------------|
-| Формы заявок | Имя, телефон, email и др. | `CallbackModal`, `GiftModal`, `ReviewModal` → `/api/*` |
-| Сервер | IP, User-Agent, URL запроса | Логи VPS / Caddy / Node (SSR) |
-| Cookie-баннер | Выбор «Принять» / «Отклонить» | `localStorage`: `anro_cookies_accepted` |
-| Nemo (авиа) | Поисковые запросы, cookie виджета | `NemoSearch.astro`, `cdn.nemo.travel` |
-| Tourvisor (туры) | Поиск, cookie/iframe | `SearchWidget.astro`, `tourvisor.ru` |
-| Telegram / SMTP | Текст заявки | `src/lib/mailer.ts` (сервер, не в браузере) |
+| Источник         | Данные                            | Где в коде                                             |
+| ---------------- | --------------------------------- | ------------------------------------------------------ |
+| Формы заявок     | Имя, телефон, email и др.         | `CallbackModal`, `GiftModal`, `ReviewModal` → `/api/*` |
+| Сервер           | IP, User-Agent, URL запроса       | Логи VPS / Caddy / Node (SSR)                          |
+| Cookie-баннер    | Выбор «Принять» / «Отклонить»     | `localStorage`: `anro_cookies_accepted`                |
+| Nemo (авиа)      | Поисковые запросы, cookie виджета | `NemoSearch.astro`, `cdn.nemo.travel`                  |
+| Tourvisor (туры) | Поиск, cookie/iframe              | `SearchWidget.astro`, `tourvisor.ru`                   |
+| Telegram / SMTP  | Текст заявки                      | `src/lib/mailer.ts` (сервер, не в браузере)            |
 
 ### Чего нет
 
@@ -74,10 +74,10 @@ PUBLIC_YANDEX_METRIKA_ID=
 
 ```ts
 export function initMetrikaIfConsented(): void {
-  const id = import.meta.env.PUBLIC_YANDEX_METRIKA_ID;
-  if (!id || localStorage.getItem('anro_cookies_accepted') !== 'true') return;
-  if (window.ym) return;
-  // insert tag.js, ym(id, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true })
+	const id = import.meta.env.PUBLIC_YANDEX_METRIKA_ID;
+	if (!id || localStorage.getItem('anro_cookies_accepted') !== 'true') return;
+	if (window.ym) return;
+	// insert tag.js, ym(id, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true })
 }
 ```
 
@@ -146,10 +146,10 @@ export function initMetrikaIfConsented(): void {
 
 ## Связанные файлы
 
-| Файл | Роль |
-|------|------|
-| `src/pages/privacy.astro` | Публичная политика |
-| `src/components/CookieBanner.astro` | UI согласия |
-| `src/middleware.ts` | CSP |
-| `src/layouts/Layout.astro` | Точка подключения скриптов |
-| `.env.example` | `PUBLIC_YANDEX_METRIKA_ID` |
+| Файл                                | Роль                       |
+| ----------------------------------- | -------------------------- |
+| `src/pages/privacy.astro`           | Публичная политика         |
+| `src/components/CookieBanner.astro` | UI согласия                |
+| `src/middleware.ts`                 | CSP                        |
+| `src/layouts/Layout.astro`          | Точка подключения скриптов |
+| `.env.example`                      | `PUBLIC_YANDEX_METRIKA_ID` |

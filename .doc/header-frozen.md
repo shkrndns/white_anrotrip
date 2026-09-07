@@ -15,11 +15,11 @@
 
 ```typescript
 export interface Props {
-  navItems?: { name: string; href: string }[];   // плоский список для мобильного drawer
-  ctaText?: string;                               // текст кнопки CTA (default: 'Личный кабинет')
-  ctaHref?: string;                               // ссылка CTA (default: /cabinet)
-  navVariant?: 'default' | 'corp';               // вариант навигации
-  homeQuickContacts?: boolean;                    // круглые кнопки телефона/Telegram/MAX (только главная)
+	navItems?: { name: string; href: string }[]; // плоский список для мобильного drawer
+	ctaText?: string; // текст кнопки CTA (default: 'Личный кабинет')
+	ctaHref?: string; // ссылка CTA (default: /cabinet)
+	navVariant?: 'default' | 'corp'; // вариант навигации
+	homeQuickContacts?: boolean; // круглые кнопки телефона/Telegram/MAX (только главная)
 }
 ```
 
@@ -48,27 +48,28 @@ export interface Props {
 
 ### Якоря (главная)
 
-| Ссылка | href (главная) | href (другие страницы) |
-|---|---|---|
-| Авиабилеты | `#search` | `/#search` |
-| Туры | `#popular-tours` | `/#popular-tours` |
-| Журнал | `#journal` | `/#journal` |
-| О нас | `#about` | `/#about` |
-| Наши услуги | `#services` | `/#services` |
-| Для бизнеса | `#business` | `/#business` |
-| Партнёры | `#partners` | `/#partners` |
-| Отзывы | `#reviews` | `/#reviews` |
-| Награды | `#awards` | `/#awards` |
-| Сертификат | `#gift` | `/#gift` |
-| Вопросы | `#faq` | `/#faq` |
-| Команда | `#team` | `/#team` |
-| Контакты | `#contacts` | `/#contacts` |
+| Ссылка      | href (главная)   | href (другие страницы) |
+| ----------- | ---------------- | ---------------------- |
+| Авиабилеты  | `#search`        | `/#search`             |
+| Туры        | `#popular-tours` | `/#popular-tours`      |
+| Журнал      | `#journal`       | `/#journal`            |
+| О нас       | `#about`         | `/#about`              |
+| Наши услуги | `#services`      | `/#services`           |
+| Для бизнеса | `#business`      | `/#business`           |
+| Партнёры    | `#partners`      | `/#partners`           |
+| Отзывы      | `#reviews`       | `/#reviews`            |
+| Награды     | `#awards`        | `/#awards`             |
+| Сертификат  | `#gift`          | `/#gift`               |
+| Вопросы     | `#faq`           | `/#faq`                |
+| Команда     | `#team`          | `/#team`               |
+| Контакты    | `#contacts`      | `/#contacts`           |
 
 ---
 
 ## Быстрые контакты (`homeQuickContacts: true`)
 
 Только на главной странице. Круглые кнопки справа от навигации:
+
 - 📞 Телефон: +7 (922) 026-70-59
 - Telegram: @anro_trip → `https://t.me/anro_trip`
 - MAX: `https://max.ru/u/f9LHodD0cOKNXrTMtvUZWd2zLeGEpz34bQ0i1a-Ur_6EKrIw9H11bR6uhLM`
@@ -110,7 +111,7 @@ import Header from '../components/Header.astro';
 
 ## Связанные документы
 
-| Документ | Содержание |
-|---|---|
+| Документ                                             | Содержание                       |
+| ---------------------------------------------------- | -------------------------------- |
 | [header-anchor-scroll.md](./header-anchor-scroll.md) | Якоря, scroll-mt, числа отступов |
-| [mobile-menu.md](./mobile-menu.md) | Мобильный drawer (часть хедера) |
+| [mobile-menu.md](./mobile-menu.md)                   | Мобильный drawer (часть хедера)  |

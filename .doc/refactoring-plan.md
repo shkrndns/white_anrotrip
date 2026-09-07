@@ -1,67 +1,50 @@
 # Рефакторинг: анализ кода и приоритеты
 
-> **Статус:** Запланировано (Фаза 6)  
-> Выполнять после стабилизации production.  
-> **Обновлено:** 2026-07-07 — актуализированы размеры компонентов и статусы пунктов после ревью кода.
+> **Статус:** Фаза 6 — **основное выполнено** (сентябрь 2026)  
+> **Обновлено:** 2026-09-07 · журнал: [audit-2026-09-full.md](./audit-2026-09-full.md) этапы 3–4
 
 ---
 
-## Обнаруженные проблемы
+## Выполнено (этапы 3–4)
 
-### P1 (высокий приоритет)
-
-| Проблема | Файл | Описание |
-|---|---|---|
-| Большие компоненты | `Header.astro` | **1248 строк** (было ~400 на момент составления плана); заморожен — трогать только по явной просьбе заказчика (`.doc/header-frozen.md`) |
-| Дублирование CSS-классов | `global.css` | Некоторые паттерны повторяются, можно вынести в `@layer components` |
-| ~~Магические числа в z-index~~ | — | ✅ Исправлено (2026-07-07): `@utility z-modal` в `global.css`, применено в `CallbackModal.astro`, `GiftModal.astro`, `Reviews.astro`, `About.astro` |
-
-### P2 (средний приоритет)
-
-| Проблема | Описание |
-|---|---|
-| Inline styles в Astro | Отдельные `style=""` атрибуты с расчётными значениями |
-| Дублирование строк i18n | Русские тексты прямо в компонентах — рассмотреть вынесение в data-файлы |
-| Typeguards | Некоторые `as unknown as Type` можно заменить нормальной типизацией |
-| ~~Мёртвый код валидации~~ | ✅ Исправлено (2026-07-07): `src/lib/schemas.ts` реально подключён к `api/callback.ts`, `gift.ts`, `review.ts` (раньше объявлялся, но не импортировался нигде) |
-| ~~Неиспользуемые зависимости~~ | ✅ Исправлено (2026-07-07): удалён `resend` (не импортировался, письма шли через `nodemailer`) |
-| ~~`as any` на `window`~~ | ✅ Исправлено (2026-07-07): `switchSearchTab`/`tvSelectCountry` типизированы в `src/types/window.d.ts`, касты убраны из `PopularTours.astro` |
-
-### P3 (низкий приоритет)
-
-| Проблема | Описание |
-|---|---|
-| Скрипты inline в компонентах | Небольшие JS-блоки в Astro — при росте сложности вынести в `.ts` |
-| Устаревшие комментарии | Обновить после рефакторинга |
-| ~~Rate-limit без очистки~~ | ✅ Исправлено (2026-07-07): `mailer.ts` — периодическая очистка `rateLimitMap` от истёкших записей (раньше росла бессрочно) |
+| Задача                                    | Результат                                                         |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| form-submit                               | `src/lib/client/form-submit.ts`                                   |
+| scroll-lock, smooth-scroll, scroll-reveal | `src/lib/client/*.ts`                                             |
+| Data layer                                | `src/data/*.ts` (10 файлов)                                       |
+| SectionHeading                            | `ui/SectionHeading.astro`                                         |
+| Reviews split                             | `reviews/ReviewsLightbox`, `ReviewFormOverlay`                    |
+| About split                               | `about/About*.astro`                                              |
+| Blog split                                | `blog/Blog*.astro`                                                |
+| Mailer split                              | `mail-transport`, `mail-telegram`, `mail-templates`, `rate-limit` |
+| is:inline → bundled                       | client modules                                                    |
+| Quality                                   | lint, prettier, spellcheck, Playwright, Lighthouse CI             |
 
 ---
 
-## Крупные компоненты (потенциал разбивки)
+## Крупные компоненты (актуальные размеры)
 
-| Компонент | Строк (актуально) | Кандидаты на выделение |
-|---|---|---|
-| `Header.astro` | 1248 | `MobileDrawer.astro`, `DesktopNav.astro` — **заморожен, не трогать без запроса заказчика** |
-| `Reviews.astro` | 672 | `ReviewCarousel.astro`, `ReviewForm.astro`, `Lightbox.astro` |
-| `OfficeWidget.astro` | 604 | — |
-| `About.astro` | 568 | `ServicesGrid.astro`, `DirectionsGrid.astro` |
-| `Footer.astro` | 435 | — |
-| `Team.astro` | 348 | `TeamGrid.astro` |
+| Комponent            | Строк (~) | Статус                                            |
+| -------------------- | --------- | ------------------------------------------------- |
+| `Header.astro`       | ~1230     | **Заморожен** — split только по запросу заказчика |
+| `Reviews.astro`      | ~200      | Lightbox + форма вынесены                         |
+| `About.astro`        | ~100      | Секции в `about/`                                 |
+| `OfficeWidget.astro` | ~600      | —                                                 |
+| `Footer.astro`       | ~460      | —                                                 |
 
 ---
 
-## Порядок выполнения
+## Остаётся (низкий приоритет)
 
-1. **Написать тесты перед рефакторингом** (Playwright smoke) — см. [testing-plan.md](./testing-plan.md)
-2. Рефакторить по одному компоненту
-3. Запускать `pnpm check` после каждого изменения
-4. Визуально проверять на всех страницах
+- Header split (`MobileDrawer`, `DesktopNav`) — после согласования
+- Nonce-CSP вместо `unsafe-inline` — этап 6 аудита, после минимизации inline
+- Точечный `@layer components` для повторяющихся паттернов в `global.css`
 
 ---
 
 ## Связанные документы
 
-| Документ | Содержание |
-|---|---|
-| [testing-plan.md](./testing-plan.md) | Тесты перед рефакторингом |
-| [audit-full-2026-04.md](./audit-full-2026-04.md) | Аудит кода |
+| Документ                                                 | Содержание       |
+| -------------------------------------------------------- | ---------------- |
+| [testing-plan.md](./testing-plan.md)                     | Playwright smoke |
+| [architecture-reference.md](./architecture-reference.md) | `src/lib/`       |

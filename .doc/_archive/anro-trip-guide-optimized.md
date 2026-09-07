@@ -78,11 +78,11 @@ white_anrotrip/
 ```astro
 <Hero />
 <div id="content" class="relative z-10 mt-[20vh] bg-white">
-  <div id="search" class="absolute -top-32 w-full h-1"></div>
-  <div class="relative z-20 -translate-y-24 px-4 sm:px-6 max-w-7xl mx-auto">
-    <SearchWidget />
-  </div>
-  ...остальные секции...
+	<div id="search" class="absolute -top-32 w-full h-1"></div>
+	<div class="relative z-20 -translate-y-24 px-4 sm:px-6 max-w-7xl mx-auto">
+		<SearchWidget />
+	</div>
+	...остальные секции...
 </div>
 ```
 
@@ -107,15 +107,15 @@ z-0             Hero
 
 ```css
 @theme {
-  --color-primary: #00abb3; /* ⭐ Бренд-тил (цвет «trip» в логотипе) */
-  --color-primary-light: #33bfc6;
-  --color-primary-dark: #008a91;
-  --color-secondary: #006d73; /* Глубокий тил */
-  --color-secondary-hover: #00585d;
-  --color-cta: #ffd417; /* Янтарный (CTA, контраст к тилу) */
-  --color-cta-hover: #e5be14;
-  --font-montserrat: 'Montserrat', sans-serif;
-  --font-inter: 'Inter', sans-serif;
+	--color-primary: #00abb3; /* ⭐ Бренд-тил (цвет «trip» в логотипе) */
+	--color-primary-light: #33bfc6;
+	--color-primary-dark: #008a91;
+	--color-secondary: #006d73; /* Глубокий тил */
+	--color-secondary-hover: #00585d;
+	--color-cta: #ffd417; /* Янтарный (CTA, контраст к тилу) */
+	--color-cta-hover: #e5be14;
+	--font-montserrat: 'Montserrat', sans-serif;
+	--font-inter: 'Inter', sans-serif;
 }
 ```
 
@@ -153,14 +153,14 @@ Fluid Typography через `clamp()` — без media queries. Стили в `g
 
 Правила, чтобы интерфейс не выглядел как типичный «ИИ-шаблон» (см. `.doc/audit-ai-design-habr.md`, [Habr](https://habr.com/ru/articles/1004960/)).
 
-| Правило | Как делать |
-|--------|------------|
-| **Цвета** | Только из `@theme` (primary, secondary, cta). Не использовать дефолтные Tailwind: `indigo-*`, `blue-600`, `sky-*`, `emerald-*` как основные. Hero по времени суток, Footer соцсети, кнопки — только токены или свои hex в @theme. |
-| **Тени** | Не плоский `shadow-md`. Использовать двухслойные тени с оттенком: `shadow-[0_4px_24px_rgba(0,171,179,0.35)]`, `hover:shadow-xl hover:shadow-primary/20`. |
-| **Анимации** | Не `transition-all`. Только явные свойства: `transition-[transform,box-shadow]`, `transition-[transform,opacity]`. Easing — предпочтительно `ease-out`/`ease-in` или cubic-bezier. |
-| **Типографика тела** | Для основного текста (body/параграфы) — `line-height: 1.7` (в base или утилита). Заголовки — уже Montserrat + tracking-tight. |
-| **Глубина** | Слои: base (фон) → elevated (карточки, панели) → floating (модалки, виджеты). Не держать все элементы на одной z-плоскости. |
-| **Интерактив** | У каждого кликабельного: hover, focus-visible, active (уже в конституции). |
+| Правило              | Как делать                                                                                                                                                                                                                        |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Цвета**            | Только из `@theme` (primary, secondary, cta). Не использовать дефолтные Tailwind: `indigo-*`, `blue-600`, `sky-*`, `emerald-*` как основные. Hero по времени суток, Footer соцсети, кнопки — только токены или свои hex в @theme. |
+| **Тени**             | Не плоский `shadow-md`. Использовать двухслойные тени с оттенком: `shadow-[0_4px_24px_rgba(0,171,179,0.35)]`, `hover:shadow-xl hover:shadow-primary/20`.                                                                          |
+| **Анимации**         | Не `transition-all`. Только явные свойства: `transition-[transform,box-shadow]`, `transition-[transform,opacity]`. Easing — предпочтительно `ease-out`/`ease-in` или cubic-bezier.                                                |
+| **Типографика тела** | Для основного текста (body/параграфы) — `line-height: 1.7` (в base или утилита). Заголовки — уже Montserrat + tracking-tight.                                                                                                     |
+| **Глубина**          | Слои: base (фон) → elevated (карточки, панели) → floating (модалки, виджеты). Не держать все элементы на одной z-плоскости.                                                                                                       |
+| **Интерактив**       | У каждого кликабельного: hover, focus-visible, active (уже в конституции).                                                                                                                                                        |
 
 При рефакторинге и добавлении новых компонентов проверять список в `.doc/audit-ai-design-habr.md`.
 
@@ -204,26 +204,26 @@ Fluid Typography через `clamp()` — без media queries. Стили в `g
 
 Главное правило: **тяжёлые эффекты только на `@media (hover: hover)`** (= десктоп с мышью).
 
-| Эффект                 | Мобайл                    | Десктоп           |
-| ---------------------- | ------------------------- | ----------------- |
-| Орбы (blur)            | `blur-0`                  | `md:blur-3xl`     |
+| Эффект                                    | Мобайл           | Десктоп            |
+| ----------------------------------------- | ---------------- | ------------------ |
+| Орбы (blur)                               | `blur-0`         | `md:blur-3xl`      |
 | glass-panel (TrustBadges, Partners stats) | solid (без blur) | ✅ backdrop-filter |
-| Ken Burns              | ❌ статично               | ✅ 30s анимация   |
-| Parallax Hero          | ❌ нет                    | ✅ 0.15 коэф.     |
-| Marquee партнёры       | ❌ grid-cols-2            | ✅ marquee        |
-| Tour card breathe      | ❌ нет                    | ✅ 24s анимация   |
-| Logo spin              | ❌ нет                    | ✅ 20-30s         |
-| hero-gradient-text     | ❌ просто белый           | ✅ shine анимация |
+| Ken Burns                                 | ❌ статично      | ✅ 30s анимация    |
+| Parallax Hero                             | ❌ нет           | ✅ 0.15 коэф.      |
+| Marquee партнёры                          | ❌ grid-cols-2   | ✅ marquee         |
+| Tour card breathe                         | ❌ нет           | ✅ 24s анимация    |
+| Logo spin                                 | ❌ нет           | ✅ 20-30s          |
+| hero-gradient-text                        | ❌ просто белый  | ✅ shine анимация  |
 
 ```css
 /* Паттерн для всех тяжёлых эффектов */
 .my-animation {
-  animation: none;
+	animation: none;
 }
 @media (hover: hover) {
-  .my-animation {
-    animation: my-anim 20s linear infinite;
-  }
+	.my-animation {
+		animation: my-anim 20s linear infinite;
+	}
 }
 ```
 
@@ -348,12 +348,12 @@ Fluid Typography через `clamp()` — без media queries. Стили в `g
 
 ```css
 .TVCartStickyButton {
-  opacity: 0 !important;
-  left: -9999px !important;
+	opacity: 0 !important;
+	left: -9999px !important;
 }
 iframe[src*='tourvisor'] {
-  width: 100% !important;
-  min-height: 500px !important;
+	width: 100% !important;
+	min-height: 500px !important;
 }
 ```
 
