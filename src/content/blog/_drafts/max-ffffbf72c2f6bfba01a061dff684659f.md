@@ -11,7 +11,7 @@ importedAt: '2026-09-06'
 author: 'Команда ANRO TRIP'
 ---
 
-🇪🇬 ANNA ASTI в 
+🇪🇬 ANNA ASTI в
 Шарм-эль-Шейхе
 
 21 сентября ANNA ASTI выступит в Vibe Club.

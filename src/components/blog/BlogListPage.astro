@@ -2,566 +2,182 @@
 import { Image } from 'astro:assets';
 import favicon from '../../assets/favicon.png';
 import FooterMinimal from '../FooterMinimal.astro';
-import FaIcon from '../icons/FaIcon.astro';
 import Layout from '../../layouts/Layout.astro';
 import type { BlogListContext } from '../../lib/blog-list';
-import { getTourStyleBadge } from '../../lib/tourDestinationBadge';
-import { siteBlogPost, siteHomeJournal } from '../../lib/site-urls';
-import { formatBlogTitleHtml, typografText } from '../../lib/typograf';
+import { siteHomeJournal } from '../../lib/site-urls';
+import BlogHero from './BlogHero.astro';
+import BlogFeaturedCard from './BlogFeaturedCard.astro';
+import BlogPostCard from './BlogPostCard.astro';
+import BlogPagination from './BlogPagination.astro';
 
 interface Props extends BlogListContext {
-  featuredTitle: string;
-  featuredTitleHtml: string;
-  featuredDescription: string;
-  blogIndexUrl: string;
-  pageUrl: string;
-  prevUrl?: string;
-  nextUrl?: string;
-  blogBreadcrumbSchema: Record<string, unknown>;
+	featuredTitle: string;
+	featuredTitleHtml: string;
+	featuredDescription: string;
+	blogIndexUrl: string;
+	pageUrl: string;
+	prevUrl?: string;
+	nextUrl?: string;
+	blogBreadcrumbSchema: Record<string, unknown>;
 }
 
 const {
-  page,
-  featuredPost,
-  allDestinations,
-  totalCount,
-  materialsWord,
-  featuredTitle,
-  featuredTitleHtml,
-  featuredDescription,
-  blogIndexUrl,
-  pageUrl,
-  prevUrl,
-  nextUrl,
-  blogBreadcrumbSchema,
+	page,
+	featuredPost,
+	allDestinations,
+	totalCount,
+	materialsWord,
+	featuredTitle,
+	featuredTitleHtml,
+	featuredDescription,
+	pageUrl,
+	prevUrl,
+	nextUrl,
+	blogBreadcrumbSchema,
 } = Astro.props;
 
 const listTitle =
-  page.currentPage > 1
-    ? `Журнал о путешествиях — страница ${page.currentPage} | ANRO TRIP`
-    : 'Журнал о путешествиях | ANRO TRIP';
+	page.currentPage > 1
+		? `Журнал о путешествиях — страница ${page.currentPage} | ANRO TRIP`
+		: 'Журнал о путешествиях | ANRO TRIP';
 ---
 
 <Layout
-  title={listTitle}
-  description="Вдохновляющие идеи, советы экспертов и путеводители по лучшим направлениям от команды ANRO TRIP."
-  canonicalURL={pageUrl}
-  showFavorites={false}
-  showOfficeWidget={false}
-  showScrollToTop={false}
+	title={listTitle}
+	description="Вдохновляющие идеи, советы экспертов и путеводители по лучшим направлениям от команды ANRO TRIP."
+	canonicalURL={pageUrl}
+	showFavorites={false}
+	showOfficeWidget={false}
+	showScrollToTop={false}
 >
-  <Fragment slot="head">
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(blogBreadcrumbSchema)} />
-    {prevUrl && <link rel="prev" href={prevUrl} />}
-    {nextUrl && <link rel="next" href={nextUrl} />}
-  </Fragment>
-  <!-- Одна сплошная страница: mesh-фон, без наезда блока списка на hero -->
-  <main
-    id="content"
-    class="blog-mesh-text-bg relative overflow-hidden min-h-screen pb-16 md:pb-24"
-    aria-label="Журнал о путешествиях"
-  >
-    <!-- Фоновые орбы страницы — паттерн как на главной -->
-    <div
-      class="absolute -top-28 -right-28 size-112 rounded-full bg-primary/8 blur-none md:blur-3xl pointer-events-none"
-      aria-hidden="true"
-    >
-    </div>
-    <div
-      class="absolute top-[38%] -left-24 size-80 rounded-full bg-secondary/5 blur-none md:blur-3xl pointer-events-none"
-      aria-hidden="true"
-    >
-    </div>
-    <div
-      class="absolute bottom-40 -right-16 size-72 rounded-full bg-primary/7 blur-none md:blur-3xl pointer-events-none"
-      aria-hidden="true"
-    >
-    </div>
-    <div
-      class="absolute bottom-0 left-1/2 -translate-x-1/2 w-152 h-36 rounded-full bg-primary/4 blur-none md:blur-3xl pointer-events-none"
-      aria-hidden="true"
-    >
-    </div>
+	<Fragment slot="head">
+		<script
+			is:inline
+			type="application/ld+json"
+			set:html={JSON.stringify(blogBreadcrumbSchema)}
+		/>
+		{prevUrl && <link rel="prev" href={prevUrl} />}
+		{nextUrl && <link rel="next" href={nextUrl} />}
+	</Fragment>
 
-    <div class="relative">
-      <a
-        href={siteHomeJournal()}
-        class="pointer-events-auto absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:top-5 sm:right-5 md:top-6 md:right-6"
-        aria-label="Наш блог на главной"
-      >
-        <Image
-          src={favicon}
-          alt=""
-          format="png"
-          quality="max"
-          decoding="async"
-          class="h-10 w-10 shrink-0 object-contain drop-shadow-md"
-        />
-      </a>
-      <div class="container mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 md:pb-12">
-        <!-- Заголовок страницы — паттерн как в PopularTours -->
-        <div>
-          <div
-            class="mb-4 section-badge"
-          >
-            <span class="section-badge__dot" aria-hidden="true"></span>
-            <span class="section-badge__label">Журнал</span>
-          </div>
-          <h1
-            class="mb-4 font-montserrat font-extrabold uppercase leading-none tracking-tight text-gray-900"
-            style="font-size: clamp(2rem, 1.5rem + 3vw, 4rem);"
-          >
-            Журнал<br /><span class="text-primary">путешествий</span>
-          </h1>
-          <p class="max-w-md text-sm leading-relaxed text-gray-500">
-            Вдохновляющие идеи, советы экспертов и путеводители по лучшим
-            направлениям от команды ANRO&nbsp;TRIP.
-          </p>
+	<main
+		id="content"
+		class="blog-mesh-text-bg relative overflow-hidden min-h-screen pb-16 md:pb-24"
+		aria-label="Журнал о путешествиях"
+	>
+		<div
+			class="absolute -top-28 -right-28 size-112 rounded-full bg-primary/8 blur-none md:blur-3xl pointer-events-none"
+			aria-hidden="true"
+		>
+		</div>
+		<div
+			class="absolute top-[38%] -left-24 size-80 rounded-full bg-secondary/5 blur-none md:blur-3xl pointer-events-none"
+			aria-hidden="true"
+		>
+		</div>
+		<div
+			class="absolute bottom-40 -right-16 size-72 rounded-full bg-primary/7 blur-none md:blur-3xl pointer-events-none"
+			aria-hidden="true"
+		>
+		</div>
+		<div
+			class="absolute bottom-0 left-1/2 -translate-x-1/2 w-152 h-36 rounded-full bg-primary/4 blur-none md:blur-3xl pointer-events-none"
+			aria-hidden="true"
+		>
+		</div>
 
-          <!-- Редакционная строка -->
-          <div class="mt-5 pt-4 border-t border-primary/10 space-y-3">
-            <div
-              class="flex flex-wrap items-center gap-2.5 text-[11px] text-gray-400 font-inter"
-            >
-              <span class="font-medium text-gray-500 tabular-nums"
-                >{totalCount} {materialsWord}</span
-              >
-              <span aria-hidden="true" class="text-gray-200">·</span>
-              <span class="inline-flex items-center gap-1.5">
-                <span
-                  class="inline-block w-1.5 h-1.5 rounded-full bg-primary/50 md:animate-pulse"
-                  aria-hidden="true"></span>
-                Обновляется
-              </span>
-              <span aria-hidden="true" class="text-gray-200">·</span>
-              <span>ANRO&nbsp;TRIP · 2026</span>
-            </div>
-            <!-- Теги направлений -->
-            {
-              allDestinations.length > 0 && (
-                <div
-                  class="flex flex-wrap gap-1.5"
-                  role="list"
-                  aria-label="Направления в журнале"
-                >
-                  {allDestinations.map((dest) => {
-                    const badge = getTourStyleBadge(dest);
-                    return (
-                      <span
-                        role="listitem"
-                        class:list={[
-                          'inline-block rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider',
-                          badge.className,
-                        ]}
-                      >
-                        {badge.label}
-                      </span>
-                    );
-                  })}
-                </div>
-              )
-            }
-          </div>
-        </div>
-      </div>
-    </div>
+		<BlogHero
+			totalCount={totalCount}
+			materialsWord={materialsWord}
+			allDestinations={allDestinations}
+		/>
 
-    <div class="container mx-auto max-w-7xl px-4 pt-2 sm:px-6 md:pt-4">
-      <!-- Крупная карточка «Направления» + сетка остальных материалов (стр. 1) -->
-      <div
-        class="mb-16 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5"
-      >
-        {
-          page.currentPage === 1 && featuredPost && (
-            <article class="group md:col-span-3 flex flex-col lg:flex-row rounded-3xl overflow-hidden bg-white border border-primary/15 shadow-[0_8px_40px_rgba(0,171,179,0.18)] hover:shadow-[0_12px_48px_rgba(0,171,179,0.28)] transition-[opacity,transform,box-shadow] duration-slow [content-visibility:auto]">
-              <a
-                href={siteBlogPost(featuredPost.id)}
-                class="relative block overflow-hidden aspect-16/10 lg:w-[58%] lg:shrink-0 lg:aspect-auto lg:min-h-[min(22rem,52vh)]"
-                aria-label={`Читать статью: ${featuredTitle}`}
-              >
-                {featuredPost.data.heroImages &&
-                featuredPost.data.heroImages.length >= 2 ? (
-                  <div
-                    class="absolute inset-0 transition-transform duration-slow ease-out group-hover:scale-[1.02]"
-                    data-slideshow={`card-featured-${featuredPost.id}`}
-                  >
-                    {featuredPost.data.heroImages.slice(0, 8).map((img, i) => (
-                      <div
-                        class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-                        data-slide={i}
-                        data-slideshow-group={`card-featured-${featuredPost.id}`}
-                      >
-                        <Image
-                          src={img}
-                          alt={`${featuredPost.data.title} — фото ${i + 1}`}
-                          width={1200}
-                          height={675}
-                          loading={i === 0 ? 'eager' : 'lazy'}
-                          class="w-full h-full object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : (featuredPost.data.cardImage ?? featuredPost.data.heroImage) ? (
-                  <Image
-                    src={featuredPost.data.cardImage ?? featuredPost.data.heroImage!}
-                    alt={featuredPost.data.title}
-                    width={1200}
-                    height={675}
-                    loading="eager"
-                    class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.02]"
-                  />
-                ) : (
-                  <div class="blog-card-placeholder w-full h-full min-h-48" role="img" aria-label="Место для фото">
-                    <svg class="blog-media-placeholder__icon blog-media-placeholder__icon--lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="blog-media-placeholder__label">Фото скоро</span>
-                  </div>
-                )}
-                <div class="absolute top-4 left-4 flex flex-wrap items-center gap-2">
-                  <span class="bg-red text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
-                    Выбор редакции
-                  </span>
-                  {featuredPost.data.destination && (
-                    <span
-                      class:list={[
-                        'inline-block rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider',
-                        getTourStyleBadge(featuredPost.data.destination)
-                          .className,
-                      ]}
-                    >
-                      {getTourStyleBadge(featuredPost.data.destination).label}
-                    </span>
-                  )}
-                </div>
-              </a>
+		<div class="container mx-auto max-w-7xl px-4 pt-2 sm:px-6 md:pt-4">
+			<div class="mb-16 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+				{
+					page.currentPage === 1 && featuredPost && (
+						<BlogFeaturedCard
+							post={featuredPost}
+							title={featuredTitle}
+							titleHtml={featuredTitleHtml}
+							description={featuredDescription}
+						/>
+					)
+				}
+				{
+					page.data.map((post, index) => (
+						<BlogPostCard post={post} index={index} />
+					))
+				}
+			</div>
 
-              <div class="relative overflow-hidden p-6 md:p-8 lg:p-10 flex flex-col grow lg:max-w-[42%]">
-                <div
-                  class="absolute top-0 right-0 size-52 rounded-full bg-primary/7 blur-none md:blur-2xl pointer-events-none translate-x-1/3 -translate-y-1/3"
-                  aria-hidden="true"
-                />
-                <div
-                  class="absolute bottom-0 left-0 size-40 rounded-full bg-secondary/6 blur-none md:blur-2xl pointer-events-none -translate-x-1/3 translate-y-1/3"
-                  aria-hidden="true"
-                />
-                <div
-                  class="absolute bottom-1/3 right-4 size-24 rounded-full bg-primary/8 blur-none md:blur-xl pointer-events-none"
-                  aria-hidden="true"
-                />
-                <time
-                  datetime={featuredPost.data.pubDate.toISOString()}
-                  class="text-xs text-gray-400 font-inter mb-3 block"
-                >
-                  {featuredPost.data.pubDate.toLocaleDateString('ru-RU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
-                <h2 class="text-xl md:text-2xl lg:text-[1.65rem] font-extrabold text-gray-900 mb-3 font-montserrat leading-tight tracking-tight line-clamp-3 group-hover:text-primary transition-colors duration-fast">
-                  <a href={siteBlogPost(featuredPost.id)} set:html={featuredTitleHtml} />
-                </h2>
-                <p class="text-sm md:text-base text-gray-600 line-clamp-4 mb-6 grow font-inter leading-relaxed">
-                  {featuredDescription}
-                </p>
-                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-gray-100 mt-auto">
-                  <span class="text-xs font-semibold text-gray-500 font-inter">
-                    {featuredPost.data.author}
-                  </span>
-                  <a
-                    href={siteBlogPost(featuredPost.id)}
-                    class="group/link inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-dark transition-colors duration-fast font-montserrat uppercase tracking-wide"
-                    aria-label={`Читать: ${featuredTitle}`}
-                  >
-                    Читать материал
-                    <svg
-                      class="w-4 h-4 group-hover/link:translate-x-0.5 transition-transform duration-fast"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2.5"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-          )
-        }
-        {
-          page.data.map((post, index) => {
-            const cardTitle = typografText(post.data.title);
-            const cardTitleHtml = formatBlogTitleHtml(post.data.title);
-            const cardDescription = typografText(post.data.description);
-            return (
-            <article class="group flex flex-col rounded-3xl overflow-hidden bg-white border border-white/10 shadow-[0_4px_24px_rgba(0,171,179,0.15)] hover:shadow-[0_8px_32px_rgba(0,171,179,0.25)] transition-[opacity,transform,box-shadow] duration-slow [content-visibility:auto]">
-              <a
-                href={siteBlogPost(post.id)}
-                class="block relative overflow-hidden aspect-4/3"
-                aria-label={`Читать статью: ${cardTitle}`}
-              >
-                {post.data.heroImages && post.data.heroImages.length >= 2 ? (
-                  // Слайдер для коллажа
-                  <div
-                    class="absolute inset-0"
-                    data-slideshow={`card-${post.id}`}
-                  >
-                    {post.data.heroImages.slice(0, 8).map((img, i) => (
-                      <div
-                        class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-                        data-slide={i}
-                        data-slideshow-group={`card-${post.id}`}
-                      >
-                        <Image
-                          src={img}
-                          alt={`${post.data.title} — фото ${i + 1}`}
-                          width={600}
-                          height={450}
-                          loading={index < 3 ? 'eager' : 'lazy'}
-                          class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.04]"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : (post.data.heroImages?.[0] ?? post.data.cardImage ?? post.data.heroImage) ? (
-                  <Image
-                    src={post.data.heroImages?.[0] ?? post.data.cardImage ?? post.data.heroImage!}
-                    alt={post.data.title}
-                    width={600}
-                    height={450}
-                    loading={index < 3 ? 'eager' : 'lazy'}
-                    class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.04]"
-                  />
-                ) : (
-                  <div class="blog-card-placeholder w-full h-full" role="img" aria-label="Место для фото">
-                    <svg class="blog-media-placeholder__icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="blog-media-placeholder__label">Фото скоро</span>
-                  </div>
-                )}
-                {post.data.destination && (
-                  <div class="absolute top-4 left-4">
-                    <span
-                      class:list={[
-                        'inline-block rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider',
-                        getTourStyleBadge(post.data.destination).className,
-                      ]}
-                    >
-                      {getTourStyleBadge(post.data.destination).label}
-                    </span>
-                  </div>
-                )}
-              </a>
-              <div class="relative overflow-hidden p-5 md:p-6 flex flex-col grow">
-                {/* Паттерн 0: primary верхний правый + secondary нижний левый */}
-                {index % 3 === 0 && (
-                  <div
-                    class="absolute top-0 right-0 size-32 rounded-full bg-primary/8 blur-none md:blur-xl pointer-events-none translate-x-1/4 -translate-y-1/4"
-                    aria-hidden="true"
-                  />
-                )}
-                {index % 3 === 0 && (
-                  <div
-                    class="absolute bottom-0 left-0 size-20 rounded-full bg-secondary/6 blur-none md:blur-lg pointer-events-none -translate-x-1/3 translate-y-1/3"
-                    aria-hidden="true"
-                  />
-                )}
-                {/* Паттерн 1: cta верхний левый + primary нижний правый */}
-                {index % 3 === 1 && (
-                  <div
-                    class="absolute top-0 left-0 size-28 rounded-full bg-primary/9 blur-none md:blur-xl pointer-events-none -translate-x-1/4 -translate-y-1/4"
-                    aria-hidden="true"
-                  />
-                )}
-                {index % 3 === 1 && (
-                  <div
-                    class="absolute bottom-0 right-0 size-24 rounded-full bg-primary/7 blur-none md:blur-lg pointer-events-none translate-x-1/3 translate-y-1/3"
-                    aria-hidden="true"
-                  />
-                )}
-                {/* Паттерн 2: secondary середина правый + primary нижний + cta верхний центр */}
-                {index % 3 === 2 && (
-                  <div
-                    class="absolute top-1/2 right-0 size-24 rounded-full bg-secondary/8 blur-none md:blur-xl pointer-events-none translate-x-1/3 -translate-y-1/2"
-                    aria-hidden="true"
-                  />
-                )}
-                {index % 3 === 2 && (
-                  <div
-                    class="absolute top-0 left-1/3 size-20 rounded-full bg-primary/6 blur-none md:blur-lg pointer-events-none -translate-x-1/2 -translate-y-1/2"
-                    aria-hidden="true"
-                  />
-                )}
-                {index % 3 === 2 && (
-                  <div
-                    class="absolute bottom-0 left-0 size-20 rounded-full bg-primary/7 blur-none md:blur-lg pointer-events-none -translate-x-1/3 translate-y-1/3"
-                    aria-hidden="true"
-                  />
-                )}
-                <time
-                  datetime={post.data.pubDate.toISOString()}
-                  class="text-xs text-gray-400 font-inter mb-2 block"
-                >
-                  {post.data.pubDate.toLocaleDateString('ru-RU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
-                <h2 class="text-base font-extrabold text-gray-900 mb-2 font-montserrat leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-fast">
-                  <a href={siteBlogPost(post.id)} set:html={cardTitleHtml} />
-                </h2>
-                <p class="text-sm text-gray-500 line-clamp-2 mb-4 grow font-inter leading-relaxed">
-                  {cardDescription}
-                </p>
-                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <span class="text-xs font-semibold text-gray-500 font-inter">
-                    {post.data.author}
-                  </span>
-                  <a
-                    href={siteBlogPost(post.id)}
-                    class="group/link inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-dark transition-colors duration-fast font-montserrat uppercase tracking-wide"
-                    aria-label={`Читать: ${cardTitle}`}
-                  >
-                    Читать
-                    <svg
-                      class="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform duration-fast"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2.5"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-            );
-          })
-        }
-      </div>
+			<BlogPagination page={page} />
+		</div>
 
-      <!-- Пагинация -->
-      {
-        page.lastPage > 1 && (
-          <div class="flex justify-center items-center gap-4">
-            {page.url.prev ? (
-              <a
-                href={page.url.prev}
-                class="group inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-primary transition-colors duration-fast font-montserrat uppercase tracking-wide"
-              >
-                <FaIcon name="fa6-solid:arrow-left" iconClass="text-sm leading-none group-hover:-translate-x-1 transition-transform duration-fast" />
-                Назад
-              </a>
-            ) : (
-              <span class="inline-flex items-center gap-2 text-sm font-semibold text-gray-200 font-montserrat uppercase tracking-wide cursor-not-allowed">
-                <FaIcon name="fa6-solid:arrow-left" iconClass="text-sm leading-none opacity-60" />
-                Назад
-              </span>
-            )}
+		<div class="text-center mt-8 pb-2">
+			<a
+				href={siteHomeJournal()}
+				class="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition-[color,transform] duration-fast group cursor-pointer"
+			>
+				<Image
+					src={favicon}
+					alt=""
+					format="png"
+					quality="max"
+					decoding="async"
+					class="h-5 w-5 shrink-0 object-contain transition-transform duration-fast group-hover:-translate-x-1"
+				/>
+				Наш блог
+			</a>
+		</div>
+	</main>
 
-            <span class="text-sm text-gray-400 font-inter">
-              {page.currentPage} / {page.lastPage}
-            </span>
-
-            {page.url.next ? (
-              <a
-                href={page.url.next}
-                class="group inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-primary transition-colors duration-fast font-montserrat uppercase tracking-wide"
-              >
-                Вперёд
-                <FaIcon name="fa6-solid:arrow-right" iconClass="text-sm leading-none group-hover:translate-x-1 transition-transform duration-fast" />
-              </a>
-            ) : (
-              <span class="inline-flex items-center gap-2 text-sm font-semibold text-gray-200 font-montserrat uppercase tracking-wide cursor-not-allowed">
-                Вперёд
-                <FaIcon name="fa6-solid:arrow-right" iconClass="text-sm leading-none opacity-60" />
-              </span>
-            )}
-          </div>
-        )
-      }
-    </div>
-
-    <div class="text-center mt-8 pb-2">
-      <a
-        href={siteHomeJournal()}
-        class="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition-[color,transform] duration-fast group cursor-pointer"
-      >
-        <Image
-          src={favicon}
-          alt=""
-          format="png"
-          quality="max"
-          decoding="async"
-          class="h-5 w-5 shrink-0 object-contain transition-transform duration-fast group-hover:-translate-x-1"
-        />
-        Наш блог
-      </a>
-    </div>
-  </main>
-
-  <FooterMinimal />
+	<FooterMinimal />
 </Layout>
 
 <script>
-  const blogCardSlideshowTimers = new WeakMap<
-    HTMLElement,
-    ReturnType<typeof setInterval>
-  >();
+	const blogCardSlideshowTimers = new WeakMap<
+		HTMLElement,
+		ReturnType<typeof setInterval>
+	>();
 
-  function initCardSlideshows() {
-    const slideshows = document.querySelectorAll('[data-slideshow^="card-"]');
+	function initCardSlideshows() {
+		const slideshows = document.querySelectorAll('[data-slideshow^="card-"]');
 
-    slideshows.forEach((slideshow) => {
-      const el = slideshow as HTMLElement;
-      const prev = blogCardSlideshowTimers.get(el);
-      if (prev !== undefined) {
-        clearInterval(prev);
-        blogCardSlideshowTimers.delete(el);
-      }
+		slideshows.forEach((slideshow) => {
+			const el = slideshow as HTMLElement;
+			const prev = blogCardSlideshowTimers.get(el);
+			if (prev !== undefined) {
+				clearInterval(prev);
+				blogCardSlideshowTimers.delete(el);
+			}
 
-      const group = slideshow.getAttribute('data-slideshow');
-      if (!group) return;
+			const group = slideshow.getAttribute('data-slideshow');
+			if (!group) return;
 
-      const slides = slideshow.querySelectorAll(
-        `[data-slideshow-group="${group}"]`,
-      );
-      if (slides.length < 2) return;
+			const slides = slideshow.querySelectorAll(
+				`[data-slideshow-group="${group}"]`,
+			);
+			if (slides.length < 2) return;
 
-      slides.forEach((slide, i) => {
-        (slide as HTMLElement).style.opacity = i === 0 ? '1' : '0';
-      });
+			slides.forEach((slide, i) => {
+				(slide as HTMLElement).style.opacity = i === 0 ? '1' : '0';
+			});
 
-      let current = 0;
-      const intervalMs = 5000;
+			let current = 0;
+			const intervalMs = 5000;
 
-      const nextSlide = () => {
-        const next = (current + 1) % slides.length;
-        (slides[current] as HTMLElement).style.opacity = '0';
-        (slides[next] as HTMLElement).style.opacity = '1';
-        current = next;
-      };
+			const nextSlide = () => {
+				const next = (current + 1) % slides.length;
+				(slides[current] as HTMLElement).style.opacity = '0';
+				(slides[next] as HTMLElement).style.opacity = '1';
+				current = next;
+			};
 
-      blogCardSlideshowTimers.set(el, setInterval(nextSlide, intervalMs));
-    });
-  }
+			blogCardSlideshowTimers.set(el, setInterval(nextSlide, intervalMs));
+		});
+	}
 
-  document.addEventListener('DOMContentLoaded', initCardSlideshows);
-  document.addEventListener('astro:page-load', initCardSlideshows);
+	document.addEventListener('DOMContentLoaded', initCardSlideshows);
+	document.addEventListener('astro:page-load', initCardSlideshows);
 </script>

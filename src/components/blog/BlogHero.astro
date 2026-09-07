@@ -1,0 +1,91 @@
+---
+import { Image } from 'astro:assets';
+import favicon from '../../assets/favicon.png';
+import { getTourStyleBadge } from '../../lib/tourDestinationBadge';
+import { siteHomeJournal } from '../../lib/site-urls';
+import SectionHeading from '../ui/SectionHeading.astro';
+
+interface Props {
+	totalCount: number;
+	materialsWord: string;
+	allDestinations: string[];
+}
+
+const { totalCount, materialsWord, allDestinations } = Astro.props;
+---
+
+<div class="relative">
+	<a
+		href={siteHomeJournal()}
+		class="pointer-events-auto absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:top-5 sm:right-5 md:top-6 md:right-6"
+		aria-label="Наш блог на главной"
+	>
+		<Image
+			src={favicon}
+			alt=""
+			format="png"
+			quality="max"
+			decoding="async"
+			class="h-10 w-10 shrink-0 object-contain drop-shadow-md"
+		/>
+	</a>
+	<div class="container mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 md:pb-12">
+		<div>
+			<SectionHeading
+				as="h1"
+				badge="Журнал"
+				headingClass="mb-4 font-montserrat font-extrabold uppercase leading-none tracking-tight text-gray-900"
+				headingStyle="font-size: clamp(2rem, 1.5rem + 3vw, 4rem);"
+			>
+				Журнал<br /><span class="text-primary">путешествий</span>
+			</SectionHeading>
+			<p class="max-w-md text-sm leading-relaxed text-gray-500">
+				Вдохновляющие идеи, советы экспертов и путеводители по лучшим
+				направлениям от команды ANRO&nbsp;TRIP.
+			</p>
+
+			<div class="mt-5 pt-4 border-t border-primary/10 space-y-3">
+				<div
+					class="flex flex-wrap items-center gap-2.5 text-[11px] text-gray-500 font-inter"
+				>
+					<span class="font-medium text-gray-500 tabular-nums"
+						>{totalCount} {materialsWord}</span
+					>
+					<span aria-hidden="true" class="text-gray-200">·</span>
+					<span class="inline-flex items-center gap-1.5">
+						<span
+							class="inline-block w-1.5 h-1.5 rounded-full bg-primary/50 md:animate-pulse"
+							aria-hidden="true"></span>
+						Обновляется
+					</span>
+					<span aria-hidden="true" class="text-gray-200">·</span>
+					<span>ANRO&nbsp;TRIP · 2026</span>
+				</div>
+				{
+					allDestinations.length > 0 && (
+						<div
+							class="flex flex-wrap gap-1.5"
+							role="list"
+							aria-label="Направления в журнале"
+						>
+							{allDestinations.map((dest) => {
+								const badge = getTourStyleBadge(dest);
+								return (
+									<span
+										role="listitem"
+										class:list={[
+											'inline-block rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider',
+											badge.className,
+										]}
+									>
+										{badge.label}
+									</span>
+								);
+							})}
+						</div>
+					)
+				}
+			</div>
+		</div>
+	</div>
+</div>
