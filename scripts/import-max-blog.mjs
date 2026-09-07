@@ -4,8 +4,10 @@
  *
  * Запуск: pnpm import:max-blog
  * Опции:
- *   --limit N   импортировать не более N новых постов (по умолчанию 20)
- *   --dry-run   только показать, что будет создано
+ *   --limit N        импортировать не более N новых постов (по умолчанию 20)
+ *   --dry-run        только показать, что будет создано
+ *   --sync-images    докачать/обновить hero/card у существующих черновиков
+ *   --force-images   вместе с --sync-images: перекачать даже если heroImage уже есть
  *
  * Требует в .env: MAX_BOT_TOKEN, MAX_CHANNEL_ID
  */
@@ -103,12 +105,31 @@ function maxApi(path, token, options = {}) {
 	});
 }
 
-/** @param {string} url */
-function downloadBinary(url) {
+/** @param {string} url @param {number} [redirects] */
+function downloadBinary(url, redirects = 0) {
 	return new Promise((resolve, reject) => {
-		httpsGet(url, { rejectUnauthorized: false }, (res) => {
+		const fetchUrl = upgradeImageUrl(url);
+		httpsGet(fetchUrl, { rejectUnauthorized: false }, (res) => {
+			if (
+				res.statusCode &&
+				res.statusCode >= 300 &&
+				res.statusCode < 400 &&
+				res.headers.location
+			) {
+				if (redirects > 5) {
+					reject(new Error(`Too many redirects: ${url}`));
+					return;
+				}
+				const next = new URL(res.headers.location, fetchUrl).href;
+				downloadBinary(next, redirects + 1)
+					.then(resolve)
+					.catch(reject);
+				return;
+			}
 			if (res.statusCode && res.statusCode >= 400) {
-				reject(new Error(`Download failed HTTP ${res.statusCode}: ${url}`));
+				reject(
+					new Error(`Download failed HTTP ${res.statusCode}: ${fetchUrl}`),
+				);
 				return;
 			}
 			const chunks = [];
@@ -116,6 +137,107 @@ function downloadBinary(url) {
 			res.on('end', () => resolve(Buffer.concat(chunks)));
 		}).on('error', reject);
 	});
+}
+
+/** @param {string} url */
+function upgradeImageUrl(url) {
+	try {
+		const parsed = new URL(url);
+		if (parsed.hostname === 'i.oneme.ru' && !parsed.searchParams.has('fn')) {
+			parsed.searchParams.set('fn', 'w_1440');
+			return parsed.href;
+		}
+	} catch {
+		// оставляем как есть
+	}
+	return url;
+}
+
+/** @param {string} url */
+function isLikelyImageUrl(url) {
+	try {
+		const { hostname, pathname } = new URL(url);
+		if (/\.(jpe?g|png|webp|gif|avif|bmp)(\?|$)/i.test(pathname)) return true;
+		if (hostname === 'i.oneme.ru') return true;
+		if (hostname.endsWith('.okcdn.ru')) return true;
+		if (hostname === 'pimg.mycdn.me') return true;
+		if (hostname === 'i.mycdn.me') return true;
+		return false;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * @param {unknown} attachment
+ * @returns {{ url: string; kind: 'photo' | 'preview' | 'video-thumb' } | null}
+ */
+function attachmentImageCandidate(attachment) {
+	if (!attachment || typeof attachment !== 'object') return null;
+	const att = /** @type {Record<string, unknown>} */ (attachment);
+	const type = typeof att.type === 'string' ? att.type : '';
+	const payload =
+		att.payload && typeof att.payload === 'object'
+			? /** @type {Record<string, unknown>} */ (att.payload)
+			: null;
+
+	if (type === 'image' && payload && typeof payload.url === 'string') {
+		if (isLikelyImageUrl(payload.url)) {
+			return { url: payload.url, kind: 'photo' };
+		}
+	}
+
+	if (typeof att.image_url === 'string' && isLikelyImageUrl(att.image_url)) {
+		return { url: att.image_url, kind: type === 'share' ? 'preview' : 'photo' };
+	}
+
+	if (type === 'video') {
+		const thumb =
+			att.thumbnail && typeof att.thumbnail === 'object'
+				? /** @type {Record<string, unknown>} */ (att.thumbnail)
+				: null;
+		if (thumb && typeof thumb.url === 'string' && isLikelyImageUrl(thumb.url)) {
+			return { url: thumb.url, kind: 'video-thumb' };
+		}
+	}
+
+	if (
+		payload &&
+		typeof payload.url === 'string' &&
+		isLikelyImageUrl(payload.url)
+	) {
+		return { url: payload.url, kind: 'preview' };
+	}
+
+	if (typeof att.url === 'string' && isLikelyImageUrl(att.url)) {
+		return { url: att.url, kind: 'preview' };
+	}
+
+	return null;
+}
+
+/** @param {MaxMessage} message */
+function collectImageUrls(message) {
+	const attachments = message.body?.attachments ?? [];
+	/** @type {{ url: string; score: number }[]} */
+	const ranked = [];
+
+	for (const attachment of attachments) {
+		const candidate = attachmentImageCandidate(attachment);
+		if (!candidate) continue;
+
+		let score = 0;
+		if (candidate.kind === 'photo') score = 100;
+		else if (candidate.kind === 'video-thumb') score = 60;
+		else score = 30;
+
+		if (!ranked.some((item) => item.url === candidate.url)) {
+			ranked.push({ url: candidate.url, score });
+		}
+	}
+
+	ranked.sort((a, b) => b.score - a.score);
+	return ranked.map((item) => item.url);
 }
 
 /** @param {string} dir */
@@ -179,52 +301,21 @@ function isoDateFromMs(ms) {
 	return new Date(ms).toISOString().slice(0, 10);
 }
 
-/** @param {unknown} attachment */
-function attachmentImageUrl(attachment) {
-	if (!attachment || typeof attachment !== 'object') return null;
-	const att = /** @type {Record<string, unknown>} */ (attachment);
-	if (typeof att.image_url === 'string') return att.image_url;
-	const payload = att.payload;
-	if (payload && typeof payload === 'object') {
-		const p = /** @type {Record<string, unknown>} */ (payload);
-		if (
-			typeof p.url === 'string' &&
-			/\.(jpe?g|png|webp|gif|avif)(\?|$)/i.test(p.url)
-		) {
-			return p.url;
-		}
-		if (typeof p.photo_id === 'string' && typeof p.token === 'string') {
-			return null;
-		}
-	}
-	if (typeof att.url === 'string') return att.url;
-	return null;
-}
-
-/** @param {MaxMessage} message */
-function collectImageUrls(message) {
-	const attachments = message.body?.attachments ?? [];
-	/** @type {string[]} */
-	const urls = [];
-	for (const attachment of attachments) {
-		const url = attachmentImageUrl(attachment);
-		if (url && !urls.includes(url)) urls.push(url);
-	}
-	return urls;
-}
-
 /**
  * @param {string} url
  * @param {string} baseName
+ * @param {{ force?: boolean }} [options]
  */
-async function saveImageAsWebp(url, baseName) {
+async function saveImageAsWebp(url, baseName, options = {}) {
 	await mkdir(IMAGES_DIR, { recursive: true });
 	const outPath = join(IMAGES_DIR, `${baseName}.webp`);
-	try {
-		await stat(outPath);
-		return `../../../assets/blog/max/${baseName}.webp`;
-	} catch {
-		// новый файл
+	if (!options.force) {
+		try {
+			await stat(outPath);
+			return `../../../assets/blog/max/${baseName}.webp`;
+		} catch {
+			// новый файл
+		}
 	}
 	const buffer = await downloadBinary(url);
 	await sharp(buffer).webp({ quality: 92 }).toFile(outPath);
@@ -234,17 +325,64 @@ async function saveImageAsWebp(url, baseName) {
 /**
  * @param {MaxMessage} message
  * @param {string} slug
+ * @param {{ force?: boolean }} [options]
  */
-async function importImages(message, slug) {
+async function importImages(message, slug, options = {}) {
 	const urls = collectImageUrls(message);
-	if (urls.length === 0) return { heroImage: null, cardImage: null };
+	if (urls.length === 0) return { heroImage: null, cardImage: null, count: 0 };
 
-	const heroRel = await saveImageAsWebp(urls[0], `${slug}-hero`);
+	const heroRel = await saveImageAsWebp(urls[0], `${slug}-hero`, options);
 	let cardRel = heroRel;
 	if (urls.length > 1) {
-		cardRel = await saveImageAsWebp(urls[1], `${slug}-card`);
+		cardRel = await saveImageAsWebp(urls[1], `${slug}-card`, options);
 	}
-	return { heroImage: heroRel, cardImage: cardRel };
+	return { heroImage: heroRel, cardImage: cardRel, count: urls.length };
+}
+
+/**
+ * @param {string} content
+ * @param {{ heroImage: string | null; cardImage: string | null }} images
+ */
+function patchFrontmatterImages(content, images) {
+	const lines = content.split('\n');
+	const fmEnd = lines.findIndex(
+		(line, idx) => idx > 0 && line.trim() === '---',
+	);
+	if (fmEnd === -1) return content;
+
+	const frontmatter = lines.slice(1, fmEnd);
+	const body = lines.slice(fmEnd + 1);
+	const filtered = frontmatter.filter(
+		(line) => !/^heroImage:/.test(line) && !/^cardImage:/.test(line),
+	);
+
+	const authorIdx = filtered.findIndex((line) => /^author:/.test(line));
+	const insertAt = authorIdx === -1 ? filtered.length : authorIdx + 1;
+	if (images.heroImage)
+		filtered.splice(insertAt, 0, `heroImage: '${images.heroImage}'`);
+	if (images.cardImage && images.cardImage !== images.heroImage) {
+		const offset = images.heroImage ? insertAt + 1 : insertAt;
+		filtered.splice(offset, 0, `cardImage: '${images.cardImage}'`);
+	}
+
+	return ['---', ...filtered, '---', ...body].join('\n');
+}
+
+/** @param {string} token @param {string[]} mids */
+async function fetchMessagesByIds(token, mids) {
+	/** @type {MaxMessage[]} */
+	const messages = [];
+	for (let i = 0; i < mids.length; i += 50) {
+		const batch = mids.slice(i, i + 50);
+		const params = new URLSearchParams({
+			message_ids: batch.join(','),
+		});
+		const data = /** @type {{ messages?: MaxMessage[] }} */ (
+			await maxApi(`/messages?${params}`, token)
+		);
+		messages.push(...(data.messages ?? []));
+	}
+	return messages;
 }
 
 /**
@@ -315,11 +453,76 @@ async function fetchChannelMessages(token, chatId, count) {
 	return all;
 }
 
+/** @param {string} token @param {{ force?: boolean }} [options] */
+async function syncDraftImages(token, options = {}) {
+	const draftFiles = await listMarkdownFiles(DRAFTS_DIR);
+	/** @type {{ file: string; sourceId: string; slug: string }[]} */
+	const targets = [];
+
+	for (const file of draftFiles) {
+		const sourceId = await readSourceId(file);
+		if (!sourceId) continue;
+		const content = await readFile(file, 'utf8');
+		if (!options.force && /^heroImage:/m.test(content)) continue;
+		targets.push({ file, sourceId, slug: slugFromMid(sourceId) });
+	}
+
+	if (targets.length === 0) {
+		console.info('[import-max-blog] sync-images: нечего обновлять');
+		return;
+	}
+
+	console.info(
+		`[import-max-blog] sync-images: ${targets.length} черновик(ов)${options.force ? ' (force)' : ' без heroImage'}`,
+	);
+	const messages = await fetchMessagesByIds(
+		token,
+		targets.map((t) => t.sourceId),
+	);
+	const byMid = new Map(
+		messages
+			.map((m) => [m.body?.mid, m])
+			.filter(([mid]) => typeof mid === 'string'),
+	);
+
+	let updated = 0;
+	for (const target of targets) {
+		const message = byMid.get(target.sourceId);
+		if (!message) {
+			console.warn(
+				`[import-max-blog] sync-images: пост не найден — ${target.sourceId}`,
+			);
+			continue;
+		}
+		const images = await importImages(message, target.slug, options);
+		if (!images.heroImage) {
+			console.warn(
+				`[import-max-blog] sync-images: нет картинок — ${basename(target.file)}`,
+			);
+			continue;
+		}
+		const content = await readFile(target.file, 'utf8');
+		await writeFile(
+			target.file,
+			patchFrontmatterImages(content, images),
+			'utf8',
+		);
+		updated += 1;
+		console.info(
+			`[import-max-blog] sync-images: ${basename(target.file)} (${images.count} img)`,
+		);
+	}
+
+	console.info(`[import-max-blog] sync-images: обновлено ${updated}`);
+}
+
 async function main() {
 	await loadDotEnv(join(ROOT, '.env'));
 
 	const args = process.argv.slice(2);
 	const dryRun = args.includes('--dry-run');
+	const syncImages = args.includes('--sync-images');
+	const forceImages = args.includes('--force-images');
 	const limitArg = args.find((a) => a.startsWith('--limit='));
 	const limitFlagIdx = args.indexOf('--limit');
 	let limit = 20;
@@ -337,6 +540,11 @@ async function main() {
 			'[import-max-blog] Нужны MAX_BOT_TOKEN и MAX_CHANNEL_ID в .env',
 		);
 		process.exit(1);
+	}
+
+	if (syncImages) {
+		await syncDraftImages(token, { force: forceImages });
+		return;
 	}
 
 	console.info('[import-max-blog] Загрузка постов канала…');
@@ -392,7 +600,8 @@ async function main() {
 		await writeFile(outPath, markdown, 'utf8');
 		knownSourceIds.add(mid);
 		created += 1;
-		console.info(`[import-max-blog] + ${basename(outPath)}`);
+		const imgNote = images.heroImage ? `, ${images.count} img` : ', без img';
+		console.info(`[import-max-blog] + ${basename(outPath)}${imgNote}`);
 	}
 
 	console.info(

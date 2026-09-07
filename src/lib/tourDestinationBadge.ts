@@ -35,6 +35,10 @@ const TOUR_BADGE_BY_DESTINATION: Record<string, TourStyleBadge> = {
 		label: 'Подборка',
 		className: 'bg-primary text-white',
 	},
+	Новости: {
+		label: 'Новости',
+		className: 'bg-red text-white',
+	},
 };
 
 export function getTourStyleBadge(destination: string): TourStyleBadge {

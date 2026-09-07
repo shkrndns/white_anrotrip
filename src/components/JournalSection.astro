@@ -14,10 +14,10 @@ const sortedPosts = allPosts.sort(
 const featuredPost = sortedPosts.find((p) => p.data.featured === true);
 const latestPosts = sortedPosts
 	.filter((p) => (featuredPost ? p.id !== featuredPost.id : true))
-	.slice(0, 3);
+	.slice(0, 2);
 const displayPosts = featuredPost
 	? [featuredPost, ...latestPosts]
-	: sortedPosts.slice(0, 4);
+	: sortedPosts.slice(0, 3);
 
 const journalBadgeClasses = [
 	'bg-red text-white',
@@ -48,8 +48,8 @@ const journalBadgeClasses = [
 			</p>
 		</div>
 
-		<!-- Сетка: четыре карточки в ряд на lg+ -->
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+		<!-- Сетка: три карточки в ряд на lg+ -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
 			{
 				displayPosts.map((post, index) => {
 					const isFeatured = featuredPost?.id === post.id;
@@ -80,7 +80,7 @@ const journalBadgeClasses = [
 													alt={`${post.data.title} — фото ${i + 1}`}
 													width={600}
 													height={450}
-													sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
+													sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
 													loading="lazy"
 													class="w-full h-full object-cover"
 												/>
@@ -93,7 +93,7 @@ const journalBadgeClasses = [
 										alt={post.data.title}
 										width={600}
 										height={450}
-										sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
+										sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
 										loading="lazy"
 										class="object-cover w-full h-full transition-transform duration-slow ease-out group-hover:scale-[1.04]"
 									/>

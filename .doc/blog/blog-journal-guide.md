@@ -176,13 +176,19 @@ pnpm import:max-blog -- --limit 5
 
 # Только показать, что будет создано (без записи файлов)
 pnpm import:max-blog -- --dry-run
+
+# Докачать обложки у черновиков без heroImage
+pnpm import:max-blog -- --sync-images
+
+# Перекачать обложки у всех MAX-черновиков (если раньше был только share-preview)
+pnpm import:max-blog -- --sync-images --force-images
 ```
 
 **Результат:** файлы `src/content/blog/_drafts/max-{id}.md` с `draft: true`, `source: max`, `sourceId`, `sourceUrl`.
 
 **Повторный запуск** не создаёт дубли (проверка по `sourceId` и существующим файлам).
 
-**Картинки** из постов (если есть) сохраняются в `src/assets/blog/max/`.
+**Картинки:** скрипт берёт фото из постов MAX — вложения `type: image` (i.oneme.ru), превью видео, `image_url` у share. Файлы сохраняются в `src/assets/blog/max/` (WebP, для oneme — до 1440px).
 
 Подробнее: [max-blog-import-plan.md](./max-blog-import-plan.md).
 
