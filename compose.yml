@@ -7,9 +7,9 @@ services:
     image: caddy:2-alpine
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"   # HTTP/3 / QUIC
+      - '80:80'
+      - '443:443'
+      - '443:443/udp' # HTTP/3 / QUIC
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
@@ -18,12 +18,12 @@ services:
       app:
         condition: service_healthy
     mem_limit: 128m
-    cpus: "0.25"
+    cpus: '0.25'
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     security_opt:
       - no-new-privileges:true
 
@@ -31,15 +31,23 @@ services:
     image: ghcr.io/${GITHUB_REPOSITORY:-owner/white_anrotrip}:${IMAGE_TAG:-latest}
     restart: unless-stopped
     env_file: .env
+    environment:
+      NODE_ENV: production
     expose:
-      - "4321"
+      - '4321'
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:4321/']
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
     mem_limit: 512m
-    cpus: "1.0"
+    cpus: '1.0'
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     security_opt:
       - no-new-privileges:true
 
