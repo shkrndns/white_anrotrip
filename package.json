@@ -23,6 +23,7 @@
 		"import:max-blog": "node scripts/import-max-blog.mjs",
 		"typograf:blog": "node scripts/typograf-blog.mjs",
 		"skills:install": "node scripts/install-agent-skills.mjs",
+		"rc:awake": "./scripts/cursor-remote-control-awake.sh",
 		"preview": "astro preview",
 		"astro": "astro"
 	},

@@ -170,6 +170,7 @@
 | Документ                                                            | Описание                                                                  |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | [skills-primary-shortlists.md](./meta/skills-primary-shortlists.md) | Agent skills ([skills.sh](https://www.skills.sh/)); `pnpm skills:install` |
+| [cursor-remote-control.md](./meta/cursor-remote-control.md)         | Cursor Remote Control (телефон → агент на ПК)                             |
 
 ---
 
