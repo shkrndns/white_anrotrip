@@ -67,7 +67,7 @@ white_anrotrip/
 │   │   └── cabinet.astro   # Личный кабинет туриста (/cabinet)
 │   └── styles/global.css
 ├── public/favicon.svg           # Логотип с пунктирным кругом + самолётик
-├── .doc/anro-trip-guide-optimized.md
+├── .doc/_archive/anro-trip-guide-optimized.md
 └── package.json
 ```
 

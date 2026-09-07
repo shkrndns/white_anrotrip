@@ -1,6 +1,6 @@
 # Production compose — используется на Beget VPS.
 # Локальный тест: compose.local.yml
-# Подробнее: .doc/server-vps-stack-plan.md
+# Подробнее: .doc/deploy/server-vps-stack-plan.md
 
 services:
   caddy:

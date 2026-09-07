@@ -2,7 +2,7 @@
  * Nemo Flights Search Widget v2.5.64 — тема ANRO TRIP
  * Третий CSS-слой (после flights.search.widget.min.css).
  * Селекторы BEM виджета: .widget__startButton, .widget-ui-* (не nemo-ui-*).
- * @see .doc/nemo-flights-widget-plan.md
+ * @see .doc/roadmaps/nemo-flights-widget-plan.md
  */
 
 .nemo-wrapper {

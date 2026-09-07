@@ -52,7 +52,7 @@ export default defineConfig({
 	/** Прод: anrotrip.ru (Beget VPS + Docker + Caddy).
 	 *  Локальный тест: docker run -p 4321:4321 — открыть http://localhost:4321
 	 *  GitHub Pages (архив): был site=hyperdevops.github.io, base=/white_anrotrip/ — более не используется.
-	 *  Подробнее: .doc/server-vps-stack-plan.md */
+	 *  Подробнее: .doc/deploy/server-vps-stack-plan.md */
 	site: 'https://anrotrip.ru',
 	output: 'server',
 	adapter: node({ mode: 'standalone', bodySizeLimit: API_BODY_SIZE_LIMIT }),
@@ -71,7 +71,7 @@ export default defineConfig({
 		},
 		build: {
 			/** Не minify CSS: иначе пропадает backdrop-blur (Tailwind v4 + Vite).
-			 *  См. AGENTS.md → «Blur в production» и .doc/notes-blur-production.md */
+			 *  См. AGENTS.md → «Blur в production» и .doc/deploy/notes-blur-production.md */
 			cssMinify: false,
 		},
 	},

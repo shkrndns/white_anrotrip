@@ -1,6 +1,6 @@
 # Полный аудит проекта (апрель 2026)
 
-> ⚠️ **АРХИВ** — заменён [audit-2026-09-full.md](../audit-2026-09-full.md). Только для истории.
+> ⚠️ **АРХИВ** — заменён [audit-2026-09-full.md](../audits/audit-2026-09-full.md). Только для истории.
 
 > **Дата:** апрель 2026  
 > **Охват:** Код, UI/UX, производительность, SEO, безопасность  
@@ -80,7 +80,7 @@
 
 ## Мобильная версия
 
-Подробнее: [audit-mobile.md](./audit-mobile.md)
+Подробнее: [audit-mobile.md](../audits/audit-mobile.md)
 
 ---
 
@@ -96,10 +96,10 @@
 
 ## Связанные документы
 
-| Документ                                                       | Содержание                                            |
-| -------------------------------------------------------------- | ----------------------------------------------------- |
-| [audit-mobile.md](./audit-mobile.md)                           | Мобильный аудит                                       |
-| [technical-audit-checklist.md](./technical-audit-checklist.md) | Операционный чеклист: CWV, SEO, ИИ-видимость, техдолг |
-| [project-roadmap.md](./project-roadmap.md)                     | Дорожная карта                                        |
-| [refactoring-plan.md](./refactoring-plan.md)                   | Рефакторинг                                           |
-| [testing-plan.md](./testing-plan.md)                           | Тестирование                                          |
+| Документ                                                            | Содержание                                            |
+| ------------------------------------------------------------------- | ----------------------------------------------------- |
+| [audit-mobile.md](../audits/audit-mobile.md)                        | Мобильный аудит                                       |
+| [technical-audit-checklist.md](../seo/technical-audit-checklist.md) | Операционный чеклист: CWV, SEO, ИИ-видимость, техдолг |
+| [project-roadmap.md](../roadmaps/project-roadmap.md)                | Дорожная карта                                        |
+| [refactoring-plan.md](../roadmaps/refactoring-plan.md)              | Рефакторинг                                           |
+| [testing-plan.md](../testing/testing-plan.md)                       | Тестирование                                          |

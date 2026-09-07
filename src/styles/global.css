@@ -242,7 +242,7 @@ html.is-page-leaving body {
 	}
 }
 
-/* Выпадашки главной (десктоп): вне #header-inner, blur по Hero — см. .doc/header-frozen.md */
+/* Выпадашки главной (десктоп): вне #header-inner, blur по Hero — см. .doc/navigation/header-frozen.md */
 .nav-dropdown-menu {
 	background: rgba(255, 255, 255, 0.72);
 	backdrop-filter: blur(20px);
