@@ -41,13 +41,6 @@ export function initReviewsLightbox({
 		document.body.appendChild(lb);
 	}
 
-	document.querySelectorAll('[data-review-index]').forEach((btn) => {
-		btn.addEventListener('click', () => {
-			const index = parseInt(btn.getAttribute('data-review-index') ?? '0', 10);
-			window.openLightbox(index);
-		});
-	});
-
 	let lightboxPreviousFocus: HTMLElement | null = null;
 	let lightboxFocusTrap: ReturnType<
 		NonNullable<typeof window.createFocusTrap>
@@ -282,6 +275,101 @@ export function initReviewsLightbox({
 			if (e.key === 'ArrowLeft') window.changeSlide(-1);
 		}
 	});
+}
+
+const REVIEW_TAP_MOVE_PX = 10;
+
+/** Открытие карточек отзывов: делегирование + tap после горизонтального скролла. */
+function bindReviewCardTriggers(): void {
+	if (window.__reviewsCardOpenInit) return;
+	window.__reviewsCardOpenInit = true;
+
+	let touchStartX = 0;
+	let touchStartY = 0;
+	let touchMoved = false;
+	let suppressClick = false;
+
+	const openFromTarget = (target: EventTarget | null): boolean => {
+		if (!(target instanceof Element)) return false;
+		const btn = target.closest('[data-review-index]');
+		if (!(btn instanceof HTMLElement)) return false;
+		const index = parseInt(btn.getAttribute('data-review-index') ?? '0', 10);
+		if (!window.openLightbox) return false;
+		window.openLightbox(index);
+		return true;
+	};
+
+	document.addEventListener(
+		'touchstart',
+		(event) => {
+			const scroller = document.getElementById('reviews-scroller');
+			if (!scroller) return;
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			if (!target.closest('#reviews-scroller [data-review-index]')) return;
+
+			touchMoved = false;
+			suppressClick = false;
+			const touch = event.touches[0];
+			touchStartX = touch.clientX;
+			touchStartY = touch.clientY;
+		},
+		{ passive: true },
+	);
+
+	document.addEventListener(
+		'touchmove',
+		(event) => {
+			if (!event.touches[0]) return;
+			const touch = event.touches[0];
+			if (
+				Math.abs(touch.clientX - touchStartX) > REVIEW_TAP_MOVE_PX ||
+				Math.abs(touch.clientY - touchStartY) > REVIEW_TAP_MOVE_PX
+			) {
+				touchMoved = true;
+			}
+		},
+		{ passive: true },
+	);
+
+	document.addEventListener('touchend', (event) => {
+		if (touchMoved) return;
+		if (!openFromTarget(event.target)) return;
+		suppressClick = true;
+		event.preventDefault();
+	});
+
+	document.addEventListener(
+		'click',
+		(event) => {
+			if (suppressClick) {
+				suppressClick = false;
+				return;
+			}
+			openFromTarget(event.target);
+		},
+		true,
+	);
+}
+
+export function initReviewsLightboxFromDom(): void {
+	const lightbox = document.getElementById('lightbox');
+	if (!lightbox?.dataset.reviewTitles) return;
+
+	let reviewTitles: string[] = [];
+	try {
+		reviewTitles = JSON.parse(lightbox.dataset.reviewTitles) as string[];
+	} catch {
+		return;
+	}
+
+	const reviewCount = parseInt(
+		lightbox.dataset.reviewCount ?? String(reviewTitles.length),
+		10,
+	);
+
+	initReviewsLightbox({ reviewTitles, reviewCount });
+	bindReviewCardTriggers();
 }
 
 export function initReviewsScroller(): void {

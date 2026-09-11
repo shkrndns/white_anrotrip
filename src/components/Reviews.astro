@@ -13,10 +13,18 @@ import {
 	yandexReviews,
 	yandexReviewsUrl,
 } from '../lib/external-reviews';
+import { buildReviewPlatformsSchema } from '../lib/schema-reviews';
 import { reviewDocs as reviews } from '../data/review-docs';
+
+const reviewPlatformsSchema = buildReviewPlatformsSchema();
 ---
 
 <section id="reviews" class="relative py-[50px] overflow-hidden bg-gray-950">
+	<script
+		is:inline
+		type="application/ld+json"
+		set:html={JSON.stringify(reviewPlatformsSchema)}
+	/>
 	<div
 		class="absolute -top-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-none md:blur-3xl pointer-events-none"
 	>

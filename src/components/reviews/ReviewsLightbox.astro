@@ -24,6 +24,8 @@ const reviewCount = reviews.length;
 	role="dialog"
 	aria-modal="true"
 	aria-labelledby="lightbox-heading"
+	data-review-titles={JSON.stringify(reviewTitles)}
+	data-review-count={reviewCount}
 	class="fixed inset-0 z-modal bg-black/95 hidden items-center justify-center opacity-0 transition-opacity duration-normal select-none backdrop-blur-sm cursor-zoom-in overflow-hidden"
 >
 	<div
@@ -150,13 +152,9 @@ const reviewCount = reviews.length;
 	</div>
 </div>
 
-<script define:vars={{ reviewTitles, reviewCount }}>
-	import { initReviewsLightbox } from '../../lib/client/reviews-lightbox.ts';
+<script>
+	import { initReviewsLightboxFromDom } from '../../lib/client/reviews-lightbox.ts';
 
-	function setupReviewsLightbox() {
-		initReviewsLightbox({ reviewTitles, reviewCount });
-	}
-
-	setupReviewsLightbox();
-	document.addEventListener('astro:page-load', setupReviewsLightbox);
+	initReviewsLightboxFromDom();
+	document.addEventListener('astro:page-load', initReviewsLightboxFromDom);
 </script>
