@@ -17,7 +17,11 @@
 	}
 }
 
-anrotrip.ru, www.anrotrip.ru {
+www.anrotrip.ru {
+	redir https://anrotrip.ru{uri} permanent
+}
+
+anrotrip.ru {
 	encode zstd gzip
 
 	header {
