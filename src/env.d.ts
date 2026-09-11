@@ -1,6 +1,11 @@
 /// <reference types="astro/client" />
 /// <reference types="astro/env" />
 
+declare module '*?inline' {
+	const src: string;
+	export default src;
+}
+
 interface ImportMetaEnv {
 	/** mtime og-image.* (сек), задаётся в astro.config.mjs при сборке / старте dev */
 	readonly OG_IMAGE_VERSION: string;
@@ -28,6 +33,8 @@ interface Window {
 	smoothScrollIntoView: (el: Element | null, onDone?: () => void) => void;
 	__revealObserver?: IntersectionObserver;
 	__anchorSmoothInit?: boolean;
+	__blogCardTocInit?: boolean;
+	__reviewsCardOpenInit?: boolean;
 	scrollHomeToHash?: (hash: string, doc?: Document) => boolean;
 	revealHomeAfterAnchor?: () => void;
 	__layoutNavigationInit?: boolean;

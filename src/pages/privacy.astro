@@ -3,9 +3,22 @@
 // См. .doc/forms/legal-pages-review.md и .doc/forms/analytics-cookies-plan.md
 import FooterLegalStrip from '../components/FooterLegalStrip.astro';
 import Layout from '../layouts/Layout.astro';
-import { siteHome, sitePrivacy } from '../lib/site-urls';
+import { company } from '../data/company';
+import { buildLegalBreadcrumbSchema } from '../lib/schema-legal';
+import { getPublicOrigin, siteHome, sitePrivacy } from '../lib/site-urls';
 
-const siteUrl = 'https://anrotrip.ru';
+const siteUrl = company.siteUrl;
+const baseUrl = getPublicOrigin(
+	Astro.request,
+	Astro.url.origin,
+	Astro.site?.origin,
+);
+const pageUrl = new URL(sitePrivacy(), baseUrl).href;
+const legalSchema = buildLegalBreadcrumbSchema({
+	baseUrl,
+	pageTitle: 'Политика конфиденциальности',
+	pageUrl,
+});
 ---
 
 <Layout
@@ -16,11 +29,25 @@ const siteUrl = 'https://anrotrip.ru';
 	showScrollToTop={false}
 	showSchema={false}
 >
+	<Fragment slot="head">
+		<script
+			is:inline
+			type="application/ld+json"
+			set:html={JSON.stringify(legalSchema)}
+		/>
+	</Fragment>
 	<!-- <Header /> -->
 	<main id="content" class="min-h-dvh pt-24 pb-16">
 		<article
 			class="legal-content container mx-auto max-w-3xl px-4 sm:px-6 font-inter text-gray-800 leading-relaxed"
 		>
+			<nav class="sr-only" aria-label="Навигация">
+				<ol>
+					<li><a href={siteHome()}>Главная</a></li>
+					<li aria-current="page">Политика конфиденциальности</li>
+				</ol>
+			</nav>
+
 			<h1
 				class="font-montserrat font-extrabold text-gray-900 text-2xl md:text-3xl mb-6"
 			>

@@ -1,5 +1,5 @@
 /**
- * Schema.org JSON-LD для блога: BlogPosting и BreadcrumbList.
+ * Schema.org JSON-LD для блога: BlogPosting, BreadcrumbList, CollectionPage.
  */
 
 export interface BlogPostingInput {
@@ -21,15 +21,34 @@ export interface BlogBreadcrumbInput {
 	postUrl?: string;
 }
 
+export interface BlogCardSchemaInput {
+	baseUrl: string;
+	cardTitle: string;
+	cardUrl: string;
+	blogIndexUrl: string;
+	articles: BlogPostingInput[];
+}
+
+export interface BlogCollectionInput {
+	baseUrl: string;
+	blogIndexUrl: string;
+	name: string;
+	description: string;
+	numberOfItems: number;
+}
+
+const OG_IMAGE_PATH = '/og-image.png';
+
 function organizationPublisher(baseUrl: string) {
-	const organizationId = `${baseUrl.replace(/\/$/, '')}/#organization`;
+	const origin = baseUrl.replace(/\/$/, '');
+	const organizationId = `${origin}/#organization`;
 	return {
 		'@type': 'Organization',
 		'@id': organizationId,
 		name: 'ANRO TRIP',
 		logo: {
 			'@type': 'ImageObject',
-			url: `${baseUrl.replace(/\/$/, '')}/og-image.jpg`,
+			url: `${origin}${OG_IMAGE_PATH}`,
 		},
 	};
 }
@@ -38,7 +57,6 @@ export function buildBlogPostingSchema(input: BlogPostingInput) {
 	const modified = input.dateModified ?? input.datePublished;
 
 	return {
-		'@context': 'https://schema.org',
 		'@type': 'BlogPosting',
 		'@id': `${input.postUrl}#blogpost`,
 		headline: input.headline,
@@ -88,9 +106,41 @@ export function buildBlogBreadcrumbSchema(input: BlogBreadcrumbInput) {
 	}
 
 	return {
-		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
 		itemListElement: items,
+	};
+}
+
+export function buildBlogCollectionPageSchema(input: BlogCollectionInput) {
+	const origin = input.baseUrl.replace(/\/$/, '');
+
+	return {
+		'@type': 'CollectionPage',
+		'@id': `${input.blogIndexUrl}#collection`,
+		url: input.blogIndexUrl,
+		name: input.name,
+		description: input.description,
+		inLanguage: 'ru-RU',
+		isPartOf: {
+			'@type': 'WebSite',
+			'@id': `${origin}/#website`,
+		},
+		numberOfItems: input.numberOfItems,
+	};
+}
+
+export function buildBlogCardSchemaGraph(input: BlogCardSchemaInput) {
+	return {
+		'@context': 'https://schema.org',
+		'@graph': [
+			buildBlogBreadcrumbSchema({
+				baseUrl: input.baseUrl,
+				blogIndexUrl: input.blogIndexUrl,
+				postTitle: input.cardTitle,
+				postUrl: input.cardUrl,
+			}),
+			...input.articles.map((article) => buildBlogPostingSchema(article)),
+		],
 	};
 }
 
@@ -107,6 +157,19 @@ export function buildBlogPostSchemaGraph(input: BlogPostingInput) {
 				postTitle: input.headline,
 				postUrl: input.postUrl,
 			}),
+		],
+	};
+}
+
+export function buildBlogIndexSchemaGraph(input: BlogCollectionInput) {
+	return {
+		'@context': 'https://schema.org',
+		'@graph': [
+			buildBlogBreadcrumbSchema({
+				baseUrl: input.baseUrl,
+				blogIndexUrl: input.blogIndexUrl,
+			}),
+			buildBlogCollectionPageSchema(input),
 		],
 	};
 }

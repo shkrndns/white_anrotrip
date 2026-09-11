@@ -3,11 +3,28 @@
 // import Header from '../components/Header.astro';
 import FooterLegalStrip from '../components/FooterLegalStrip.astro';
 import Layout from '../layouts/Layout.astro';
-import { siteHome, sitePrivacy } from '../lib/site-urls';
 import { company, companyMailto, companyPhoneHref } from '../data/company';
+import { buildLegalBreadcrumbSchema } from '../lib/schema-legal';
+import {
+	getPublicOrigin,
+	siteHome,
+	sitePrivacy,
+	siteTerms,
+} from '../lib/site-urls';
 
 const { phones, emails } = company;
 const siteUrl = company.siteUrl;
+const baseUrl = getPublicOrigin(
+	Astro.request,
+	Astro.url.origin,
+	Astro.site?.origin,
+);
+const pageUrl = new URL(siteTerms(), baseUrl).href;
+const legalSchema = buildLegalBreadcrumbSchema({
+	baseUrl,
+	pageTitle: 'Пользовательское соглашение',
+	pageUrl,
+});
 ---
 
 <Layout
@@ -18,11 +35,25 @@ const siteUrl = company.siteUrl;
 	showScrollToTop={false}
 	showSchema={false}
 >
+	<Fragment slot="head">
+		<script
+			is:inline
+			type="application/ld+json"
+			set:html={JSON.stringify(legalSchema)}
+		/>
+	</Fragment>
 	<!-- <Header /> -->
 	<main id="content" class="min-h-dvh pt-24 pb-16">
 		<article
 			class="legal-content container mx-auto max-w-3xl px-4 sm:px-6 font-inter text-gray-800 leading-relaxed"
 		>
+			<nav class="sr-only" aria-label="Навигация">
+				<ol>
+					<li><a href={siteHome()}>Главная</a></li>
+					<li aria-current="page">Пользовательское соглашение</li>
+				</ol>
+			</nav>
+
 			<h1
 				class="font-montserrat font-extrabold text-gray-900 text-2xl md:text-3xl mb-6"
 			>

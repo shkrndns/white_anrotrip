@@ -136,6 +136,18 @@ export const twoGisReviews: ExternalReview[] = [
 	},
 ];
 
+/** Сводный рейтинг для Schema.org (Яндекс Карты + 2ГИС). */
+export function buildAggregateRatingSchema() {
+	return {
+		'@type': 'AggregateRating',
+		ratingValue: '5',
+		reviewCount: yandexRating.reviewsCount + twoGisRating.reviewsCount,
+		ratingCount: yandexRating.ratingsCount + twoGisRating.ratingsCount,
+		bestRating: '5',
+		worstRating: '1',
+	};
+}
+
 /** Палитра фонов для аватаров-инициалов (детерминированный выбор по индексу). */
 export const avatarColors = [
 	'bg-blue-500',

@@ -50,6 +50,16 @@ export function siteBlogPost(slug: string): string {
 	return sitePage(`blog/${slug}`);
 }
 
+/** Карточка журнала (группа статей): `/blog/{cardId}`. */
+export function siteBlogCard(cardId: string): string {
+	return sitePage(`blog/${cardId}`);
+}
+
+/** Статья внутри карточки: `/blog/{cardId}#{postId}`. */
+export function siteBlogCardPost(cardId: string, postId: string): string {
+	return `${siteBlogCard(cardId)}#${postId}`;
+}
+
 /** Прод-домены для canonical / OG (защита от Host header injection). */
 const PROD_ALLOWED_HOSTNAMES = new Set(['anrotrip.ru', 'www.anrotrip.ru']);
 
