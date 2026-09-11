@@ -34,8 +34,7 @@ export const heroStatPills: HeroStatPill[] = [
 ];
 
 export const heroServiceLabels = [
-	'Авиабилеты',
-	'Туры',
+	'Корпоративное обслуживание',
 	'Отели',
 	'Визовая поддержка',
 	'Трансферы',

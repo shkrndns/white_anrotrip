@@ -1,7 +1,8 @@
 ---
 // src/components/Hero.astro
-import { getImage, Image } from 'astro:assets';
+import { Image } from 'astro:assets';
 import heroBg from '../assets/hero/world.webp';
+import heroLqip from '../assets/hero/world-lqip.webp?inline';
 import {
 	maxIconPath,
 	socialLogoTransform0,
@@ -14,9 +15,6 @@ import { company, companyPhoneHref } from '../data/company';
 import { heroServiceLabels, heroStatPills } from '../data/hero-stats';
 
 const { phones, social } = company;
-
-// Tiny placeholder (20px) — как Tilda: размытый превью до загрузки полного изображения
-const tinyHero = await getImage({ src: heroBg, width: 20, quality: 20 });
 ---
 
 <!-- pt: под хедер; pb: зона стрелки. overflow-hidden — Ken Burns и запрет внутреннего скролла секции (overflow-x:hidden + y:visible даёт в браузере y:auto и «плашка крутится отдельно»). -->
@@ -24,11 +22,17 @@ const tinyHero = await getImage({ src: heroBg, width: 20, quality: 20 });
 	id="hero"
 	class="sticky top-0 z-0 min-h-svh md:min-h-dvh w-full flex items-center justify-center overflow-hidden pt-[calc(var(--site-header-h,5rem)+0.75rem)] max-[720px]:pt-[calc(var(--site-header-h,5rem)+1rem)] pb-[clamp(2.75rem,7vh,4.75rem)]"
 >
-	<!-- Фоновое изображение: tiny blur placeholder (как Tilda) + fade-in при загрузке -->
-	<div
-		class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-		style={`background-image: url('${tinyHero.src}'); background-color: #0c4a6e`}
-	>
+	<!-- Фоновое изображение: inline LQIP с blur сразу в HTML + fade-in полного кадра -->
+	<div class="hero-bg-layer absolute inset-0 overflow-hidden bg-[#f4f6f8]">
+		<img
+			src={heroLqip}
+			alt=""
+			width="480"
+			height="270"
+			class="hero-bg-placeholder"
+			aria-hidden="true"
+			decoding="async"
+		/>
 		<!-- Ken Burns: hero-kenburns scale-100 md:scale-105 — раскомментировать вместе с блоком в global.css -->
 		<Image
 			src={heroBg}
@@ -266,6 +270,8 @@ const tinyHero = await getImage({ src: heroBg, width: 20, quality: 20 });
 </section>
 
 <script>
+	import { smoothScrollHomeToHash } from '../lib/client/layout-navigation';
+
 	const searchBtn = document.getElementById('hero-search-btn');
 	const arrowBtn = document.getElementById(
 		'scroll-arrow',
@@ -302,9 +308,6 @@ const tinyHero = await getImage({ src: heroBg, width: 20, quality: 20 });
 		/** Синхронно с `initAnchorScroll` для якорей awards/gift и прочих пунктов меню (не search/content/business) */
 		const MOBILE_ANCHOR_GAP = -28;
 
-		/** Зазор ~100px от низа хедера до заголовка «Наши услуги» (см. макет с линейкой) */
-		const SERVICES_ANCHOR_GAP = 55;
-
 		const scrollToAnchor = (anchor: HTMLElement, offset: number) => {
 			const top = anchor.getBoundingClientRect().top + window.scrollY - offset;
 			window.smoothScrollTo(top);
@@ -314,11 +317,7 @@ const tinyHero = await getImage({ src: heroBg, width: 20, quality: 20 });
 			'click',
 			(e) => {
 				e.preventDefault();
-				const anchor = document.getElementById('services');
-				if (!anchor) return;
-				const headerEl = document.getElementById('site-header');
-				const headerHeight = headerEl ? headerEl.offsetHeight : 64;
-				scrollToAnchor(anchor, headerHeight + SERVICES_ANCHOR_GAP);
+				smoothScrollHomeToHash('#services');
 			},
 			{ signal },
 		);
@@ -374,13 +373,22 @@ const tinyHero = await getImage({ src: heroBg, width: 20, quality: 20 });
 	searchBtn?.addEventListener('click', scrollToSearch);
 	arrowBtn?.addEventListener('click', scrollToSearch);
 
-	// Blur-up: показать изображение при загрузке
+	// Blur-up: показать резкий кадр, затем убрать LQIP (не держать blur на GPU)
 	const heroImg = hero?.querySelector(
 		'.hero-bg-image',
 	) as HTMLImageElement | null;
+	const heroPlaceholder = hero?.querySelector('.hero-bg-placeholder');
 	if (heroImg) {
-		const show = () => heroImg.classList.add('!opacity-100');
-		if (heroImg.complete) show();
+		const show = () => {
+			heroImg.classList.add('!opacity-100');
+			const hidePlaceholder = () =>
+				heroPlaceholder?.classList.add('hero-bg-placeholder--done');
+			heroImg.addEventListener('transitionend', hidePlaceholder, {
+				once: true,
+			});
+			window.setTimeout(hidePlaceholder, 600);
+		};
+		if (heroImg.complete && heroImg.naturalWidth > 0) show();
 		else heroImg.addEventListener('load', show);
 	}
 
