@@ -30,32 +30,39 @@ function getHomeNavigation(url: URL): HomeNavigation {
 	return { isHome, hash: url.hash || '' };
 }
 
-export function scrollHomeToHash(hash: string, doc?: Document): boolean {
-	const root = doc ?? document;
-	const view = root.defaultView ?? window;
-	if (!hash || hash.length < 2) return false;
+function getLayoutTop(el: HTMLElement): number {
+	let top = 0;
+	let node: HTMLElement | null = el;
+	while (node) {
+		top += node.offsetTop;
+		node = node.offsetParent as HTMLElement | null;
+	}
+	return top;
+}
 
+/** Как пункт меню «Наши услуги»: бейдж секции минус хедер минус 26px. */
+export function getHomeAnchorScrollTop(
+	hash: string,
+	root: Document = document,
+): number | null {
+	if (!hash || hash.length < 2) return null;
+
+	const view = root.defaultView ?? window;
 	const id = decodeURIComponent(hash.charAt(0) === '#' ? hash.slice(1) : hash);
 	const anchor = root.getElementById(id);
-	if (!anchor) return false;
+	if (!anchor) return null;
 
 	const headerEl = root.getElementById('site-header');
 	const headerHeight = headerEl ? headerEl.offsetHeight : 64;
 	let top: number | undefined;
 
 	if (id !== 'search' && id !== 'content') {
-		const badge = anchor.querySelector(
+		const badge = anchor.querySelector<HTMLElement>(
 			'.section-badge, .inline-flex.rounded-full',
 		);
 		if (badge) {
-			let layoutTop = 0;
-			let node = badge as HTMLElement | null;
-			while (node) {
-				layoutTop += node.offsetTop;
-				node = node.offsetParent as HTMLElement | null;
-			}
 			const extraGap = id === 'directions' ? 20 : 0;
-			top = layoutTop - headerHeight - 26 - extraGap;
+			top = getLayoutTop(badge) - headerHeight - 26 - extraGap;
 		}
 	}
 
@@ -66,7 +73,27 @@ export function scrollHomeToHash(hash: string, doc?: Document): boolean {
 		top = anchor.getBoundingClientRect().top + view.scrollY - offset;
 	}
 
-	view.scrollTo(0, Math.max(0, top));
+	return Math.max(0, top);
+}
+
+export function scrollHomeToHash(hash: string, doc?: Document): boolean {
+	const root = doc ?? document;
+	const view = root.defaultView ?? window;
+	const top = getHomeAnchorScrollTop(hash, root);
+	if (top == null) return false;
+	view.scrollTo(0, top);
+	return true;
+}
+
+/** Плавный скролл к якорю главной — та же точка остановки, что у пунктов хедера. */
+export function smoothScrollHomeToHash(hash: string): boolean {
+	const top = getHomeAnchorScrollTop(hash);
+	if (top == null) return false;
+	if (typeof window.smoothScrollTo === 'function') {
+		window.smoothScrollTo(top);
+	} else {
+		window.scrollTo(0, top);
+	}
 	return true;
 }
 
