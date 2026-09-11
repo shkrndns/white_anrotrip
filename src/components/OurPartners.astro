@@ -2,41 +2,61 @@
 // src/components/OurPartners.astro
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { tourOperatorPartners } from '../data/our-partners';
+import {
+	airlinePartners,
+	cooperationPartners,
+	partnerLogoAlt,
+	tourOperatorRow,
+} from '../data/our-partners';
+import { buildCooperationPartnersSchema } from '../lib/schema-partners';
+import { getPublicOrigin } from '../lib/site-urls';
 import SectionHeading from './ui/SectionHeading.astro';
 
 type PartnerSlot =
-	| { type: 'logo'; name: string; logo: ImageMetadata }
+	| {
+			type: 'logo';
+			name: string;
+			logo: ImageMetadata;
+			logoScale?: number;
+			logoClass?: string;
+	  }
 	| { type: 'placeholder'; name: string };
 
-const placeholders: PartnerSlot[] = Array.from({ length: 10 }).map((_, i) => ({
-	type: 'placeholder',
-	name: `Партнёр ${i + 1}`,
+const partnerLogoClass = (logoClass?: string) =>
+	logoClass
+		? `origin-center object-contain ${logoClass}`
+		: 'max-h-full max-w-full origin-center object-contain';
+
+const logoScaleStyle = (scale?: number) =>
+	scale ? `transform: scale(${scale})` : undefined;
+
+const baseUrl = getPublicOrigin(
+	Astro.request,
+	Astro.url.origin,
+	Astro.site?.origin,
+);
+const partnersSchema = buildCooperationPartnersSchema(
+	baseUrl,
+	cooperationPartners,
+);
+
+// Верхний ряд: 10 авиакомпаний по порядку (1…10)
+const row1Slots: PartnerSlot[] = airlinePartners.map((partner) => ({
+	type: 'logo' as const,
+	name: partner.name,
+	logo: partner.logo,
+	logoScale: partner.logoScale,
+	logoClass: partner.logoClass,
 }));
 
-// Пробная тройка: 2 логотипа в верхнем ряду, 1 — в нижнем
-const row1Slots: PartnerSlot[] = [
-	{
-		type: 'logo',
-		name: tourOperatorPartners[0].name,
-		logo: tourOperatorPartners[0].logo,
-	},
-	{
-		type: 'logo',
-		name: tourOperatorPartners[1].name,
-		logo: tourOperatorPartners[1].logo,
-	},
-	...placeholders.slice(2),
-];
-
-const row2Slots: PartnerSlot[] = [
-	{
-		type: 'logo',
-		name: tourOperatorPartners[2].name,
-		logo: tourOperatorPartners[2].logo,
-	},
-	...placeholders.slice(1),
-];
+// Нижний ряд: 12 туроператоров по слотам 1…12
+const row2Slots: PartnerSlot[] = tourOperatorRow.map((partner) => ({
+	type: 'logo' as const,
+	name: partner.name,
+	logo: partner.logo,
+	logoScale: partner.logoScale,
+	logoClass: partner.logoClass,
+}));
 
 const row1 = [...row1Slots, ...row1Slots];
 const row2 = [...row2Slots, ...row2Slots].reverse();
@@ -50,7 +70,34 @@ const { class: classes = '' }: Props = Astro.props;
 <section
 	id="our-partners"
 	class={`relative py-[50px] bg-primary/4 overflow-hidden ${classes}`}
+	aria-labelledby="our-partners-heading"
 >
+	<!-- SEO: один канонический индекс партнёров (без дублей marquee) -->
+	<div class="sr-only">
+		<h3 id="our-partners-index">Партнёры ANRO TRIP</h3>
+		<ul>
+			{
+				cooperationPartners.map((partner) => (
+					<li>
+						<Image
+							src={partner.logo}
+							alt={partnerLogoAlt(partner)}
+							width={partner.logo.width}
+							height={partner.logo.height}
+							loading="lazy"
+							decoding="async"
+						/>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+
+	<script
+		type="application/ld+json"
+		set:html={JSON.stringify(partnersSchema)}
+	/>
+
 	<!-- Декоративные фоновые элементы -->
 	<div
 		class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3"
@@ -67,21 +114,21 @@ const { class: classes = '' }: Props = Astro.props;
 			class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4 md:mb-6 reveal-hidden"
 		>
 			<div>
-				<SectionHeading badge="Наши партнёры">
+				<SectionHeading badge="Наши партнёры" id="our-partners-heading">
 					<span class="text-primary">Сотрудничество</span>
 				</SectionHeading>
 			</div>
 
-			<p class="section-caption">
+			<p class="section-caption md:translate-x-6">
 				Мы сотрудничаем с ведущими авиакомпаниями, отельными сетями и
 				туроператорами по всему миру, чтобы предоставлять вам лучший сервис
 			</p>
 		</div>
 
-		<!-- ЛЕНТА ЛОГОТИПОВ -->
+		<!-- ЛЕНТА ЛОГОТИПОВ (декоративная; alt — в sr-only индексе выше) -->
 
 		<!-- Мобилка: только ручной скролл (как в Partners.astro — «Наши клиенты») -->
-		<div class="relative md:hidden">
+		<div class="relative md:hidden" aria-hidden="true">
 			<div
 				class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-primary/4 to-transparent z-10 pointer-events-none"
 			>
@@ -97,17 +144,21 @@ const { class: classes = '' }: Props = Astro.props;
 			>
 				{
 					row1.map((partner) => (
-						<div class="shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3">
+						<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-4 py-3">
 							{partner.type === 'logo' ? (
-								<Image
-									src={partner.logo}
-									alt={partner.name}
-									width={160}
-									height={120}
-									class="max-h-full w-auto max-w-full object-contain"
-									loading="lazy"
-									decoding="async"
-								/>
+								<div class="flex h-full w-full items-center justify-center overflow-hidden">
+									<Image
+										src={partner.logo}
+										alt=""
+										width={partner.logo.width}
+										height={partner.logo.height}
+										sizes="120px"
+										class={`partners-logo-img ${partnerLogoClass(partner.logoClass)}`}
+										style={logoScaleStyle(partner.logoScale)}
+										loading="lazy"
+										decoding="async"
+									/>
+								</div>
 							) : (
 								<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider text-center">
 									{partner.name}
@@ -124,17 +175,21 @@ const { class: classes = '' }: Props = Astro.props;
 			>
 				{
 					row2.map((partner) => (
-						<div class="shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3">
+						<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-4 py-3">
 							{partner.type === 'logo' ? (
-								<Image
-									src={partner.logo}
-									alt={partner.name}
-									width={160}
-									height={120}
-									class="max-h-full w-auto max-w-full object-contain"
-									loading="lazy"
-									decoding="async"
-								/>
+								<div class="flex h-full w-full items-center justify-center overflow-hidden">
+									<Image
+										src={partner.logo}
+										alt=""
+										width={partner.logo.width}
+										height={partner.logo.height}
+										sizes="120px"
+										class={`partners-logo-img ${partnerLogoClass(partner.logoClass)}`}
+										style={logoScaleStyle(partner.logoScale)}
+										loading="lazy"
+										decoding="async"
+									/>
+								</div>
 							) : (
 								<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider text-center">
 									{partner.name}
@@ -147,7 +202,7 @@ const { class: classes = '' }: Props = Astro.props;
 		</div>
 
 		<!-- Десктоп: marquee -->
-		<div class="reveal-hidden relative hidden md:block">
+		<div class="reveal-hidden relative hidden md:block" aria-hidden="true">
 			<div
 				class="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-linear-to-r from-primary/4 to-transparent z-10 pointer-events-none"
 			>
@@ -158,21 +213,24 @@ const { class: classes = '' }: Props = Astro.props;
 			</div>
 
 			<div class="partners-marquee-viewport mb-4">
-				<div
-					class="partners-track partners-track--forward flex gap-4 w-max"
-					aria-hidden="true"
-				>
+				<div class="partners-track partners-track--forward flex gap-4 w-max">
 					{
 						row1.map((partner) => (
 							<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
 								{partner.type === 'logo' ? (
-									<Image
-										src={partner.logo}
-										alt={partner.name}
-										class="max-h-full w-auto max-w-full object-contain"
-										loading="lazy"
-										decoding="async"
-									/>
+									<div class="flex h-full w-full items-center justify-center overflow-hidden">
+										<Image
+											src={partner.logo}
+											alt=""
+											width={partner.logo.width}
+											height={partner.logo.height}
+											sizes="120px"
+											class={`partners-logo-img ${partnerLogoClass(partner.logoClass)}`}
+											style={logoScaleStyle(partner.logoScale)}
+											loading="lazy"
+											decoding="async"
+										/>
+									</div>
 								) : (
 									<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider group-hover:text-primary/50 transition-colors text-center">
 										{partner.name}
@@ -185,21 +243,24 @@ const { class: classes = '' }: Props = Astro.props;
 			</div>
 
 			<div class="partners-marquee-viewport">
-				<div
-					class="partners-track partners-track--reverse flex gap-4 w-max"
-					aria-hidden="true"
-				>
+				<div class="partners-track partners-track--reverse flex gap-4 w-max">
 					{
 						row2.map((partner) => (
 							<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
 								{partner.type === 'logo' ? (
-									<Image
-										src={partner.logo}
-										alt={partner.name}
-										class="max-h-full w-auto max-w-full object-contain"
-										loading="lazy"
-										decoding="async"
-									/>
+									<div class="flex h-full w-full items-center justify-center overflow-hidden">
+										<Image
+											src={partner.logo}
+											alt=""
+											width={partner.logo.width}
+											height={partner.logo.height}
+											sizes="120px"
+											class={`partners-logo-img ${partnerLogoClass(partner.logoClass)}`}
+											style={logoScaleStyle(partner.logoScale)}
+											loading="lazy"
+											decoding="async"
+										/>
+									</div>
 								) : (
 									<span class="text-gray-300 font-montserrat font-bold text-xs sm:text-sm uppercase tracking-wider group-hover:text-primary/50 transition-colors text-center">
 										{partner.name}

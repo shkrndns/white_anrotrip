@@ -1,11 +1,19 @@
 ---
 import { Image } from 'astro:assets';
-import { clientPartners as partners } from '../data/partners';
+import {
+	clientPartnerLogoAlt,
+	clientPartners as partners,
+} from '../data/partners';
+import { buildClientPartnersSchema } from '../lib/schema-clients';
+import { getPublicOrigin } from '../lib/site-urls';
 import FaIcon from './icons/FaIcon.astro';
 import SectionHeading from './ui/SectionHeading.astro';
 
 // Дублируем для бесшовного marquee
 const row1 = [...partners, ...partners];
+
+const logoScaleStyle = (scale?: number) =>
+	scale ? `transform: scale(${scale})` : undefined;
 
 const stats = [
 	{
@@ -23,13 +31,51 @@ const stats = [
 	},
 ];
 
+const baseUrl = getPublicOrigin(
+	Astro.request,
+	Astro.url.origin,
+	Astro.site?.origin,
+);
+const clientsSchema = buildClientPartnersSchema(baseUrl, partners);
+
 interface Props {
 	class?: string;
 }
 const { class: classes = '' }: Props = Astro.props;
 ---
 
-<section id="partners" class={`relative py-[50px] overflow-hidden ${classes}`}>
+<section
+	id="partners"
+	class={`relative py-[50px] overflow-hidden ${classes}`}
+	aria-labelledby="partners-heading"
+>
+	<!-- SEO: канонический индекс клиентов -->
+	<div class="sr-only">
+		<h3 id="partners-index">Корпоративные клиенты ANRO TRIP</h3>
+		<ul>
+			{
+				partners.map((partner) => (
+					<li>
+						<Image
+							src={partner.logo}
+							alt={clientPartnerLogoAlt(partner)}
+							width={partner.logo.width}
+							height={partner.logo.height}
+							loading="lazy"
+							decoding="async"
+						/>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+
+	<script
+		is:inline
+		type="application/ld+json"
+		set:html={JSON.stringify(clientsSchema)}
+	/>
+
 	<!-- Фоновый градиент -->
 	<div
 		class="absolute inset-0 bg-linear-to-br from-slate-50 via-white to-blue-50/40 pointer-events-none"
@@ -51,7 +97,7 @@ const { class: classes = '' }: Props = Astro.props;
 			class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-5 md:mb-7 reveal-hidden"
 		>
 			<div>
-				<SectionHeading badge="Наши клиенты">
+				<SectionHeading badge="Наши клиенты" id="partners-heading">
 					Нам <span class="text-primary">доверяют</span>
 				</SectionHeading>
 			</div>
@@ -85,9 +131,8 @@ const { class: classes = '' }: Props = Astro.props;
 			}
 		</div>
 
-		<!-- ===== ЛЕНТА ЛОГОТИПОВ ===== -->
-		<!-- Мобилка: дублированный контент + бесшовный цикл — нет жёстких краёв начала/конца -->
-		<div class="relative md:hidden">
+		<!-- ===== ЛЕНТА ЛОГОТИПОВ (декоративная; alt — в sr-only) ===== -->
+		<div class="relative md:hidden" aria-hidden="true">
 			<div
 				class="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-slate-50 to-transparent z-10 pointer-events-none"
 			>
@@ -102,24 +147,28 @@ const { class: classes = '' }: Props = Astro.props;
 			>
 				{
 					row1.map((partner) => (
-						<div class="shrink-0 w-40 min-h-30 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-4">
-							<Image
-								src={partner.logo}
-								alt={partner.name}
-								width={160}
-								height={120}
-								class="max-h-full w-auto max-w-full object-contain"
-								loading="eager"
-								decoding="async"
-							/>
+						<div class="partners-logo-card shrink-0 w-40 min-h-30 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-4 py-4">
+							<div class="flex h-full w-full items-center justify-center overflow-hidden">
+								<Image
+									src={partner.logo}
+									alt=""
+									width={partner.logo.width}
+									height={partner.logo.height}
+									sizes="120px"
+									class="partners-logo-img max-h-full max-w-full origin-center object-contain"
+									style={logoScaleStyle(partner.logoScale)}
+									loading="eager"
+									decoding="async"
+								/>
+							</div>
 						</div>
 					))
 				}
 			</div>
 		</div>
 
-		<!-- Десктоп: marquee, без изменений -->
-		<div class="reveal-hidden relative hidden md:block">
+		<!-- Десктоп: marquee -->
+		<div class="reveal-hidden relative hidden md:block" aria-hidden="true">
 			<div
 				class="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 bg-linear-to-r from-white to-transparent z-10 pointer-events-none"
 			>
@@ -129,38 +178,24 @@ const { class: classes = '' }: Props = Astro.props;
 			>
 			</div>
 			<div class="partners-marquee-viewport mb-4">
-				<div
-					class="partners-track partners-track--forward flex gap-4 w-max"
-					aria-hidden="true"
-				>
+				<div class="partners-track partners-track--forward flex gap-4 w-max">
 					{
 						row1.map((partner) => (
 							<div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
-								<Image
-									src={partner.logo}
-									alt={partner.name}
-									class="max-h-full w-auto object-contain opacity-100 group-hover:opacity-100 transition-opacity duration-normal group-hover:grayscale-0"
-									loading="lazy"
-								/>
+								<div class="flex h-full w-full items-center justify-center overflow-hidden">
+									<Image
+										src={partner.logo}
+										alt=""
+										class="partners-logo-img max-h-full w-auto max-w-full origin-center object-contain opacity-100 group-hover:opacity-100 transition-opacity duration-normal group-hover:grayscale-0"
+										style={logoScaleStyle(partner.logoScale)}
+										loading="lazy"
+									/>
+								</div>
 							</div>
 						))
 					}
 				</div>
 			</div>
-			<!-- <div class="overflow-hidden">
-        <div class="partners-track partners-track--reverse flex gap-4 w-max" aria-hidden="true">
-          {row2doubled.map((partner) => (
-            <div class="partners-logo-card shrink-0 w-40 h-22 sm:w-44 sm:h-24 md:h-36 rounded-2xl bg-white border border-gray-100 flex items-center justify-center px-5 py-3 group transition-all duration-normal">
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                class="max-h-full w-auto object-contain opacity-100 group-hover:opacity-100 transition-opacity duration-normal group-hover:grayscale-0"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
-      </div> -->
 		</div>
 
 		<!-- ===== CTA ===== -->
