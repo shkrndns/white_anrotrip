@@ -1,0 +1,151 @@
+---
+import { Image } from 'astro:assets';
+import type { BlogCardWithPosts } from '../../lib/blog-cards';
+import { cardCoverAspect } from '../../lib/blog-cards';
+import {
+	BLOG_CARD_MEDIA_ZOOM,
+	journalCardImageClass,
+	journalCardMediaClass,
+} from '../../lib/blog-media';
+import { siteBlogCard } from '../../lib/site-urls';
+import { typografText } from '../../lib/typograf';
+
+interface Props {
+	card: BlogCardWithPosts;
+	index: number;
+}
+
+const { card, index } = Astro.props;
+const href = siteBlogCard(card.id);
+const title = typografText(card.title);
+const description = typografText(card.description);
+const slideshowKey = `topic-${card.id}`;
+const images = card.images.slice(0, 8);
+const coverAspect = cardCoverAspect(images);
+const latest = card.posts[0];
+const authorLabel = typografText('Команда ANRO TRIP');
+---
+
+<article
+	class="group flex flex-col rounded-3xl overflow-hidden bg-white border border-white/10 shadow-[0_4px_24px_rgba(0,171,179,0.15)] hover:shadow-[0_8px_32px_rgba(0,171,179,0.25)] transition-[opacity,transform,box-shadow] duration-slow"
+>
+	<a
+		href={href}
+		class:list={['block relative overflow-hidden', journalCardMediaClass()]}
+		aria-label={`Открыть подборку: ${title}`}
+	>
+		{
+			images.length >= 2 ? (
+				<div
+					class:list={['absolute inset-0', BLOG_CARD_MEDIA_ZOOM]}
+					data-slideshow={slideshowKey}
+				>
+					{images.map((img, i) => (
+						<div
+							class="absolute inset-0 transition-opacity duration-700 ease-in-out"
+							data-slide={i}
+							data-slideshow-group={slideshowKey}
+						>
+							<Image
+								src={img}
+								alt={`${card.title} — фото ${i + 1}`}
+								width={img.width}
+								height={img.height}
+								sizes="(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 25vw"
+								loading={index < 2 ? 'eager' : 'lazy'}
+								class={journalCardImageClass(coverAspect, img)}
+							/>
+						</div>
+					))}
+				</div>
+			) : images[0] ? (
+				<div class:list={['absolute inset-0', BLOG_CARD_MEDIA_ZOOM]}>
+					<Image
+						src={images[0]}
+						alt={card.title}
+						width={images[0].width}
+						height={images[0].height}
+						sizes="(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 25vw"
+						loading={index < 2 ? 'eager' : 'lazy'}
+						class={journalCardImageClass(coverAspect, images[0])}
+					/>
+				</div>
+			) : (
+				<div
+					class="blog-card-placeholder w-full h-full"
+					role="img"
+					aria-label="Место для фото"
+				>
+					<svg
+						class="blog-media-placeholder__icon"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="1.5"
+							d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+						/>
+					</svg>
+					<span class="blog-media-placeholder__label">Фото скоро</span>
+				</div>
+			)
+		}
+	</a>
+
+	<div class="p-5 md:p-6 flex flex-col grow">
+		{
+			latest && (
+				<time
+					datetime={latest.data.pubDate.toISOString()}
+					class="text-xs text-gray-500 font-inter mb-2 block"
+				>
+					{card.period}
+				</time>
+			)
+		}
+
+		<h3
+			class="text-base font-extrabold text-gray-900 mb-2 font-montserrat leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-fast"
+		>
+			<a href={href}>{title}</a>
+		</h3>
+
+		<p
+			class="text-sm text-gray-500 line-clamp-2 mb-4 grow font-inter leading-relaxed"
+		>
+			{description}
+		</p>
+
+		<div
+			class="flex items-center justify-between pt-4 border-t border-gray-100"
+		>
+			<span class="text-xs font-semibold text-gray-500 font-inter">
+				{authorLabel}
+			</span>
+			<a
+				href={href}
+				class="group/link inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-dark transition-colors duration-fast font-montserrat uppercase tracking-wide"
+				aria-label={`Читать подборку: ${title}`}
+			>
+				Читать
+				<svg
+					class="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform duration-fast"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					aria-hidden="true"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2.5"
+						d="M9 5l7 7-7 7"></path>
+				</svg>
+			</a>
+		</div>
+	</div>
+</article>

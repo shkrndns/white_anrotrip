@@ -17,12 +17,13 @@ const CONTENT_SECURITY_POLICY = [
 ].join('; ');
 
 export const onRequest = defineMiddleware(async (context, next) => {
-	/** Astro paginate: /blog/2 → SSR-маршрут /blog/page/2 */
+	/** Пагинация журнала снята: /blog/2 и /blog/page/N → /blog */
 	const legacyBlogPage = context.url.pathname.match(/^\/blog\/(\d+)\/?$/);
 	if (legacyBlogPage) {
-		const pageNum = parseInt(legacyBlogPage[1], 10);
-		const target = pageNum <= 1 ? '/blog' : `/blog/page/${pageNum}`;
-		return context.redirect(target, 301);
+		return context.redirect('/blog', 301);
+	}
+	if (/^\/blog\/page\/\d+\/?$/.test(context.url.pathname)) {
+		return context.redirect('/blog', 301);
 	}
 
 	const response = await next();

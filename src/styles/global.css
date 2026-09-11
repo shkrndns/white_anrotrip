@@ -294,6 +294,27 @@ html.is-page-leaving body {
 	display: none;
 }
 
+/* Плашка оглавления карточки журнала — как fixed-хедер, поверх overflow у main/body */
+.blog-card-toc--pinned {
+	position: fixed;
+	top: max(1rem, env(safe-area-inset-top));
+	right: 1rem;
+	left: 1rem;
+	z-index: 40;
+	max-width: 56rem;
+	margin-inline: auto;
+	box-shadow:
+		0 8px 24px rgb(15 76 129 / 0.12),
+		0 1px 2px rgb(15 76 129 / 0.06);
+}
+
+@media (min-width: 40rem) {
+	.blog-card-toc--pinned {
+		right: 1.5rem;
+		left: 1.5rem;
+	}
+}
+
 /* ═══════════════════════════════════════════════
    SCROLL REVEAL — оптимизировано
 ═══════════════════════════════════════════════ */
@@ -587,6 +608,29 @@ html.is-route-swapping .reveal-hidden {
    HERO ANIMATIONS
 ═══════════════════════════════════════════════ */
 
+/* LQIP-карта на весь экран, пока грузится world.webp */
+.hero-bg-layer picture,
+.hero-bg-placeholder,
+.hero-bg-image {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.hero-bg-placeholder {
+	transform: scale(1.12);
+	filter: blur(20px) saturate(1.04);
+	pointer-events: none;
+}
+
+.hero-bg-placeholder--done {
+	visibility: hidden;
+}
+
 /* Gradient text — десктоп; на мобайле — primary */
 .hero-gradient-text {
 	color: var(--color-primary);
@@ -738,6 +782,17 @@ html.is-route-swapping .reveal-hidden {
 		transform var(--motion-duration-fast) var(--motion-easing),
 		box-shadow var(--motion-duration-fast) var(--motion-easing),
 		border-color var(--motion-duration-fast) var(--motion-easing);
+}
+
+.partners-logo-card picture,
+.partners-logo-card img.partners-logo-img {
+	display: block;
+	max-width: 100%;
+	max-height: 100%;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	object-position: center;
 }
 
 @media (hover: hover) {
@@ -1281,10 +1336,22 @@ iframe[src*='tourvisor'] {
 	box-shadow: none;
 }
 
-/* --- Bold: акцентный dark primary вместо серого --- */
+/* --- Bold: зазор через padding (margin у inline схлопывается) --- */
 .blog-content strong {
 	color: rgb(15 23 42);
 	font-weight: 700;
+}
+
+.blog-content strong,
+.blog-content em,
+.blog-content b {
+	padding-inline: 0.22em;
+}
+
+.blog-content p > strong:first-child,
+.blog-content p > em:first-child,
+.blog-content p > b:first-child {
+	padding-inline-start: 0;
 }
 
 /* --- Списки с кастомными маркерами --- */
@@ -1390,22 +1457,22 @@ iframe[src*='tourvisor'] {
 	margin-top: 0.5rem;
 }
 
-/* --- Таблицы цен (город / цена) --- */
-.blog-content table.blog-content-price-table {
+/* --- Таблицы в статьях (markdown и цены) --- */
+.blog-content table {
 	width: 100%;
 	border-collapse: collapse;
 	margin: 0 0 1.5rem;
 	font-size: inherit;
 }
 
-.blog-content table.blog-content-price-table th,
-.blog-content table.blog-content-price-table td {
-	padding: 0.7rem 0;
+.blog-content table th,
+.blog-content table td {
+	padding: 0.7rem 1.5rem 0.7rem 0;
 	border-bottom: 1px solid rgb(0 171 179 / 0.12);
 	vertical-align: middle;
 }
 
-.blog-content table.blog-content-price-table th {
+.blog-content table th {
 	font-family: var(--font-montserrat);
 	font-size: 0.7rem;
 	font-weight: 800;
@@ -1414,22 +1481,28 @@ iframe[src*='tourvisor'] {
 	color: rgb(100 116 139);
 }
 
-.blog-content table.blog-content-price-table td:first-child,
-.blog-content table.blog-content-price-table th:first-child {
+.blog-content table td:first-child,
+.blog-content table th:first-child {
 	padding-right: 2.5rem;
-	width: 58%;
 }
 
-.blog-content table.blog-content-price-table td:last-child,
-.blog-content table.blog-content-price-table th:last-child {
-	padding-left: 1.5rem;
+.blog-content table td:last-child,
+.blog-content table th:last-child {
+	padding-left: 1.75rem;
+	padding-right: 0;
 	text-align: right;
 	white-space: nowrap;
 	font-variant-numeric: tabular-nums;
 }
 
-.blog-content table.blog-content-price-table tbody tr:last-child td {
+.blog-content table tbody tr:last-child td {
 	border-bottom: none;
+}
+
+/* --- Таблицы цен (город / цена): первая колонка шире --- */
+.blog-content table.blog-content-price-table td:first-child,
+.blog-content table.blog-content-price-table th:first-child {
+	width: 58%;
 }
 
 /* --- Обложки блога: полное фото без обрезки --- */
@@ -1437,7 +1510,95 @@ iframe[src*='tourvisor'] {
 	aspect-ratio: 959 / 1200;
 }
 
-/* Карточки журнала на главной — portrait выше обычного 4/3 */
+/* Hero landscape: cover на всю sticky-область */
+.blog-hero-image {
+	object-fit: cover;
+	object-position: center;
+}
+
+/* Hero portrait (MAX-постер): высота под пропорцию 959×1200 */
+.blog-hero--portrait {
+	height: min(calc(100vw * 1200 / 959), 85vh);
+	min-height: 20rem;
+	background: rgb(18 32 42);
+}
+
+.blog-hero-image--portrait {
+	object-fit: contain;
+	object-position: center top;
+}
+
+/*
+ * Hero: кинематографический fill — размытая обложка на всю ширину,
+ * сверху резкий постер contain. picture/img растягиваем явно:
+ * Astro Image может обернуть img в picture.
+ */
+.blog-hero-fill-layer,
+.blog-hero-poster-layer {
+	position: absolute;
+	inset: 0;
+}
+
+.blog-hero-fill-layer {
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.blog-hero-fill-layer picture,
+.blog-hero-fill-layer img,
+.blog-hero-poster-layer picture,
+.blog-hero-poster-layer img {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.blog-hero-fill-layer img {
+	object-fit: cover;
+	object-position: center;
+	transform: scale(1.18);
+	filter: blur(14px) saturate(1.06);
+}
+
+.blog-hero-fill-shade {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(
+			90deg,
+			rgb(0 0 0 / 0.22) 0%,
+			rgb(0 0 0 / 0.08) 18%,
+			rgb(0 0 0 / 0.04) 50%,
+			rgb(0 0 0 / 0.08) 82%,
+			rgb(0 0 0 / 0.22) 100%
+		),
+		rgb(8 20 28 / 0.1);
+}
+
+.blog-hero-poster-layer img {
+	object-fit: contain;
+	object-position: center;
+}
+
+/* Карточки: cover под блок превью */
+.blog-card-image,
+.journal-card-image {
+	object-fit: cover;
+}
+
+.blog-card-image--portrait,
+.journal-card-image--portrait {
+	object-position: center top;
+}
+
+.blog-card-image--landscape,
+.journal-card-image--landscape {
+	object-position: center;
+}
+
 .journal-card-media--portrait {
 	min-height: 17.5rem;
 }

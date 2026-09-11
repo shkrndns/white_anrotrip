@@ -1,550 +1,137 @@
 ---
-import { getImage, Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import { getEntry, render } from 'astro:content';
-import favicon from '../../assets/favicon.png';
-import FooterMinimal from '../../components/FooterMinimal.astro';
-import Layout from '../../layouts/Layout.astro';
+import BlogCardFeed from '../../components/blog/BlogCardFeed.astro';
+import BlogArticleBlock from '../../components/blog/BlogArticleBlock.astro';
+import { loadBlogCard } from '../../lib/blog-cards';
+import { isBlogCardId } from '../../data/blog-cards';
+import { buildBlogCardSchemaGraph } from '../../lib/schema-blog';
 import {
-	maxIconPath,
-	socialLogoTransform0,
-	socialLogoTransform80,
-	telegramIconPath,
-	vkIconPath,
-} from '../../lib/social-icons';
-import { buildBlogPostSchemaGraph } from '../../lib/schema-blog';
-import {
+	siteBlogCard,
+	siteBlogCardPost,
 	siteBlogIndex,
-	siteBlogPost,
-	siteHome,
-	siteHomeJournal,
-	siteHomeSearch,
 } from '../../lib/site-urls';
-import { typografText, formatBlogTitleHtml } from '../../lib/typograf';
-import { isPortraitBlogAspect, blogHeroImageClass } from '../../lib/blog-media';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
-import FaIcon from '../../components/icons/FaIcon.astro';
+import { typografText } from '../../lib/typograf';
 
 const slug = Astro.params.slug;
 if (!slug) {
 	return Astro.redirect(siteBlogIndex());
 }
 
-const post = await getEntry('blog', slug);
-if (!post || post.data.draft) {
+if (!isBlogCardId(slug)) {
+	const post = await getEntry('blog', slug);
+	if (post && !post.data.draft && post.data.card) {
+		return Astro.redirect(siteBlogCardPost(post.data.card, post.id), 301);
+	}
+	if (slug === 'travel-digest-september-2026') {
+		return Astro.redirect(siteBlogCard('september-start'), 301);
+	}
 	return new Response(null, { status: 404, statusText: 'Not Found' });
 }
 
-const { Content } = await render(post);
-const displayTitle = typografText(post.data.title);
-const displayTitleHtml = formatBlogTitleHtml(post.data.title, {
-	uppercase: true,
-});
-const displayDescription = typografText(post.data.description);
-
-// Расчёт времени чтения
-const wordCount = post.body ? post.body.trim().split(/\s+/).length : 0;
-const readingTime = Math.max(1, Math.round(wordCount / 200));
-const readingTimeLabel = `${readingTime}\u00a0мин`;
-
-// Определяем режим Hero: коллаж или одиночное изображение
-const hasCollage = post.data.heroImages && post.data.heroImages.length >= 2;
-const collageImages = post.data.heroImages?.slice(0, 8) ?? [];
-const heroImageWidth = isPortraitBlogAspect(post.data.cardAspect) ? 959 : 1600;
-const heroImageHeight = isPortraitBlogAspect(post.data.cardAspect) ? 1200 : 900;
-
-const siteOrigin = Astro.site?.href.replace(/\/$/, '') ?? Astro.url.origin;
-const postUrl = new URL(siteBlogPost(post.id), `${siteOrigin}/`).href;
-
-let heroImageUrl = new URL('/og-image.jpg', `${siteOrigin}/`).href;
-if (post.data.heroImage) {
-	const optimizedHero = await getImage({
-		src: post.data.heroImage,
-		width: 1200,
-		height: 630,
-		quality: 85,
-	});
-	heroImageUrl = new URL(optimizedHero.src, `${siteOrigin}/`).href;
-} else if (collageImages[0]) {
-	const optimizedHero = await getImage({
-		src: collageImages[0],
-		width: 1200,
-		height: 630,
-		quality: 85,
-	});
-	heroImageUrl = new URL(optimizedHero.src, `${siteOrigin}/`).href;
+const card = await loadBlogCard(slug);
+if (!card) {
+	return new Response(null, { status: 404, statusText: 'Not Found' });
 }
 
-const blogSchemaGraph = buildBlogPostSchemaGraph({
-	baseUrl: `${siteOrigin}/`,
-	postUrl,
-	headline: displayTitle,
-	description: displayDescription,
-	datePublished: post.data.pubDate,
-	dateModified: post.data.updatedDate,
-	authorName: post.data.author,
-	imageUrl: heroImageUrl,
-});
----
+const siteOrigin = Astro.site?.href.replace(/\/$/, '') ?? Astro.url.origin;
+const articles = await Promise.all(
+	card.posts.map(async (post) => {
+		const { Content } = await render(post);
+		return {
+			post,
+			Content,
+			displayTitle: typografText(post.data.title),
+			displayDescription: typografText(post.data.description),
+		};
+	}),
+);
 
-<Layout
-	title={`${displayTitle} | Журнал ANRO TRIP`}
-	description={displayDescription}
-	canonicalURL={postUrl}
-	ogImage={heroImageUrl}
-	showFavorites={false}
-	showOfficeWidget={false}
-	showScrollToTop={true}
-	scrollToTopVariant="blog"
->
-	<Fragment slot="head">
-		<script
-			is:inline
-			type="application/ld+json"
-			set:html={JSON.stringify(blogSchemaGraph)}
-		/>
-	</Fragment>
-	<!-- Обёртка: ограничивает sticky Hero (как на corp), чтобы при скролле контент наползал на фото -->
-	<div>
-		<!-- Hero: sticky — при прокрутке main (z-10) наползает сверху; логотип внутри Hero -->
-		<div class="sticky top-0 z-0 h-[55vh] md:h-[65vh] overflow-hidden">
-			{
-				hasCollage ? (
-					<div class="absolute inset-0" data-slideshow="hero-collage">
-						{collageImages.map((img, i) => (
-							<div
-								class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-								data-slide={i}
-								data-slideshow-group="hero-collage"
-							>
-								<Image
-									src={img}
-									alt={`${post.data.title} — фото ${i + 1}`}
-									width={1600}
-									height={900}
-									loading={i === 0 ? 'eager' : 'lazy'}
-									fetchpriority={i === 0 ? 'high' : 'auto'}
-									class="w-full h-full object-cover object-center"
-								/>
-							</div>
-						))}
-					</div>
-				) : post.data.heroImage ? (
-					<Image
-						src={post.data.heroImage}
-						alt={post.data.title}
-						width={heroImageWidth}
-						height={heroImageHeight}
-						loading="eager"
-						fetchpriority="high"
-						class={blogHeroImageClass(post.data.cardAspect)}
-					/>
-				) : (
-					<div
-						class="blog-hero-placeholder w-full h-full"
-						role="img"
-						aria-label="Место для фото"
-					>
-						<svg
-							class="blog-media-placeholder__icon"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							aria-hidden="true"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="1.5"
-								d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-							/>
-						</svg>
-						<span class="blog-media-placeholder__label">Фото скоро</span>
-					</div>
-				)
-			}
+const cardUrl = new URL(siteBlogCard(card.id), `${siteOrigin}/`).href;
+const blogIndexUrl = new URL(siteBlogIndex(), `${siteOrigin}/`).href;
+let ogImage = new URL('/og-image.png', `${siteOrigin}/`).href;
+const cover = card.images[0];
+if (cover) {
+	const optimized = await getImage({
+		src: cover,
+		width: 1200,
+		height: 630,
+		quality: 85,
+	});
+	ogImage = new URL(optimized.src, `${siteOrigin}/`).href;
+}
 
-			<div
-				class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/70%)_0%,rgb(0_0_0/20%)_50%,transparent_100%)] pointer-events-none"
-			>
-			</div>
-
-			<div
-				class="absolute bottom-0 left-0 right-0 px-4 sm:px-6 pb-8 md:pb-12 max-w-4xl mx-auto"
-			>
-				<div class="flex flex-wrap items-center gap-3 mb-4">
-					{
-						post.data.destination && (
-							<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/90 text-white font-montserrat">
-								{post.data.destination === ''
-									? 'Направления'
-									: post.data.destination}
-							</span>
-						)
-					}
-					<time
-						datetime={post.data.pubDate.toISOString()}
-						class="text-white/70 text-xs font-inter"
-					>
-						{
-							post.data.pubDate.toLocaleDateString('ru-RU', {
-								year: 'numeric',
-								month: 'long',
-								day: 'numeric',
-							})
-						}
-					</time>
-					<span class="text-white/50 text-xs" aria-hidden="true">·</span>
-					<span class="text-white/70 text-xs font-inter"
-						>{post.data.author}</span
-					>
-					<span class="text-white/40 text-xs" aria-hidden="true">·</span>
-					<span
-						class="text-white/60 text-xs font-inter inline-flex items-center gap-1"
-					>
-						<svg
-							class="w-3 h-3 shrink-0"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-							aria-hidden="true"
-						>
-							<circle cx="12" cy="12" r="10"></circle><path
-								stroke-linecap="round"
-								d="M12 6v6l3.5 2"></path>
-						</svg>
-						{readingTimeLabel}
-					</span>
-				</div>
-				<h1
-					class="blog-post-hero__title font-montserrat font-extrabold text-white tracking-tight leading-tight"
-					set:html={displayTitleHtml}
-				/>
-			</div>
-
-			<!-- Логотип «На главную» — в слое Hero, уезжает вместе с фото при скролле -->
-			<a
-				href={siteHomeJournal()}
-				class="pointer-events-auto absolute top-4 left-4 z-20 flex h-10 w-10 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:left-6"
-				aria-label="Наш блог на главной"
-			>
-				<Image
-					src={favicon}
-					alt=""
-					format="png"
-					quality="max"
-					decoding="async"
-					class="h-10 w-10 shrink-0 object-contain drop-shadow-md"
-				/>
-			</a>
-		</div>
-
-		<!-- Контент — наползает поверх Hero при скролле (z-10 > z-0) -->
-		<main
-			id="content"
-			class="blog-mesh-text-bg relative overflow-hidden z-10 shadow-[0_-10px_40px_rgba(15,76,129,0.12)] -mt-8 rounded-t-3xl"
-		>
-			<!-- Фоновые орбы статьи — паттерн как на главной -->
-			<div
-				class="absolute -top-20 -right-20 size-96 rounded-full bg-primary/8 blur-none md:blur-3xl pointer-events-none"
-				aria-hidden="true"
-			>
-			</div>
-			<div
-				class="absolute top-[30%] -left-16 size-72 rounded-full bg-secondary/5 blur-none md:blur-3xl pointer-events-none"
-				aria-hidden="true"
-			>
-			</div>
-			<div
-				class="absolute top-[65%] right-8 size-64 rounded-full bg-primary/6 blur-none md:blur-3xl pointer-events-none"
-				aria-hidden="true"
-			>
-			</div>
-			<div
-				class="absolute bottom-48 -left-8 size-56 rounded-full bg-primary/5 blur-none md:blur-3xl pointer-events-none"
-				aria-hidden="true"
-			>
-			</div>
-			<div class="px-4 sm:px-6 max-w-4xl mx-auto pb-20 md:pb-28">
-				<!-- Хлебные крошки — minimal pill style -->
-				<nav
-					class="flex items-center gap-1.5 pt-10 mb-10"
-					aria-label="Навигация"
-				>
-					<a
-						href={siteHome()}
-						class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-primary hover:bg-primary/5 transition-all duration-200 font-inter"
-					>
-						<FaIcon
-							fa="fa-solid fa-house"
-							iconClass="text-sm leading-none shrink-0 -translate-y-0.5"
-						/>
-						Главная
-					</a>
-					<svg
-						class="w-3.5 h-3.5 text-gray-400 shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-						><path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 5l7 7-7 7"></path></svg
-					>
-					<a
-						href={siteBlogIndex()}
-						class="px-2.5 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-primary hover:bg-primary/5 transition-all duration-200 font-inter"
-						>Журнал</a
-					>
-					<svg
-						class="w-3.5 h-3.5 text-gray-400 shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-						><path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 5l7 7-7 7"></path></svg
-					>
-					<span
-						class="px-2.5 py-1 rounded-full text-xs font-semibold text-gray-600 bg-gray-100/80 line-clamp-1 font-inter"
-						>{displayTitle}</span
-					>
-				</nav>
-
-				<!-- Лид-абзац: та же типографика и акцент слева, что у .blog-content h2 — единая редакционная система -->
-				<p class="blog-article-intro whitespace-pre-line">
-					{displayDescription}
-				</p>
-
-				<!-- Контент статьи -->
-				<article
-					class="blog-content font-inter text-slate-700 min-w-0 w-full"
-					style="font-size: clamp(1rem, 0.3vw + 0.93rem, 1.125rem); line-height: 1.85;"
-				>
-					<Content />
-				</article>
-
-				<!-- CTA — градиентный 1px-ободок: цвет у орбов, плавное растворение между ними (без сплошной border) -->
-				{
-					post.data.destination && (
-						<div
-							class="relative mt-20 rounded-[1.75rem] md:rounded-[2.25rem] p-px overflow-hidden bg-[linear-gradient(135deg,rgb(0_171_179/0.35),rgb(0_171_179/0.06)_12%,transparent_32%,transparent_68%,rgb(0_171_179/0.06)_88%,rgb(0_171_179/0.32))]"
-							aria-labelledby="blog-cta-heading"
-						>
-							<div class="relative overflow-hidden rounded-[calc(1.75rem-1px)] md:rounded-[calc(2.25rem-1px)] text-center">
-								<div
-									class="absolute inset-0 bg-linear-to-br from-white via-[rgb(245_252_252)] to-[rgb(228_244_245)] pointer-events-none"
-									aria-hidden="true"
-								/>
-								<div
-									class="absolute -top-12 -right-8 md:-right-16 w-56 h-56 md:w-72 md:h-72 rounded-full bg-primary/12 blur-none md:blur-3xl pointer-events-none translate-x-1/4 -translate-y-1/4"
-									aria-hidden="true"
-								/>
-								<div
-									class="absolute -bottom-20 -left-16 w-64 h-64 md:w-80 md:h-80 rounded-full bg-primary/14 blur-none md:blur-3xl pointer-events-none -translate-x-1/4 translate-y-1/4"
-									aria-hidden="true"
-								/>
-								<div
-									class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] rounded-full bg-primary/[0.04] blur-none md:blur-3xl pointer-events-none"
-									aria-hidden="true"
-								/>
-
-								<div class="relative z-10 px-6 py-12 md:px-14 md:py-14">
-									<SectionHeading
-										as="h3"
-										id="blog-cta-heading"
-										badge="Подобрать тур"
-										badgeClass="mb-6 md:mb-7"
-										headingClass="font-montserrat font-black text-primary uppercase tracking-tight mb-5 md:mb-6 leading-[1.1]"
-										headingStyle="font-size: clamp(1.5rem, 1rem + 2.8vw, 2.35rem);"
-									>
-										Вдохновились?!
-									</SectionHeading>
-									<div class="text-slate-700 mb-10 font-inter max-w-lg mx-auto space-y-1 text-base md:text-lg leading-relaxed">
-										<p>Мы поможем организовать идеальное путешествие.</p>
-										<p>
-											Оставьте заявку — наши эксперты подберут лучшие варианты
-											туров.
-										</p>
-									</div>
-									<a
-										href={siteHomeSearch()}
-										data-astro-reload
-										class="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-red px-10 py-4 font-black text-white shadow-[0_4px_14px_4px_color-mix(in_srgb,var(--color-red)_30%,transparent)] hover:bg-red-hover hover:shadow-[0_6px_18px_4px_color-mix(in_srgb,var(--color-red)_40%,transparent)] transition-[background-color,box-shadow] duration-normal btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-sm uppercase tracking-wider font-montserrat"
-									>
-										<span
-											class="absolute inset-0 w-[200%] bg-linear-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-slow ease-out pointer-events-none"
-											aria-hidden="true"
-										/>
-										<span class="relative z-10">Подобрать тур</span>
-										<FaIcon
-											fa="fa-solid fa-arrow-right"
-											iconClass="relative z-10 text-sm leading-none shrink-0"
-											baseline={false}
-										/>
-									</a>
-								</div>
-							</div>
-						</div>
-					)
-				}
-
-				<!-- Поделиться -->
-				<div
-					class="mt-14 py-5 border-t border-primary/10 flex flex-col sm:flex-row items-center justify-between gap-3"
-				>
-					<p class="text-xs text-gray-600 font-inter">
-						Понравилась статья? Поделитесь:
-					</p>
-					<div
-						class="flex flex-wrap items-center justify-center gap-2 sm:justify-end"
-					>
-						<a
-							href="https://max.ru/id6658540239_biz"
-							target="_blank"
-							rel="noopener noreferrer"
-							class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold font-inter bg-[#7c3aed]/8 text-[#7c3aed] border border-[#7c3aed]/20 hover:bg-[#7c3aed]/15 transition-colors duration-200"
-							aria-label="MAX — страница компании"
-						>
-							<svg
-								class="h-3.5 w-3.5 shrink-0 overflow-visible text-current"
-								viewBox="80 80 80 80"
-								xmlns="http://www.w3.org/2000/svg"
-								aria-hidden="true"
-							>
-								<g transform={socialLogoTransform80}>
-									<path
-										fill="currentColor"
-										fill-rule="evenodd"
-										clip-rule="evenodd"
-										d={maxIconPath}></path>
-								</g>
-							</svg>
-							MAX
-						</a>
-						<a
-							href={`https://t.me/share/url?url=${encodeURIComponent(String(Astro.url))}&text=${encodeURIComponent(displayTitle)}`}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold font-inter bg-[#2AABEE]/8 text-[#2AABEE] border border-[#2AABEE]/20 hover:bg-[#2AABEE]/15 transition-colors duration-200"
-							aria-label="Поделиться в Telegram"
-						>
-							<svg
-								class="h-5 w-5 shrink-0 overflow-visible text-current"
-								viewBox="0 0 80 80"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-								aria-hidden="true"
-							>
-								<g transform={socialLogoTransform0}>
-									<path
-										fill="currentColor"
-										fill-rule="evenodd"
-										clip-rule="evenodd"
-										d={telegramIconPath}></path>
-								</g>
-							</svg>
-							Telegram
-						</a>
-						<a
-							href={`https://vk.com/share.php?url=${encodeURIComponent(String(Astro.url))}&title=${encodeURIComponent(displayTitle)}`}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold font-inter bg-[#0077FF]/8 text-[#0077FF] border border-[#0077FF]/20 hover:bg-[#0077FF]/15 transition-colors duration-200"
-							aria-label="Поделиться ВКонтакте"
-						>
-							<svg
-								class="h-4.5 w-4.5 shrink-0 overflow-visible text-current"
-								viewBox="0 0 80 80"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-								aria-hidden="true"
-							>
-								<g transform={socialLogoTransform0}>
-									<path fill="currentColor" d={vkIconPath}></path>
-								</g>
-							</svg>
-							ВКонтакте
-						</a>
-					</div>
-				</div>
-
-				<!-- Назад к журналу — pill link -->
-				<div class="mt-10 flex flex-col items-center gap-4">
-					<a
-						href={siteBlogIndex()}
-						class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-600 hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/15 transition-all duration-200 font-montserrat uppercase tracking-wider"
-					>
-						<FaIcon
-							fa="fa-solid fa-arrow-left"
-							iconClass="text-sm leading-none group-hover:-translate-x-1 transition-transform duration-fast"
-						/>
-						Все статьи журнала
-					</a>
-					<!-- <a
-          href={siteHomeJournal()}
-          class="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition-[color,transform] duration-fast group cursor-pointer"
-        >
-          <i
-            class="fa-solid fa-arrow-left text-sm leading-none group-hover:-translate-x-1 transition-transform duration-fast"
-            aria-hidden="true"
-          ></i>
-          Наш блог
-        </a> -->
-				</div>
-			</div>
-		</main>
-	</div>
-
-	<FooterMinimal />
-</Layout>
-
-<script>
-	/** Таймер слайдшоу Hero: один экземпляр, при повторном init старый сбрасывается (иначе интервалы накапливаются и смена «ускоряется»). */
-	let heroSlideshowTimer: ReturnType<typeof setInterval> | null = null;
-
-	function initHeroSlideshow() {
-		const heroSlideshow = document.querySelector(
-			'[data-slideshow="hero-collage"]',
-		);
-
-		if (!heroSlideshow) return;
-
-		const group = 'hero-collage';
-		const slides = heroSlideshow.querySelectorAll(
-			`[data-slideshow-group="${group}"]`,
-		);
-
-		if (slides.length < 2) return;
-
-		if (heroSlideshowTimer !== null) {
-			clearInterval(heroSlideshowTimer);
-			heroSlideshowTimer = null;
+const postingInputs = await Promise.all(
+	articles.map(async (article) => {
+		let imageUrl = ogImage;
+		const hero = article.post.data.heroImage;
+		if (hero) {
+			const optimized = await getImage({
+				src: hero,
+				width: 1200,
+				height: 630,
+				quality: 85,
+			});
+			imageUrl = new URL(optimized.src, `${siteOrigin}/`).href;
 		}
 
-		// Скрыть все слайды кроме первого
-		slides.forEach((slide, i) => {
-			(slide as HTMLElement).style.opacity = i === 0 ? '1' : '0';
-		});
-
-		let current = 0;
-		const intervalMs = 5500;
-
-		const nextSlide = () => {
-			const next = (current + 1) % slides.length;
-			(slides[current] as HTMLElement).style.opacity = '0';
-			(slides[next] as HTMLElement).style.opacity = '1';
-			current = next;
+		return {
+			baseUrl: `${siteOrigin}/`,
+			postUrl: new URL(
+				siteBlogCardPost(card.id, article.post.id),
+				`${siteOrigin}/`,
+			).href,
+			headline: article.displayTitle,
+			description: article.displayDescription,
+			datePublished: article.post.data.pubDate,
+			dateModified: article.post.data.updatedDate,
+			authorName: article.post.data.author,
+			imageUrl,
 		};
+	}),
+);
 
-		heroSlideshowTimer = setInterval(nextSlide, intervalMs);
+const schemaGraph = buildBlogCardSchemaGraph({
+	baseUrl: `${siteOrigin}/`,
+	cardTitle: card.title,
+	cardUrl,
+	blogIndexUrl,
+	articles: postingInputs,
+});
+
+const publishedMs = card.posts.map((post) => post.data.pubDate.getTime());
+const modifiedMs = card.posts.map((post) =>
+	(post.data.updatedDate ?? post.data.pubDate).getTime(),
+);
+const articlePublishedTime = new Date(Math.min(...publishedMs)).toISOString();
+const articleModifiedTime = new Date(Math.max(...modifiedMs)).toISOString();
+---
+
+<BlogCardFeed
+	card={card}
+	navItems={articles.map((article) => ({
+		id: article.post.id,
+		title: article.displayTitle,
+	}))}
+	canonicalURL={cardUrl}
+	ogImage={ogImage}
+	schemaGraph={schemaGraph}
+	ogType="article"
+	articlePublishedTime={articlePublishedTime}
+	articleModifiedTime={articleModifiedTime}
+>
+	{
+		articles.map((article) => {
+			const { Content } = article;
+			return (
+				<BlogArticleBlock
+					post={article.post}
+					displayTitle={article.displayTitle}
+					displayDescription={article.displayDescription}
+				>
+					<Content />
+				</BlogArticleBlock>
+			);
+		})
 	}
-
-	document.addEventListener('DOMContentLoaded', initHeroSlideshow);
-	document.addEventListener('astro:page-load', initHeroSlideshow);
-</script>
+</BlogCardFeed>

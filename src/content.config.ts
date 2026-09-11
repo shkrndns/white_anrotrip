@@ -1,6 +1,7 @@
 import { glob } from 'astro/loaders';
 import { defineCollection } from 'astro:content';
 import { z } from 'zod';
+import { BLOG_CARD_IDS } from './data/blog-cards';
 
 const blog = defineCollection({
 	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -20,6 +21,8 @@ const blog = defineCollection({
 			cardAspect: z.enum(['4/3', '4/5']).optional(),
 			author: z.string().default('Команда ANRO TRIP'),
 			destination: z.string().optional(),
+			/** Карточка журнала (группа статей по датам). Обязательна у опубликованных. */
+			card: z.enum(BLOG_CARD_IDS).optional(),
 			/** Крупная карточка в блоке «Журнал» на главной (одна на сайт) */
 			featured: z.boolean().optional(),
 			/** Черновик — не показывается на сайте (импорт из MAX и т.п.) */

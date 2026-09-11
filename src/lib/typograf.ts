@@ -13,8 +13,13 @@ function protectBrandName(text: string): string {
 	);
 }
 
+/** «ж/д» не разрывается по слэшу (word joiner). */
+function protectRailwayAbbrev(text: string): string {
+	return text.replace(/ж\/д/gi, (abbr) => abbr.replace('/', '\u2060/\u2060'));
+}
+
 function applyTextTypograf(text: string): string {
-	return protectBrandName(tp.execute(text));
+	return protectBrandName(protectRailwayAbbrev(tp.execute(text)));
 }
 
 /** Слова в заголовках блога — без переноса внутри (nowrap; word joiner не работает с uppercase). */

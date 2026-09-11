@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+	displayTitle: string;
+	displayDescription: string;
+}
+
+const { post, displayTitle, displayDescription } = Astro.props;
+const cover =
+	post.data.heroImage ?? post.data.cardImage ?? post.data.heroImages?.[0];
+---
+
+<article
+	id={post.id}
+	class="scroll-mt-36 mb-16 pb-16 border-b border-primary/10 last:mb-0 last:border-b-0 last:pb-0"
+>
+	{
+		cover && (
+			<div class="mb-8 overflow-hidden rounded-2xl bg-slate-100">
+				<Image
+					src={cover}
+					alt={post.data.title}
+					width={cover.width}
+					height={cover.height}
+					sizes="(max-width: 896px) 100vw, 896px"
+					loading="lazy"
+					class="w-full h-auto object-contain"
+				/>
+			</div>
+		)
+	}
+	<div class="flex flex-wrap items-center gap-3 mb-4">
+		{
+			post.data.destination && (
+				<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/90 text-white font-montserrat">
+					{post.data.destination}
+				</span>
+			)
+		}
+		<time
+			datetime={post.data.pubDate.toISOString()}
+			class="text-slate-500 text-xs font-inter"
+		>
+			{
+				post.data.pubDate.toLocaleDateString('ru-RU', {
+					year: 'numeric',
+					month: 'long',
+					day: 'numeric',
+				})
+			}
+		</time>
+	</div>
+	<h2
+		class="font-montserrat font-extrabold text-gray-900 tracking-tight leading-[1.5] mb-8 md:mb-9 text-2xl md:text-3xl"
+	>
+		{displayTitle}
+	</h2>
+	<p class="blog-article-intro whitespace-pre-line">{displayDescription}</p>
+	<div
+		class="blog-content font-inter text-slate-700 min-w-0 w-full"
+		style="font-size: clamp(1rem, 0.3vw + 0.93rem, 1.125rem); line-height: 1.85;"
+	>
+		<slot />
+	</div>
+</article>

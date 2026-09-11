@@ -7,9 +7,8 @@ import { formatBlogTitleHtml, typografText } from '../../lib/typograf';
 import {
 	blogCardAspectClass,
 	blogCardImageClass,
+	BLOG_CARD_MEDIA_ZOOM,
 	isPortraitBlogAspect,
-	BLOG_PORTRAIT_IMAGE_HEIGHT,
-	BLOG_PORTRAIT_IMAGE_WIDTH,
 } from '../../lib/blog-media';
 
 interface Props {
@@ -21,6 +20,8 @@ const { post, index } = Astro.props;
 const cardTitle = typografText(post.data.title);
 const cardTitleHtml = formatBlogTitleHtml(post.data.title);
 const cardDescription = typografText(post.data.description);
+const cardImage =
+	post.data.heroImages?.[0] ?? post.data.cardImage ?? post.data.heroImage;
 ---
 
 <article
@@ -37,7 +38,7 @@ const cardDescription = typografText(post.data.description);
 		{
 			post.data.heroImages && post.data.heroImages.length >= 2 ? (
 				<div
-					class="blog-image-frame absolute inset-0"
+					class:list={['absolute inset-0', BLOG_CARD_MEDIA_ZOOM]}
 					data-slideshow={`card-${post.id}`}
 				>
 					{post.data.heroImages.slice(0, 8).map((img, i) => (
@@ -49,42 +50,23 @@ const cardDescription = typografText(post.data.description);
 							<Image
 								src={img}
 								alt={`${post.data.title} — фото ${i + 1}`}
-								width={600}
-								height={
-									post.data.cardAspect === '4/5'
-										? BLOG_PORTRAIT_IMAGE_HEIGHT
-										: 450
-								}
+								width={img.width}
+								height={img.height}
 								loading={index < 3 ? 'eager' : 'lazy'}
 								class={blogCardImageClass(post.data.cardAspect)}
 							/>
 						</div>
 					))}
 				</div>
-			) : (post.data.heroImages?.[0] ??
-			  post.data.cardImage ??
-			  post.data.heroImage) ? (
-				<div class="blog-image-frame absolute inset-0">
+			) : cardImage ? (
+				<div class:list={['absolute inset-0', BLOG_CARD_MEDIA_ZOOM]}>
 					<Image
-						src={
-							post.data.heroImages?.[0] ??
-							post.data.cardImage ??
-							post.data.heroImage!
-						}
+						src={cardImage}
 						alt={post.data.title}
-						width={
-							post.data.cardAspect === '4/5' ? BLOG_PORTRAIT_IMAGE_WIDTH : 600
-						}
-						height={
-							post.data.cardAspect === '4/5' ? BLOG_PORTRAIT_IMAGE_HEIGHT : 450
-						}
+						width={cardImage.width}
+						height={cardImage.height}
 						loading={index < 3 ? 'eager' : 'lazy'}
-						class:list={[
-							blogCardImageClass(post.data.cardAspect),
-							post.data.cardAspect === '4/5'
-								? ''
-								: 'transition-transform duration-slow ease-out group-hover:scale-[1.02]',
-						]}
+						class={blogCardImageClass(post.data.cardAspect)}
 					/>
 				</div>
 			) : (

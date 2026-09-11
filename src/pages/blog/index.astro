@@ -3,11 +3,7 @@ import BlogListPage from '../../components/blog/BlogListPage.astro';
 import { prepareBlogListViewModel } from '../../lib/blog-list';
 
 const siteOrigin = Astro.site?.href.replace(/\/$/, '') ?? Astro.url.origin;
-const viewModel = await prepareBlogListViewModel(1, siteOrigin);
-
-if (!viewModel) {
-  return new Response(null, { status: 404, statusText: 'Not Found' });
-}
+const viewModel = await prepareBlogListViewModel(siteOrigin);
 ---
 
 <BlogListPage {...viewModel} />

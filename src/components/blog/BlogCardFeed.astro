@@ -1,0 +1,339 @@
+---
+import { Image } from 'astro:assets';
+import favicon from '../../assets/favicon.png';
+import FooterMinimal from '../FooterMinimal.astro';
+import Layout from '../../layouts/Layout.astro';
+import type { BlogCardWithPosts } from '../../lib/blog-cards';
+import { blogHeroContainerClass } from '../../lib/blog-media';
+import {
+	siteBlogIndex,
+	siteHome,
+	siteHomeJournal,
+	siteHomeSearch,
+} from '../../lib/site-urls';
+import { typografText } from '../../lib/typograf';
+import SectionHeading from '../ui/SectionHeading.astro';
+import FaIcon from '../icons/FaIcon.astro';
+
+interface NavItem {
+	id: string;
+	title: string;
+}
+
+interface Props {
+	card: BlogCardWithPosts;
+	navItems: NavItem[];
+	canonicalURL: string;
+	ogImage: string;
+	schemaGraph: Record<string, unknown>;
+	ogType?: 'website' | 'article';
+	articlePublishedTime?: string;
+	articleModifiedTime?: string;
+}
+
+const {
+	card,
+	navItems,
+	canonicalURL,
+	ogImage,
+	schemaGraph,
+	ogType = 'article',
+	articlePublishedTime,
+	articleModifiedTime,
+} = Astro.props;
+const displayTitle = typografText(card.title);
+const displayDescription = typografText(card.description);
+const heroImages = card.images.slice(0, 8);
+const firstHero = heroImages[0];
+const slideshowKey = `card-hero-${card.id}`;
+---
+
+<Layout
+	title={`${displayTitle} | Журнал ANRO TRIP`}
+	description={displayDescription}
+	canonicalURL={canonicalURL}
+	ogImage={ogImage}
+	ogType={ogType}
+	articlePublishedTime={articlePublishedTime}
+	articleModifiedTime={articleModifiedTime}
+	showFavorites={false}
+	showOfficeWidget={false}
+	showScrollToTop={true}
+	scrollToTopVariant="blog"
+>
+	<Fragment slot="head">
+		<script
+			is:inline
+			type="application/ld+json"
+			set:html={JSON.stringify(schemaGraph)}
+		/>
+	</Fragment>
+
+	<div>
+		<div
+			class:list={[
+				'sticky top-0 z-0 overflow-hidden',
+				blogHeroContainerClass(undefined, firstHero),
+			]}
+		>
+			{
+				heroImages.length > 0 ? (
+					<div
+						class="absolute inset-0"
+						data-slideshow={heroImages.length >= 2 ? slideshowKey : undefined}
+					>
+						{heroImages.map((img, i) => (
+							<div
+								class:list={[
+									'absolute inset-0',
+									heroImages.length >= 2 &&
+										'transition-opacity duration-1000 ease-in-out',
+								]}
+								data-slide={heroImages.length >= 2 ? i : undefined}
+								data-slideshow-group={
+									heroImages.length >= 2 ? slideshowKey : undefined
+								}
+							>
+								<div class="blog-hero-fill-layer" aria-hidden="true">
+									<Image
+										src={img}
+										alt=""
+										width={img.width}
+										height={img.height}
+										loading={i === 0 ? 'eager' : 'lazy'}
+										decoding="async"
+									/>
+									<div class="blog-hero-fill-shade" />
+								</div>
+								<div class="blog-hero-poster-layer">
+									<Image
+										src={img}
+										alt={
+											heroImages.length > 1
+												? `${card.title} — фото ${i + 1}`
+												: card.title
+										}
+										width={img.width}
+										height={img.height}
+										loading={i === 0 ? 'eager' : 'lazy'}
+										fetchpriority={i === 0 ? 'high' : 'auto'}
+										decoding="async"
+									/>
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div
+						class="blog-hero-placeholder w-full h-full"
+						role="img"
+						aria-label="Место для фото"
+					>
+						<span class="blog-media-placeholder__label">Фото скоро</span>
+					</div>
+				)
+			}
+
+			<div
+				class="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/55%)_0%,rgb(0_0_0/18%)_45%,transparent_100%)] pointer-events-none z-10"
+			>
+			</div>
+
+			<div
+				class="absolute bottom-0 left-0 right-0 z-10 px-4 sm:px-6 pb-11 md:pb-12 max-w-4xl mx-auto"
+			>
+				<p class="text-white/70 text-xs font-inter mb-3">{card.period}</p>
+				<h1
+					class="blog-post-hero__title font-montserrat font-extrabold text-white tracking-tight leading-tight"
+				>
+					{displayTitle}
+				</h1>
+				<p class="mt-3 text-white/80 text-sm font-inter max-w-2xl">
+					{displayDescription}
+				</p>
+			</div>
+
+			<a
+				href={siteHomeJournal()}
+				class="pointer-events-auto absolute top-4 left-4 z-20 flex h-10 w-10 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:left-6"
+				aria-label="Наш блог на главной"
+			>
+				<Image
+					src={favicon}
+					alt=""
+					format="png"
+					quality="max"
+					decoding="async"
+					class="h-10 w-10 shrink-0 object-contain drop-shadow-md"
+				/>
+			</a>
+		</div>
+
+		<main
+			id="content"
+			class="blog-mesh-text-bg relative overflow-hidden z-10 shadow-[0_-10px_40px_rgba(15,76,129,0.12)] -mt-5 md:-mt-8 rounded-t-3xl"
+		>
+			<div class="px-4 sm:px-6 max-w-4xl mx-auto pb-20 md:pb-28">
+				<nav
+					class="flex items-center gap-1.5 pt-10 mb-6"
+					aria-label="Навигация"
+				>
+					<a
+						href={siteHome()}
+						class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-primary hover:bg-primary/5 transition-all duration-200 font-inter"
+					>
+						<FaIcon
+							fa="fa-solid fa-house"
+							iconClass="text-sm leading-none shrink-0 -translate-y-0.5"
+						/>
+						Главная
+					</a>
+					<svg
+						class="w-3.5 h-3.5 text-gray-400 shrink-0"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						aria-hidden="true"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 5l7 7-7 7"></path></svg
+					>
+					<a
+						href={siteBlogIndex()}
+						class="px-2.5 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-primary hover:bg-primary/5 transition-all duration-200 font-inter"
+						>Журнал</a
+					>
+					<svg
+						class="w-3.5 h-3.5 text-gray-400 shrink-0"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						aria-hidden="true"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 5l7 7-7 7"></path></svg
+					>
+					<span
+						class="px-2.5 py-1 rounded-full text-xs font-semibold text-gray-600 bg-gray-100/80 line-clamp-1 font-inter"
+						>{displayTitle}</span
+					>
+				</nav>
+
+				<div data-blog-card-toc-anchor class="mb-12">
+					<div
+						data-blog-card-toc-spacer
+						class="pointer-events-none"
+						aria-hidden="true"
+					>
+					</div>
+					<nav
+						data-blog-card-toc
+						class="-mx-1 overflow-x-visible md:overflow-x-auto scrollbar-hide rounded-2xl border border-primary/10 bg-white/95 px-1.5 py-1.5 md:px-2 md:py-2 shadow-sm backdrop-blur-sm"
+						aria-label="Статьи в подборке"
+					>
+						<ul class="flex w-full gap-0.5 md:w-auto md:min-w-max md:gap-1">
+							{
+								navItems.map((item, index) => (
+									<li class="min-w-0 flex-1 md:flex-none">
+										<a
+											href={`#${item.id}`}
+											class="flex h-full w-full min-w-0 items-start gap-1.5 rounded-xl px-1.5 py-1.5 text-[10px] leading-snug font-semibold text-slate-600 hover:bg-primary/8 hover:text-primary transition-colors font-inter focus:outline-none focus-visible:ring-2 focus-visible:ring-primary md:inline-flex md:max-w-52 md:items-center md:gap-2 md:px-3 md:py-2 md:text-xs"
+										>
+											<span class="shrink-0 tabular-nums text-primary/70">
+												{index + 1}
+											</span>
+											<span class="min-w-0 line-clamp-3 md:line-clamp-2">
+												{item.title}
+											</span>
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</nav>
+				</div>
+
+				<slot />
+
+				<div
+					class="relative mt-16 rounded-[1.75rem] md:rounded-[2.25rem] p-px overflow-hidden bg-[linear-gradient(135deg,rgb(0_171_179/0.35),rgb(0_171_179/0.06)_12%,transparent_32%,transparent_68%,rgb(0_171_179/0.06)_88%,rgb(0_171_179/0.32))]"
+					aria-labelledby="blog-cta-heading"
+				>
+					<div
+						class="relative overflow-hidden rounded-[calc(1.75rem-1px)] md:rounded-[calc(2.25rem-1px)] text-center"
+					>
+						<div
+							class="absolute inset-0 bg-linear-to-br from-white via-[rgb(245_252_252)] to-[rgb(228_244_245)] pointer-events-none"
+							aria-hidden="true"
+						>
+						</div>
+						<div class="relative z-10 px-6 py-12 md:px-14 md:py-14">
+							<SectionHeading
+								as="h3"
+								id="blog-cta-heading"
+								badge="Подобрать тур"
+								badgeClass="mb-6 md:mb-7"
+								headingClass="font-montserrat font-black text-primary uppercase tracking-tight mb-5 md:mb-6 leading-[1.1]"
+								headingStyle="font-size: clamp(1.5rem, 1rem + 2.8vw, 2.35rem);"
+							>
+								Вдохновились?!
+							</SectionHeading>
+							<div
+								class="text-slate-700 mb-10 font-inter max-w-lg mx-auto space-y-1 text-base md:text-lg leading-relaxed"
+							>
+								<p>Мы поможем организовать идеальное путешествие.</p>
+								<p>
+									Оставьте заявку — наши эксперты подберут лучшие варианты
+									туров.
+								</p>
+							</div>
+							<a
+								href={siteHomeSearch()}
+								data-astro-reload
+								class="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-red px-10 py-4 font-black text-white shadow-[0_4px_14px_4px_color-mix(in_srgb,var(--color-red)_30%,transparent)] hover:bg-red-hover hover:shadow-[0_6px_18px_4px_color-mix(in_srgb,var(--color-red)_40%,transparent)] transition-[background-color,box-shadow] duration-normal btn-ripple cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-sm uppercase tracking-wider font-montserrat"
+							>
+								<span class="relative z-10">Подобрать тур</span>
+								<FaIcon
+									fa="fa-solid fa-arrow-right"
+									iconClass="relative z-10 text-sm leading-none shrink-0"
+									baseline={false}
+								/>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="mt-10 flex flex-col items-center gap-4">
+					<a
+						href={siteBlogIndex()}
+						class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-600 hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/15 transition-all duration-200 font-montserrat uppercase tracking-wider"
+					>
+						<FaIcon
+							fa="fa-solid fa-arrow-left"
+							iconClass="text-sm leading-none group-hover:-translate-x-1 transition-transform duration-fast"
+						/>
+						Все карточки журнала
+					</a>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<FooterMinimal />
+</Layout>
+
+<script>
+	import { initBlogCardToc } from '../../lib/client/blog-card-toc';
+	import { initBlogSlideshows } from '../../lib/client/blog-slideshow';
+
+	initBlogCardToc();
+	document.addEventListener('DOMContentLoaded', () => initBlogSlideshows());
+	document.addEventListener('astro:page-load', () => {
+		initBlogCardToc();
+		initBlogSlideshows();
+	});
+</script>

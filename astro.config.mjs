@@ -8,6 +8,10 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { rehypeFaIcons } from './src/integrations/rehype-fa-icons.mjs';
 import { rehypeTypograf } from './src/integrations/rehype-typograf.mjs';
+import {
+	getBlogCardSitemapUrls,
+	isSitemapPageAllowed,
+} from './src/lib/sitemap-urls.ts';
 
 /** Доверенные Host / X-Forwarded-* (Astro 7). Без whitelist clientAddress = IP прокси, rate-limit ломается. */
 const prodAllowedDomains = [
@@ -76,5 +80,10 @@ export default defineConfig({
 		},
 	},
 
-	integrations: [sitemap()],
+	integrations: [
+		sitemap({
+			filter: (page) => isSitemapPageAllowed(page),
+			customPages: getBlogCardSitemapUrls(),
+		}),
+	],
 });

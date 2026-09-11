@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import favicon from '../../assets/favicon.png';
-import { getTourStyleBadge } from '../../lib/tourDestinationBadge';
+import { uniqueTourStyleBadges } from '../../lib/tourDestinationBadge';
 import { siteHomeJournal } from '../../lib/site-urls';
 import SectionHeading from '../ui/SectionHeading.astro';
 
@@ -12,6 +12,7 @@ interface Props {
 }
 
 const { totalCount, materialsWord, allDestinations } = Astro.props;
+const destinationBadges = uniqueTourStyleBadges(allDestinations);
 ---
 
 <div class="relative">
@@ -62,26 +63,24 @@ const { totalCount, materialsWord, allDestinations } = Astro.props;
 					<span>ANRO&nbsp;TRIP · 2026</span>
 				</div>
 				{
-					allDestinations.length > 0 && (
+					destinationBadges.length > 0 && (
 						<div
-							class="flex flex-wrap gap-1.5"
+							class="flex flex-wrap gap-2"
 							role="list"
 							aria-label="Направления в журнале"
 						>
-							{allDestinations.map((dest) => {
-								const badge = getTourStyleBadge(dest);
-								return (
-									<span
-										role="listitem"
-										class:list={[
-											'inline-block rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider',
-											badge.className,
-										]}
-									>
-										{badge.label}
-									</span>
-								);
-							})}
+							{destinationBadges.map((badge) => (
+								<span
+									role="listitem"
+									class:list={[
+										'inline-block rounded-full px-3 py-1 text-[10px] font-black tracking-wide',
+										badge.label.includes('ANRO') ? 'normal-case' : 'uppercase',
+										badge.className,
+									]}
+								>
+									{badge.label}
+								</span>
+							))}
 						</div>
 					)
 				}

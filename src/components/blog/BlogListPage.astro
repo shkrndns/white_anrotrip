@@ -3,47 +3,34 @@ import { Image } from 'astro:assets';
 import favicon from '../../assets/favicon.png';
 import FooterMinimal from '../FooterMinimal.astro';
 import Layout from '../../layouts/Layout.astro';
-import type { BlogListContext } from '../../lib/blog-list';
-import { siteHomeJournal } from '../../lib/site-urls';
+import type { BlogCardWithPosts } from '../../lib/blog-cards';
+import { siteHome, siteHomeJournal } from '../../lib/site-urls';
+import FaIcon from '../icons/FaIcon.astro';
 import BlogHero from './BlogHero.astro';
-import BlogFeaturedCard from './BlogFeaturedCard.astro';
-import BlogPostCard from './BlogPostCard.astro';
-import BlogPagination from './BlogPagination.astro';
+import BlogTopicCard from './BlogTopicCard.astro';
 
-interface Props extends BlogListContext {
-	featuredTitle: string;
-	featuredTitleHtml: string;
-	featuredDescription: string;
+interface Props {
+	cards: BlogCardWithPosts[];
+	allDestinations: string[];
+	totalCount: number;
+	materialsWord: string;
 	blogIndexUrl: string;
 	pageUrl: string;
-	prevUrl?: string;
-	nextUrl?: string;
 	blogBreadcrumbSchema: Record<string, unknown>;
 }
 
 const {
-	page,
-	featuredPost,
+	cards,
 	allDestinations,
 	totalCount,
 	materialsWord,
-	featuredTitle,
-	featuredTitleHtml,
-	featuredDescription,
 	pageUrl,
-	prevUrl,
-	nextUrl,
 	blogBreadcrumbSchema,
 } = Astro.props;
-
-const listTitle =
-	page.currentPage > 1
-		? `Журнал о путешествиях — страница ${page.currentPage} | ANRO TRIP`
-		: 'Журнал о путешествиях | ANRO TRIP';
 ---
 
 <Layout
-	title={listTitle}
+	title="Журнал о путешествиях | ANRO TRIP"
 	description="Вдохновляющие идеи, советы экспертов и путеводители по лучшим направлениям от команды ANRO TRIP."
 	canonicalURL={pageUrl}
 	showFavorites={false}
@@ -56,8 +43,6 @@ const listTitle =
 			type="application/ld+json"
 			set:html={JSON.stringify(blogBreadcrumbSchema)}
 		/>
-		{prevUrl && <link rel="prev" href={prevUrl} />}
-		{nextUrl && <link rel="next" href={nextUrl} />}
 	</Fragment>
 
 	<main
@@ -86,6 +71,29 @@ const listTitle =
 		>
 		</div>
 
+		<div class="container mx-auto max-w-7xl px-4 sm:px-6">
+			<nav class="flex items-center gap-1.5 pt-6 pb-2" aria-label="Навигация">
+				<a
+					href={siteHome()}
+					class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-primary hover:bg-primary/5 transition-all duration-200 font-inter"
+				>
+					<FaIcon
+						fa="fa-solid fa-house"
+						iconClass="text-sm leading-none shrink-0 -translate-y-0.5"
+					/>
+					Главная
+				</a>
+				<FaIcon
+					fa="fa-solid fa-chevron-right"
+					iconClass="text-xs text-gray-400 shrink-0"
+				/>
+				<span
+					class="px-2.5 py-1 rounded-full text-xs font-semibold text-gray-600 bg-gray-100/80 font-inter"
+					>Журнал</span
+				>
+			</nav>
+		</div>
+
 		<BlogHero
 			totalCount={totalCount}
 			materialsWord={materialsWord}
@@ -93,25 +101,15 @@ const listTitle =
 		/>
 
 		<div class="container mx-auto max-w-7xl px-4 pt-2 sm:px-6 md:pt-4">
-			<div class="mb-16 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+			<div
+				class="mb-16 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5"
+			>
 				{
-					page.currentPage === 1 && featuredPost && (
-						<BlogFeaturedCard
-							post={featuredPost}
-							title={featuredTitle}
-							titleHtml={featuredTitleHtml}
-							description={featuredDescription}
-						/>
-					)
-				}
-				{
-					page.data.map((post, index) => (
-						<BlogPostCard post={post} index={index} />
+					cards.map((card, index) => (
+						<BlogTopicCard card={card} index={index} />
 					))
 				}
 			</div>
-
-			<BlogPagination page={page} />
 		</div>
 
 		<div class="text-center mt-8 pb-2">
@@ -136,48 +134,8 @@ const listTitle =
 </Layout>
 
 <script>
-	const blogCardSlideshowTimers = new WeakMap<
-		HTMLElement,
-		ReturnType<typeof setInterval>
-	>();
+	import { initBlogSlideshows } from '../../lib/client/blog-slideshow';
 
-	function initCardSlideshows() {
-		const slideshows = document.querySelectorAll('[data-slideshow^="card-"]');
-
-		slideshows.forEach((slideshow) => {
-			const el = slideshow as HTMLElement;
-			const prev = blogCardSlideshowTimers.get(el);
-			if (prev !== undefined) {
-				clearInterval(prev);
-				blogCardSlideshowTimers.delete(el);
-			}
-
-			const group = slideshow.getAttribute('data-slideshow');
-			if (!group) return;
-
-			const slides = slideshow.querySelectorAll(
-				`[data-slideshow-group="${group}"]`,
-			);
-			if (slides.length < 2) return;
-
-			slides.forEach((slide, i) => {
-				(slide as HTMLElement).style.opacity = i === 0 ? '1' : '0';
-			});
-
-			let current = 0;
-			const intervalMs = 5000;
-
-			const nextSlide = () => {
-				const next = (current + 1) % slides.length;
-				(slides[current] as HTMLElement).style.opacity = '0';
-				(slides[next] as HTMLElement).style.opacity = '1';
-				current = next;
-			};
-
-			blogCardSlideshowTimers.set(el, setInterval(nextSlide, intervalMs));
-		});
-	}
-
-	document.addEventListener('DOMContentLoaded', initCardSlideshows);
-	document.addEventListener('astro:page-load', initCardSlideshows);
+	document.addEventListener('DOMContentLoaded', () => initBlogSlideshows());
+	document.addEventListener('astro:page-load', () => initBlogSlideshows());
 </script>
