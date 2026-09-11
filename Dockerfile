@@ -3,8 +3,11 @@ FROM node:22.23-alpine AS deps
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY patches ./patches
 RUN corepack enable && corepack prepare pnpm@11.3.0 --activate
-RUN pnpm install --frozen-lockfile
+# prepare → lefthook install не нужен в образе; esbuild/sharp — postinstall для сборки
+RUN pnpm install --frozen-lockfile --ignore-scripts \
+	&& pnpm rebuild esbuild sharp
 
 # ─── Stage 2: сборка ─────────────────────────────────────────────────────────
 FROM node:22.23-alpine AS builder
@@ -13,7 +16,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Sharp-оптимизация ассетов (prebuild) + production-сборка Astro.
 # Нельзя `pnpm exec astro build` — обходит lifecycle-хуки, prebuild не запускается.
-RUN corepack enable && pnpm build && pnpm prune --prod
+RUN corepack enable && pnpm build && pnpm prune --prod --ignore-scripts
 
 # ─── Stage 3: продакшн (минимальный образ) ────────────────────────────────────
 FROM node:22.23-alpine AS runner
