@@ -3,7 +3,6 @@
  */
 import type { ImageMetadata } from 'astro';
 
-import chelbasketImg from '../assets/partners/chelbasket.webp';
 import fedBoxaImg from '../assets/partners/fed-boxa.webp';
 import napoleonImg from '../assets/partners/napoleon.webp';
 import niagaraImg from '../assets/partners/niagara.webp';
@@ -33,7 +32,6 @@ export const clientPartners: ClientPartner[] = [
 	{ name: 'НИКС', logo: niksImg },
 	{ name: 'Unisteam', logo: unisteamImg },
 	{ name: 'Red Pepper Film', logo: redpepperImg },
-	{ name: 'Челбаскет', logo: chelbasketImg },
 	{ name: 'Study Land', logo: studylandImg },
 	{ name: 'Санаторий Урал', logo: uralImg },
 	{ name: 'Федерация бокса', logo: fedBoxaImg },
