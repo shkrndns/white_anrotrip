@@ -38,38 +38,8 @@ convert-to-webp.js
 
 # AGENTS.md — в git (руководство для агентов, без секретов)
 
-# --- Документация: в git только безопасные .doc (без deploy/VPS/security) ---
-# Вне git: server-vps-stack-plan, deploy-prep-checklist, perimeter-edge-security,
-# security-audit-2026-07, security-baseline-package, security-hardening-checklist,
-# budget-costs, vps-plan-justification
-.doc/*
-!.doc/README.md
-!.doc/_archive/
-!.doc/_archive/**
-!.doc/architecture/
-!.doc/architecture/**
-!.doc/audits/
-!.doc/audits/**
-!.doc/blog/
-!.doc/blog/**
-!.doc/content/
-!.doc/content/**
-!.doc/deploy/gitflic-mirror.md
-!.doc/deploy/notes-blur-production.md
-!.doc/design/
-!.doc/design/**
-!.doc/forms/
-!.doc/forms/**
-!.doc/navigation/
-!.doc/navigation/**
-!.doc/roadmaps/
-!.doc/roadmaps/**
-!.doc/seo/
-!.doc/seo/**
-!.doc/testing/
-!.doc/testing/**
-!.doc/meta/
-!.doc/meta/**
+# --- Документация (только локально, не в git) ---
+.doc/
 
 # scripts/ — все утилиты в git (секретов нет)
 

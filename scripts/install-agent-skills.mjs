@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Restore agent skills from skills-lock.json (skills.sh ecosystem).
- * Custom project skill: .doc/meta/skills/anrotrip → .agents/skills/anrotrip
+ * Custom project skill: skills/anrotrip → .agents/skills/anrotrip
  *
  * Usage: node scripts/install-agent-skills.mjs
  *        pnpm skills:install
@@ -32,7 +32,7 @@ if (install.status !== 0) {
 	process.exit(install.status ?? 1);
 }
 
-const src = join(root, '.doc/meta/skills/anrotrip');
+const src = join(root, 'skills/anrotrip');
 const dest = join(root, '.agents/skills/anrotrip');
 mkdirSync(dest, { recursive: true });
 cpSync(join(src, 'SKILL.md'), join(dest, 'SKILL.md'));

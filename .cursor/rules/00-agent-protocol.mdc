@@ -9,7 +9,7 @@ Do **not** wait for the user to ask. At the **start of every task**, before edit
 
 1. **Read** `.specify/memory/constitution.md` (hard rules override defaults).
 2. **Read** `.agents/skills/anrotrip/SKILL.md` — if missing, run `pnpm skills:install` and read again.
-3. **Skim** `AGENTS.md` and `.doc/README.md` for pointers; open only docs relevant to the task (see `01-docs-routing.mdc`, `02-skills-routing.mdc`).
+3. **Skim** `AGENTS.md` and, if present locally, `.doc/README.md`; open only docs relevant to the task (see `01-docs-routing.mdc`, `02-skills-routing.mdc`). `.doc/` is not in git.
 
 ## When to read more
 

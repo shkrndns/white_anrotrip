@@ -11,8 +11,8 @@ description: ANRO TRIP tourism agency site (Astro 7, Tailwind v4, SSR). Use for 
 | --------------------------------------------- | ------------------------------------------------------------------------ |
 | `.specify/memory/constitution.md`             | **Always** — hard rules (Tailwind v4, no extra CSS files, frozen header) |
 | `AGENTS.md`                                   | Stack, commands, structure, patterns                                     |
-| `.doc/architecture/architecture-reference.md` | Middleware, `src/lib/`, widgets                                          |
-| `.doc/audits/AUDIT-PLAN-STATUS.md`            | Audit pause — stage 6 not done                                           |
+| `.doc/architecture/architecture-reference.md` | Middleware, `src/lib/`, widgets (local `.doc/` if present)               |
+| `.doc/audits/AUDIT-PLAN-STATUS.md`            | Audit pause — stage 6 not done (local `.doc/` if present)                |
 
 ## Stack (short)
 
@@ -33,7 +33,7 @@ Pre-commit (lefthook): format staged + `pnpm check`.
 
 ## Do not change without explicit request
 
-- `src/components/Header.astro` — see `.doc/navigation/header-frozen.md`
+- `src/components/Header.astro` — see `.doc/navigation/header-frozen.md` (local)
 - `vite.build.cssMinify: false` in `astro.config.mjs` — blur in production
 - `security.allowedDomains` in `astro.config.mjs` — rate-limit client IP
 
@@ -49,8 +49,8 @@ Do **not** put `<!-- ... -->` inside JSX expressions (`{items.map(...)}`, ternar
 
 ## Related skills (installed via `pnpm skills:install`)
 
-Use domain skills from [skills.sh](https://www.skills.sh/) when relevant: `astro`, `tailwind-4-docs`, `core-web-vitals`, `seo-audit`, `schema`, `playwright-best-practices`, `docker-patterns`, etc. Full list: `.doc/meta/skills-primary-shortlists.md`.
+Use domain skills from [skills.sh](https://www.skills.sh/) when relevant: `astro`, `tailwind-4-docs`, `core-web-vitals`, `seo-audit`, `schema`, `playwright-best-practices`, `docker-patterns`, etc. Catalog (local): `.doc/meta/skills-primary-shortlists.md`.
 
 ## Audit tails (stage 6)
 
-Prerender, PWA service worker, Metrika, nonce-CSP, Redis rate-limit — see `.doc/audits/AUDIT-PLAN-STATUS.md`.
+Prerender, PWA service worker, Metrika, nonce-CSP, Redis rate-limit — see `.doc/audits/AUDIT-PLAN-STATUS.md` (local).

@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Documentation routing
 
+`.doc/` is **local-only** (gitignored). Read listed files when they exist on disk.
+
 Read the listed files **before** implementing (use Read tool; do not guess).
 
 | Task | Read first |

@@ -13,7 +13,7 @@
 Правила Cursor (always apply): `.cursor/rules/00-agent-protocol.mdc` и др.
 
 > **Конституция проекта:** `.specify/memory/constitution.md` — читать первым делом!  
-> **Документация:** `.doc/README.md` — указатель справочных документов.  
+> **Документация:** `.doc/` — справочные документы **только локально** (не в git); указатель: `.doc/README.md` при наличии.  
 > **Архитектура:** `.doc/architecture/architecture-reference.md` — middleware, `src/lib/`, виджеты, контент.  
 > **Agent skills:** `.doc/meta/skills-primary-shortlists.md` — skills.sh; установка: `pnpm skills:install`  
 > **⚠️ План аудита не завершён** (пауза 2026-09-07): `.doc/audits/AUDIT-PLAN-STATUS.md` — этап 6 и хвосты; не считать аудит закрытым.
