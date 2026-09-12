@@ -25,20 +25,8 @@
 - **Nemo API** — поиск туров
 - **Tourvisor** — поиск туров (особая обработка iframe)
 - **Яндекс.Карты** — карта офиса
-- **WhatsApp, Telegram** — контактные ссылки
+- **MAX, Telegram** — контактные ссылки
 - **Личный кабинет** — `https://lk.anrotrip.ru`
-
----
-
-## Разработка
-
-```bash
-pnpm install
-pnpm skills:install   # локально: agent skills (нужны skills-lock.json)
-pnpm dev
-```
-
-ИИ-агенты (только локально, не в git): **`AGENTS.md`** · `.cursor/rules/` · `skills-lock.json` · `skills/anrotrip/` · `.doc/`
 
 ---
 
