@@ -19,9 +19,7 @@ playwright-report/
 !.env.example
 
 # --- Специфические файлы от ИИ и редакторов ---
-.cursor/*
-!.cursor/rules/
-!.cursor/rules/**
+.cursor/
 .cursorignore
 .cursorrules
 .qwen/
@@ -36,7 +34,10 @@ QWEN.md
 skillkit.yaml
 convert-to-webp.js
 
-# AGENTS.md — в git (руководство для агентов, без секретов)
+# --- Agent-контекст (только локально, не в git) ---
+AGENTS.md
+skills-lock.json
+skills/
 
 # --- Документация (только локально, не в git) ---
 .doc/

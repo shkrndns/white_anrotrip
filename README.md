@@ -34,11 +34,11 @@
 
 ```bash
 pnpm install
-pnpm skills:install   # agent skills (skills.sh) для Cursor
+pnpm skills:install   # локально: agent skills (нужны skills-lock.json)
 pnpm dev
 ```
 
-ИИ-агенты: **`AGENTS.md`** · правила: `.cursor/rules/` · расширенная документация: `.doc/` (только локально, не в git)
+ИИ-агенты (только локально, не в git): **`AGENTS.md`** · `.cursor/rules/` · `skills-lock.json` · `skills/anrotrip/` · `.doc/`
 
 ---
 
