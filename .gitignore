@@ -42,7 +42,9 @@ skills/
 # --- Документация (только локально, не в git) ---
 .doc/
 
-# scripts/ — все утилиты в git (секретов нет)
+# --- Dev-скрипты (только optimize-images в git — prebuild) ---
+scripts/*
+!scripts/optimize-images.mjs
 
 # --- Настройки редакторов и системы ---
 .vscode/
